@@ -25,7 +25,7 @@ jQuery(function()
 	const constraints =
 	{
 		audio: false,
-		video: true
+		video: { facingMode: { exact: "environment" } }
 		//video: { width: 3840, height: 1920 }
 		//video: { width: 1920, height: 1080 }
 	};

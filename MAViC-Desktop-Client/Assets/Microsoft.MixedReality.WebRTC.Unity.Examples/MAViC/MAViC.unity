@@ -482,9 +482,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08c18e1b62e601f4d9948e4c590ce545, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minimumLevel: 0.0001
-  timeRequiredForSilence: 0.5
-  networkEvents: {fileID: 69484235}
 --- !u!1 &371205121
 GameObject:
   m_ObjectHideFlags: 0
@@ -1273,7 +1270,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3c4b583ca57df245bf1e2b0e2e738c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  positionMoveFactor: 0
 --- !u!1 &1226852096
 GameObject:
   m_ObjectHideFlags: 0
@@ -1893,7 +1889,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4037273679120539}
   m_Layer: 0
-  m_Name: MAVC
+  m_Name: MAViC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
