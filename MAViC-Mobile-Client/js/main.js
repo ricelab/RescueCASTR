@@ -349,7 +349,7 @@ jQuery(function()
 					{
 						'clientID': clientID,
 						'coords': location.coords,
-						'location': location.timestamp
+						'timestamp': location.timestamp
 					};
 
 					$.ajax(
