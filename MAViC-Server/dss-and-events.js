@@ -1,3 +1,14 @@
+/**
+ *
+ * dss-and-events.js
+ * DSS (Dead-Simple Signaling for WebRTC) and Event Server Code
+ *
+ * Based on node-dss (by Ben Greenier): https://github.com/bengreenier/node-dss
+ * Modified to handle both WebRTC signaling and events
+ *
+ */
+
+
 const stream = require('stream')
 const Router = require('router')
 const bodyParser = require('body-parser')

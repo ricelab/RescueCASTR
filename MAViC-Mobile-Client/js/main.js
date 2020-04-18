@@ -10,18 +10,15 @@
 
 jQuery(function()
 {
-	var url = window.location.hostname;
-	var socketServerUrl = "https://" + url + ":8082";
-	var dssServerUrl = "https://" + url + ":3001";
+	const url = window.location.hostname;
+	const dssServerUrl = "https://" + url + ":3001";
 
-	var socket = io.connect(socketServerUrl);
-
-	var doc = jQuery(document),
+	const doc = jQuery(document),
 		win = jQuery(window);
 
-	var callStartTime;
+	const POLL_SERVER_TIMEOUT = 200;
+	const SEND_LOCATION_TIMEOUT = 200;
 
-	// const signaling = new SignalingChannel();
 	const constraints =
 	{
 		audio: false,
@@ -29,22 +26,14 @@ jQuery(function()
 		//video: { width: 3840, height: 1920 }
 		//video: { width: 1920, height: 1080 }
 	};
-	const configuration =
-	{
-		// iceServers: [
-		// {
-		//   url: 'turn:numb.viagenie.ca',
-		//   credential: 'dvc',
-		//   username: 'brennandgj@gmail.com',
-		//   password: 'dvcchat'
-		// }]
-	};
+	const configuration = {};
 	const pc = new RTCPeerConnection(configuration);
-
-	const POLL_SERVER_TIMEOUT = 200;
-
+	
 	var iceCandidateQueue = [];
 
+	var dc;
+
+  	
   	var $_GET = {};
 	if(document.location.toString().indexOf('?') !== -1)
 	{
@@ -64,61 +53,11 @@ jQuery(function()
 	}
 	var clientID = $_GET['clientID'];
 	console.log(clientID);
-
-
-	/**
-	* SOCKET MESSAGE HANDLERS
-	*/
-
-	/* CONNECTION */
-
-	socket.on('connect', function()
+	if (clientID.toUpperCase() === 'DESKTOP')
 	{
-		console.log('socket.io connected');
-
-		socket.emit('BroadcasterClientConnect', null);
-	});
-
-	socket.on('disconnect', function()
-	{
-		console.log('socket.io disconnected');
-
-		alert("Connection with server failed.")
-	});
-
-	/* CALL */
-
-	// socket.on('StartCall', function(data)
-	// {
-	// 	console.log('StartCall command received');
-
-	// 	callStartTime = data.currentServerTime;
-
-	// 	// var call = peer.call(data.viewerClientPeerID, window.localStream);
-	// 	// step3(call);
-	// });
-
-	// socket.on('EndCall', function(viewerClientPeerID)
-	// {
-	// 	console.log('EndCall command received');
-
-	// 	// if (window.existingCall)
-	// 	// {
-	// 	//   window.existingCall.close();
-	// 	// }
-	// });
-
-	// /* OTHER */
-
-	// socket.on('ClientDisconnect', function(clientType)
-	// {
-	// 	console.log('ClientDisconnect: ' + clientType);
-
-	// 	// if (window.existingCall)
-	// 	// {
-	// 	//   window.existingCall.close();
-	// 	// }
-	// });
+		window.alert("Mobile client cannot use ClientID 'desktop'.");
+		throw new Error("Mobile client cannot use ClientID 'desktop'.");
+	}
 
 
 	/**
@@ -146,8 +85,10 @@ jQuery(function()
 		// try
 		// {
 		//   await pc.setLocalDescription(await pc.createOffer());
-		//   // send the offer to the other peer
-		//   // signaling.send({desc: pc.localDescription});
+
+		//   console.log(pc.localDescription.sdp);
+		  
+		//   // send the offer
 		//   PostToServer(
 		//   {
 		//     'MessageType': 1,  // offer
@@ -159,6 +100,15 @@ jQuery(function()
 		//   console.error(err);
 		// }
 	};
+
+	pc.ondatachannel = function(event)
+	{
+		console.log('ondatachannel');
+
+		dc = event.channel;
+		StreamLocation();
+	};
+
 
 	function setOnTrackOrStreamHandler(peer, handler)
 	{
@@ -203,6 +153,29 @@ jQuery(function()
 		  setOnTrackOrStreamHandler(pc, (remoteStream) =>
 		  {
 		    playRemoteStream(remoteStream);
+		  });
+
+		  // Send connection request to desktop client
+
+		  var msg =
+		  {
+		  	'EventName': 'ConnectionRequest',
+		  	'EventData': clientID
+		  };
+
+		  $.ajax(
+		  {
+		    url: dssServerUrl + "/event/desktop",
+		    type: 'POST',
+		    //dataType: 'json',
+		    //contentType: 'application/json; charset=utf-8',
+		    data: JSON.stringify(msg),
+		    cache: false,
+		    processData: false
+		  })
+		  .done(function(response)
+		  {
+		    console.log("POST Response: " + response);
 		  });
 
 		  PollServer();
@@ -331,13 +304,16 @@ jQuery(function()
 	function PollServer()
 	{
 		GetAndProcessFromServer();
-
-		sendLocation();
-		
 		setTimeout(PollServer, POLL_SERVER_TIMEOUT);
 	}
 
-	function sendLocation()
+	function StreamLocation()
+	{
+		SendLocation();
+		setTimeout(StreamLocation, SEND_LOCATION_TIMEOUT);
+	}
+
+	function SendLocation()
 	{
 		if (navigator.geolocation)
 		{
@@ -347,25 +323,17 @@ jQuery(function()
 
 					var msg =
 					{
-						'clientID': clientID,
-						'coords': location.coords,
+						'latitude': location.coords.latitude,
+						'longitude': location.coords.longitude,
+						'altitude': location.coords.altitude,
+						'accuracy': location.coords.accuracy,
+						'altitudeAccuracy': location.coords.altitudeAccuracy,
+						'heading': location.coords.heading,
+						'speed': location.coords.speed,
 						'timestamp': location.timestamp
 					};
 
-					$.ajax(
-					{
-					  url: dssServerUrl + "/event/desktop/LocationUpdate",
-					  type: 'POST',
-					  //dataType: 'json',
-					  //contentType: 'application/json; charset=utf-8',
-					  data: JSON.stringify(msg),
-					  cache: false,
-					  processData: false
-					})
-					.done(function(response)
-					{
-					  console.log("POST Response: " + response);
-					});
+					dc.send(JSON.stringify(msg));
 				});
 		}
 		else

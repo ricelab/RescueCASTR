@@ -146,6 +146,7 @@ namespace Microsoft.MixedReality.WebRTC.Unity
         /// <param name="sdp"></param>
         protected override void OnSdpAnswerReadyToSend(string answer)
         {
+            Debug.Log("answer ready :)");
             StartCoroutine(PostToServer(new SignalerMessage()
             {
                 MessageType = SignalerMessage.WireMessageType.Answer,

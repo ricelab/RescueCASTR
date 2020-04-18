@@ -2,9 +2,9 @@
   "name": "mavic-server",
   "version": "1.0.0",
   "description": "Server for MAViC",
-  "main": "server.js",
+  "main": "main.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node main.js"
   },
   "repository": {
     "type": "git",
