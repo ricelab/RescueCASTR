@@ -17,7 +17,7 @@ public class MapLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        ///
     }
 
     private void AddNewMobileClient(string clientID)
@@ -25,6 +25,7 @@ public class MapLogic : MonoBehaviour
         Debug.Log("AddNewMobileClient: " + clientID);
 
         GameObject newMobileClientObj = Instantiate(mobileClientPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+        newMobileClientObj.transform.parent = this.transform;
         MobileClient newMobileClient = newMobileClientObj.GetComponent<MobileClient>();
         newMobileClient.clientID = clientID;
         newMobileClient.StartCall();

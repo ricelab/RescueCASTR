@@ -17,14 +17,13 @@ jQuery(function()
 		win = jQuery(window);
 
 	const POLL_SERVER_TIMEOUT = 200;
+	const UPDATE_LOCATION_TIMEOUT = 2000;
 	const SEND_LOCATION_TIMEOUT = 200;
 
 	const constraints =
 	{
 		audio: false,
 		video: { facingMode: { exact: "environment" } }
-		//video: { width: 3840, height: 1920 }
-		//video: { width: 1920, height: 1080 }
 	};
 	const configuration = {};
 	const pc = new RTCPeerConnection(configuration);
@@ -32,6 +31,10 @@ jQuery(function()
 	var iceCandidateQueue = [];
 
 	var dc;
+
+	var locationIsStreaming = false;
+	var geolocationWatchId;
+	var updatedLocation;
 
   	
   	var $_GET = {};
@@ -106,7 +109,13 @@ jQuery(function()
 		console.log('ondatachannel');
 
 		dc = event.channel;
-		StreamLocation();
+
+		dc.onclosing = function()
+		{
+			StopStreamingLocation();
+		}
+
+		StartStreamingLocation();
 	};
 
 
@@ -307,38 +316,70 @@ jQuery(function()
 		setTimeout(PollServer, POLL_SERVER_TIMEOUT);
 	}
 
-	function StreamLocation()
+	function StartStreamingLocation()
 	{
-		SendLocation();
-		setTimeout(StreamLocation, SEND_LOCATION_TIMEOUT);
+		StopStreamingLocation();
+
+		if (navigator.geolocation)
+		{
+			locationIsStreaming = true;
+
+			geolocationWatchId = navigator.geolocation.watchPosition(
+				function(pos)
+				{
+					console.log(pos.coords);
+
+					updatedLocation =
+					{
+						'latitude': pos.coords.latitude,
+						'longitude': pos.coords.longitude,
+						'altitude': pos.coords.altitude,
+						'accuracy': pos.coords.accuracy,
+						'altitudeAccuracy': pos.coords.altitudeAccuracy,
+						'heading': pos.coords.heading,
+						'speed': pos.coords.speed,
+						'timestamp': pos.timestamp
+					};
+				},
+				function(err)
+				{
+					console.warn('ERROR(' + err.code + '): ' + err.message);
+				},
+				{
+					enableHighAccuracy: false,
+					timeout: UPDATE_LOCATION_TIMEOUT,
+					maximumAge: 0
+				});
+
+			SendLocation();
+		}
+		else
+		{
+			console.log('Geolocation is not supported by this browser/OS.');
+		}
+	}
+
+	function StopStreamingLocation()
+	{
+		locationIsStreaming = false;
+
+		if (geolocationWatchId)
+		{
+			navigator.geolocation.clearWatch(geolocationWatchId);
+			geolocationWatchId = null;
+		}
 	}
 
 	function SendLocation()
 	{
-		if (navigator.geolocation)
+		if (updatedLocation)
 		{
-			navigator.geolocation.getCurrentPosition(function(location)
-				{
-					console.log(location.coords);
-
-					var msg =
-					{
-						'latitude': location.coords.latitude,
-						'longitude': location.coords.longitude,
-						'altitude': location.coords.altitude,
-						'accuracy': location.coords.accuracy,
-						'altitudeAccuracy': location.coords.altitudeAccuracy,
-						'heading': location.coords.heading,
-						'speed': location.coords.speed,
-						'timestamp': location.timestamp
-					};
-
-					dc.send(JSON.stringify(msg));
-				});
+			dc.send(JSON.stringify(updatedLocation));
 		}
-		else
+		
+		if (locationIsStreaming)
 		{
-			console.log('Geolocation is not supported by this browser :(');
+			setTimeout(SendLocation, SEND_LOCATION_TIMEOUT);
 		}
 	}
 
