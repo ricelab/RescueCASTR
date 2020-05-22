@@ -17,6 +17,8 @@ public class MobileClient : MonoBehaviour
     public NodeDssSignaler nodeDssSignaler;
     public DataChannel dataChannel;
 
+    public MapLogic MapLogic;
+
     public TextMesh clientIDText;
 
     #endregion

@@ -17,7 +17,7 @@ jQuery(function()
 		win = jQuery(window);
 
 	const POLL_SERVER_TIMEOUT = 200;
-	const UPDATE_LOCATION_TIMEOUT = 2000;
+	const UPDATE_LOCATION_TIMEOUT = 1000;
 	const SEND_LOCATION_TIMEOUT = 200;
 
 	const constraints =

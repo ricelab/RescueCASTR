@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Microsoft.MixedReality.WebRTC.Unity.Examples/MAViC/MAViC.unity
+    path: Assets/Microsoft.MixedReality.WebRTC.Unity.Examples/MAViC/Queens-Park.unity
     guid: facc0df2705bbde488a573e0bb5196fa
   m_configObjects: {}

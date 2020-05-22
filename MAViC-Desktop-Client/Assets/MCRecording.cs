@@ -2,18 +2,6 @@
 using Microsoft.MixedReality.WebRTC;
 
 [Serializable]
-public class Location
-{
-    public double Latitude;
-    public double Longitude;
-    public double Altitude;
-    public double Accuracy;
-    public double AltitudeAccuracy;
-    public double Heading;
-    public double Speed;
-}
-
-[Serializable]
 public class MCRecordingFrame
 {
     #region Properties
