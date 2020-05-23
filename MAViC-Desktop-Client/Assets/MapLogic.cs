@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using GPXparser;
 
@@ -42,9 +43,10 @@ public class MapLogic : MonoBehaviour
                 location.Heading = 0;
                 location.Speed = 0;
 
-                //GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                //sphere.transform.parent = this.transform;
-                //sphere.transform.position = ConvertLocationToMapPosition(location);
+                GameObject locationPoint = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                locationPoint.transform.parent = this.transform;
+                locationPoint.transform.position = ConvertLocationToMapPosition(location);
+                locationPoint.GetComponent<MeshRenderer>().enabled = false;
 
                 mapPositions[i++] = ConvertLocationToMapPosition(location);
             }
@@ -62,6 +64,14 @@ public class MapLogic : MonoBehaviour
             lineRenderer.numCornerVertices = 10;
             lineRenderer.numCapVertices = 5;
         }
+
+        //DirectoryInfo d = new DirectoryInfo(@"GoldenEarsPhotos");
+        //FileInfo[] Files = d.GetFiles("*.JPG");
+        //string str = "";
+        //foreach (FileInfo file in Files)
+        //{
+        //    str = str + ", " + file.Name;
+        //}
     }
 
     // Update is called once per frame
