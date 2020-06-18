@@ -242,7 +242,7 @@ GameObject:
   - component: {fileID: 1821429661415914073}
   - component: {fileID: 1821429661415914072}
   m_Layer: 5
-  m_Name: TeamIconSmall
+  m_Name: TeamIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -290,8 +290,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55d55e1cbb35c5c48b06cee35708912c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fieldTeam: {fileID: 0}
-  teamColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &1821429661415914078
 MonoBehaviour:
   m_ObjectHideFlags: 0
