@@ -3,14 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using GPXparser;
 
 public class MapLogic : MonoBehaviour
 {
     public NetworkEvents networkEvents;
     public GameObject mobileClientPrefab;
-
-    public string gpsRecordingFilename;
 
     public Location[] referenceLocations;
     public Vector3[] referenceMapPositions;
@@ -19,59 +16,6 @@ public class MapLogic : MonoBehaviour
     void Start()
     {
         networkEvents.AddHandler("ConnectionRequest", AddNewMobileClient);
-
-        List<Track> tracks = Track.ReadTracksFromFile(gpsRecordingFilename);
-        foreach (var track in tracks)
-        {
-            //Console.WriteLine(track.Name + ": ");
-            //Console.WriteLine(track.Statistics.ToString());
-            //Console.WriteLine();
-
-            Vector3[] mapPositions = new Vector3[track.Waypoints.Count];
-            int i = 0;
-
-            foreach (Waypoint waypoint in track.Waypoints)
-            {
-                //Debug.Log(waypoint.ToString());
-                
-                Location location = new Location();
-                location.Latitude = waypoint.Latitude;
-                location.Longitude = waypoint.Longitude;
-                location.Altitude = waypoint.Elevation + 300;
-                location.Accuracy = 0;
-                location.AltitudeAccuracy = 0;
-                location.Heading = 0;
-                location.Speed = 0;
-
-                GameObject locationPoint = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                locationPoint.transform.parent = this.transform;
-                locationPoint.transform.position = ConvertLocationToMapPosition(location);
-                locationPoint.GetComponent<MeshRenderer>().enabled = false;
-
-                mapPositions[i++] = ConvertLocationToMapPosition(location);
-            }
-
-            GameObject line = new GameObject();
-            line.transform.parent = this.transform;
-            line.AddComponent<LineRenderer>();
-            LineRenderer lineRenderer = line.GetComponent<LineRenderer>();
-            lineRenderer.material = new Material(Shader.Find("Legacy Shaders/Particles/Alpha Blended Premultiply"));
-            lineRenderer.positionCount = track.Waypoints.Count;
-            lineRenderer.SetPositions(mapPositions);
-            lineRenderer.startColor = lineRenderer.endColor = new Color(0.5f, 0.0f, 0.0f, 1.0f);
-            lineRenderer.startWidth = lineRenderer.endWidth = 1.0f;
-            lineRenderer.SetPositions(mapPositions);
-            lineRenderer.numCornerVertices = 10;
-            lineRenderer.numCapVertices = 5;
-        }
-
-        //DirectoryInfo d = new DirectoryInfo(@"GoldenEarsPhotos");
-        //FileInfo[] Files = d.GetFiles("*.JPG");
-        //string str = "";
-        //foreach (FileInfo file in Files)
-        //{
-        //    str = str + ", " + file.Name;
-        //}
     }
 
     // Update is called once per frame

@@ -996,4 +996,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clientID: 
   nodeDssSignaler: {fileID: 1422416002427935798}
+  MapLogic: {fileID: 0}
   clientIDText: {fileID: 7677509006372792289}

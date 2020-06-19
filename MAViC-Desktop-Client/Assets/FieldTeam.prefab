@@ -45,6 +45,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   teamIconPrefab: {fileID: 1821429661415914074, guid: 39fc2d9e3df274942b4ee6eac8df8ce5,
     type: 3}
+  mapFrameDisplayPrefab: {fileID: 3723715233974251473, guid: ea795aad78bd934478f0f21925cec53b,
+    type: 3}
   teamName: 
   teamColor: {r: 1, g: 1, b: 1, a: 1}
-  gpsRecordingFilename: 
+  recordingDirectoryPath: 
+  ratioComplete: 0
