@@ -38,6 +38,8 @@ public class TeamPathPointLogic : MonoBehaviour
         _mapFrameDisplayLogic.DisplayImage(imagePath);
         _mapFrameDisplay.transform.position = this.transform.position;
         _mapFrameDisplay.transform.localScale = new Vector3(25.0f, 25.0f, 25.0f);
+
+        _mapFrameDisplayLogic.sceneCamera = fieldTeam.fieldTeamsLogic.sceneCamera;
     }
 
     void OnMouseExit()

@@ -7,6 +7,7 @@ public class FieldTeamsLogic : MonoBehaviour
     public GameObject currentlyDeployedTeamsPanel;
     public GameObject completedTeamsPanel;
     public GameObject map;
+    public GameObject sceneCamera;
 
     // Start is called before the first frame update
     void Start()

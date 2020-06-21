@@ -7,7 +7,10 @@ using System;
 
 public class FieldTeam : MonoBehaviour
 {
+    #region Public Properties
+
     public GameObject map;
+    public FieldTeamsLogic fieldTeamsLogic;
 
     public GameObject teamIconPrefab;
 
@@ -19,7 +22,11 @@ public class FieldTeam : MonoBehaviour
 
     public double ratioComplete;
 
-    private FieldTeamsLogic _fieldTeamsLogic;
+    #endregion
+
+
+    #region Private Properties
+
     private TeamIcon _teamIcon;
 
     private string _gpsRecordingFilePath;
@@ -35,6 +42,8 @@ public class FieldTeam : MonoBehaviour
     private GameObject _teamPathLine;
 
     private Color _lastTeamColor;
+
+    #endregion
 
     // Start is called before the first frame update
     void Start()
@@ -56,13 +65,13 @@ public class FieldTeam : MonoBehaviour
         _timelapsePhotoThumbnailDirectoryPath = recordingDirectoryPath + "photo-thumbnails/";
 
 
-        _fieldTeamsLogic = this.gameObject.transform.parent.GetComponent<FieldTeamsLogic>();
-        map = _fieldTeamsLogic.map;
+        fieldTeamsLogic = this.gameObject.transform.parent.GetComponent<FieldTeamsLogic>();
+        map = fieldTeamsLogic.map;
         _mapLogic = map.GetComponent<MapLogic>();
 
         
         GameObject newTeamIconObj = Instantiate(teamIconPrefab,
-            ratioComplete < 1.0 ? _fieldTeamsLogic.currentlyDeployedTeamsPanel.transform : _fieldTeamsLogic.completedTeamsPanel.transform);
+            ratioComplete < 1.0 ? fieldTeamsLogic.currentlyDeployedTeamsPanel.transform : fieldTeamsLogic.completedTeamsPanel.transform);
         _teamIcon = newTeamIconObj.GetComponent<TeamIcon>();
         _teamIcon.fieldTeam = this;
 

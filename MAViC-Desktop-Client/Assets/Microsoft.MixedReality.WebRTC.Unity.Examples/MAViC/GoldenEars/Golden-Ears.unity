@@ -270,6 +270,7 @@ MonoBehaviour:
   currentlyDeployedTeamsPanel: {fileID: 899663793}
   completedTeamsPanel: {fileID: 1567310394}
   map: {fileID: 550443983}
+  sceneCamera: {fileID: 1221709216}
 --- !u!1 &545038850
 GameObject:
   m_ObjectHideFlags: 0
@@ -609,7 +610,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.004470825, y: 0.000037121816}
+  m_AnchoredPosition: {x: 149.75006, y: 0.000037121816}
   m_SizeDelta: {x: -149.74998, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &582743354
