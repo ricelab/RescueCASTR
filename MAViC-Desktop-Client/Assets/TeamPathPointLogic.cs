@@ -33,13 +33,21 @@ public class TeamPathPointLogic : MonoBehaviour
 
         string imagePath = fieldTeam.GetPhotoThumbnailPathFromTime(time);
 
-        _mapFrameDisplay = Instantiate(fieldTeam.mapFrameDisplayPrefab, fieldTeam.map.transform);
+        GameObject sceneUi = fieldTeam.fieldTeamsLogic.sceneUi;
+
+        _mapFrameDisplay = Instantiate(fieldTeam.mapFrameDisplayPrefab, sceneUi.transform);
         _mapFrameDisplayLogic = _mapFrameDisplay.GetComponent<MapFrameDisplayLogic>();
         _mapFrameDisplayLogic.DisplayImage(imagePath);
-        _mapFrameDisplay.transform.position = this.transform.position;
-        _mapFrameDisplay.transform.localScale = new Vector3(25.0f, 25.0f, 25.0f);
+        //_mapFrameDisplay.transform.localScale = new Vector3(25.0f, 25.0f, 25.0f);
 
-        _mapFrameDisplayLogic.sceneCamera = fieldTeam.fieldTeamsLogic.sceneCamera;
+        Camera sceneCamera = fieldTeam.fieldTeamsLogic.sceneCamera.GetComponent<Camera>();
+        RectTransform canvasRect = sceneUi.GetComponent<RectTransform>();
+        Vector2 viewportPos = sceneCamera.WorldToViewportPoint(this.transform.position);
+        Vector2 worldObjScreenPos = new Vector2(
+            ((viewportPos.x * canvasRect.sizeDelta.x * 0.75f) - (canvasRect.sizeDelta.x * 0.5f)),
+            ((viewportPos.y * canvasRect.sizeDelta.y) - (canvasRect.sizeDelta.y * 0.5f))
+        );
+        _mapFrameDisplay.GetComponent<RectTransform>().anchoredPosition = worldObjScreenPos;
     }
 
     void OnMouseExit()

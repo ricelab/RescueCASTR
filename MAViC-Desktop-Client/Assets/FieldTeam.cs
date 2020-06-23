@@ -9,7 +9,6 @@ public class FieldTeam : MonoBehaviour
 {
     #region Public Properties
 
-    public GameObject map;
     public FieldTeamsLogic fieldTeamsLogic;
 
     public GameObject teamIconPrefab;
@@ -33,6 +32,7 @@ public class FieldTeam : MonoBehaviour
     private string _timelapsePhotoDirectoryPath;
     private string _timelapsePhotoThumbnailDirectoryPath;
 
+    private GameObject _map;
     private MapLogic _mapLogic;
 
     private string[] _photoFileNames;
@@ -66,8 +66,8 @@ public class FieldTeam : MonoBehaviour
 
 
         fieldTeamsLogic = this.gameObject.transform.parent.GetComponent<FieldTeamsLogic>();
-        map = fieldTeamsLogic.map;
-        _mapLogic = map.GetComponent<MapLogic>();
+        _map = fieldTeamsLogic.map;
+        _mapLogic = _map.GetComponent<MapLogic>();
 
         
         GameObject newTeamIconObj = Instantiate(teamIconPrefab,
@@ -116,7 +116,7 @@ public class FieldTeam : MonoBehaviour
                 location.Speed = 0;
 
                 _teamPathPoints[i] = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                _teamPathPoints[i].transform.parent = map.transform;
+                _teamPathPoints[i].transform.parent = _map.transform;
                 _teamPathPoints[i].transform.position = _mapLogic.ConvertLocationToMapPosition(location);
                 _teamPathPoints[i].GetComponent<MeshRenderer>().enabled = false;
                 _teamPathPoints[i].transform.localScale.Scale(new Vector3(5, 5, 5));
@@ -133,7 +133,7 @@ public class FieldTeam : MonoBehaviour
             }
 
             _teamPathLine = new GameObject();
-            _teamPathLine.transform.parent = map.transform;
+            _teamPathLine.transform.parent = _map.transform;
             _teamPathLine.AddComponent<LineRenderer>();
             LineRenderer lineRenderer = _teamPathLine.GetComponent<LineRenderer>();
             lineRenderer.material = new Material(Shader.Find("Legacy Shaders/Particles/Alpha Blended Premultiply"));

@@ -43,9 +43,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c472a7656fe1dd9438daa0c5f80f7339, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fieldTeamsLogic: {fileID: 0}
   teamIconPrefab: {fileID: 1821429661415914074, guid: 39fc2d9e3df274942b4ee6eac8df8ce5,
     type: 3}
-  mapFrameDisplayPrefab: {fileID: 3723715233974251473, guid: ea795aad78bd934478f0f21925cec53b,
+  mapFrameDisplayPrefab: {fileID: 7884995692887825270, guid: 9a26f68059d86b8448e74e04fdcbaff0,
     type: 3}
   teamName: 
   teamColor: {r: 1, g: 1, b: 1, a: 1}
