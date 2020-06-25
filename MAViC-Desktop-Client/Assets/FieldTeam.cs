@@ -109,7 +109,7 @@ public class FieldTeam : MonoBehaviour
                 Location location = new Location();
                 location.Latitude = waypoint.Latitude;
                 location.Longitude = waypoint.Longitude;
-                location.Altitude = waypoint.Elevation + 300;
+                location.Altitude = waypoint.Elevation + 100;
                 location.Accuracy = 0;
                 location.AltitudeAccuracy = 0;
                 location.Heading = 0;
@@ -119,7 +119,7 @@ public class FieldTeam : MonoBehaviour
                 _teamPathPoints[i].transform.parent = _map.transform;
                 _teamPathPoints[i].transform.position = _mapLogic.ConvertLocationToMapPosition(location);
                 _teamPathPoints[i].GetComponent<MeshRenderer>().enabled = false;
-                _teamPathPoints[i].transform.localScale.Scale(new Vector3(5, 5, 5));
+                _teamPathPoints[i].transform.localScale.Scale(new Vector3(10, 10, 10));
 
                 TeamPathPointLogic teamPathPointLogic = _teamPathPoints[i].AddComponent<TeamPathPointLogic>();
                 teamPathPointLogic.location = location;

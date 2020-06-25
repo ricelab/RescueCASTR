@@ -29,7 +29,7 @@ public class TeamPathPointLogic : MonoBehaviour
     {
         Debug.Log("MouseEnter: " + pointNumber);
 
-        this.GetComponent<MeshRenderer>().enabled = true;
+        //this.GetComponent<MeshRenderer>().enabled = true;
 
         string imagePath = fieldTeam.GetPhotoThumbnailPathFromTime(time);
 
@@ -45,7 +45,7 @@ public class TeamPathPointLogic : MonoBehaviour
         Vector2 viewportPos = sceneCamera.WorldToViewportPoint(this.transform.position);
         Vector2 worldObjScreenPos = new Vector2(
             ((viewportPos.x * canvasRect.sizeDelta.x * 0.75f) - (canvasRect.sizeDelta.x * 0.5f)),
-            ((viewportPos.y * canvasRect.sizeDelta.y) - (canvasRect.sizeDelta.y * 0.5f))
+            ((viewportPos.y * canvasRect.sizeDelta.y * 0.8f) - (canvasRect.sizeDelta.y * 0.5f) + (canvasRect.sizeDelta.y * 0.2f))
         );
         _mapFrameDisplay.GetComponent<RectTransform>().anchoredPosition = worldObjScreenPos;
     }
