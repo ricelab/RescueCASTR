@@ -13,18 +13,6 @@ public class TeamPathPointLogic : MonoBehaviour
     private GameObject _mapFrameDisplay;
     private MapFrameDisplayLogic _mapFrameDisplayLogic;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        ///
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        ///
-    }
-
     void OnMouseEnter()
     {
         Debug.Log("MouseEnter: " + pointNumber);
@@ -38,7 +26,6 @@ public class TeamPathPointLogic : MonoBehaviour
         _mapFrameDisplay = Instantiate(fieldTeam.mapFrameDisplayPrefab, sceneUi.transform);
         _mapFrameDisplayLogic = _mapFrameDisplay.GetComponent<MapFrameDisplayLogic>();
         _mapFrameDisplayLogic.DisplayImage(imagePath);
-        //_mapFrameDisplay.transform.localScale = new Vector3(25.0f, 25.0f, 25.0f);
 
         Camera sceneCamera = fieldTeam.fieldTeamsLogic.sceneCamera.GetComponent<Camera>();
         RectTransform canvasRect = sceneUi.GetComponent<RectTransform>();

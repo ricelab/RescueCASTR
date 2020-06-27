@@ -4,6 +4,7 @@ using UnityEngine;
 using GPXparser;
 using System.IO;
 using System;
+using System.Linq;
 
 public class FieldTeam : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class FieldTeam : MonoBehaviour
     public FieldTeamsLogic fieldTeamsLogic;
 
     public GameObject teamIconPrefab;
+    public GameObject teamTimelinePrefab;
 
     public GameObject mapFrameDisplayPrefab;
 
@@ -21,12 +23,33 @@ public class FieldTeam : MonoBehaviour
 
     public double ratioComplete;
 
+    public UDateTime startTime;
+
+    public UDateTime endTime
+    {
+        get
+        {
+            if (_endTime == null)
+            {
+                List<Track> tracks = Track.ReadTracksFromFile(_gpsRecordingFilePath);
+                DateTime dateTime = new DateTime(startTime.dateTime.Ticks + tracks[0].Waypoints.Last().Time.Ticks - tracks[0].Waypoints.First().Time.Ticks);
+                _endTime = dateTime;
+            }
+            return _endTime;
+        }
+    }
+
     #endregion
 
 
     #region Private Properties
 
+    private bool _fieldTeamIsInstantiated = false;
+
+    private UDateTime _endTime = null;
+
     private TeamIcon _teamIcon;
+    private TeamTimelineLogic _teamTimelineLogic;
 
     private string _gpsRecordingFilePath;
     private string _timelapsePhotoDirectoryPath;
@@ -45,16 +68,10 @@ public class FieldTeam : MonoBehaviour
 
     #endregion
 
+
     // Start is called before the first frame update
     void Start()
     {
-        //teamColor = new Color(
-        //    Random.Range(0f, 1f),
-        //    Random.Range(0f, 1f),
-        //    Random.Range(0f, 1f)
-        //);
-
-        
         if (!recordingDirectoryPath.EndsWith("/"))
         {
             recordingDirectoryPath += "/";
@@ -64,16 +81,39 @@ public class FieldTeam : MonoBehaviour
         _timelapsePhotoDirectoryPath = recordingDirectoryPath + "photos/";
         _timelapsePhotoThumbnailDirectoryPath = recordingDirectoryPath + "photo-thumbnails/";
 
-
         fieldTeamsLogic = this.gameObject.transform.parent.GetComponent<FieldTeamsLogic>();
         _map = fieldTeamsLogic.map;
         _mapLogic = _map.GetComponent<MapLogic>();
+    }
 
-        
+    // Update is called once per frame
+    void Update()
+    {
+        if (_fieldTeamIsInstantiated)
+        {
+            // Update path colour if team's colour changed
+            if (teamColor != _lastTeamColor)
+            {
+                _lastTeamColor = teamColor;
+
+                LineRenderer lineRenderer = _teamPathLine.GetComponent<LineRenderer>();
+                lineRenderer.startColor = lineRenderer.endColor = teamColor;
+            }
+        }
+    }
+
+    public void FieldTeamInstantiate()
+    {
         GameObject newTeamIconObj = Instantiate(teamIconPrefab,
             ratioComplete < 1.0 ? fieldTeamsLogic.currentlyDeployedTeamsPanel.transform : fieldTeamsLogic.completedTeamsPanel.transform);
+        newTeamIconObj.transform.SetSiblingIndex(0);
         _teamIcon = newTeamIconObj.GetComponent<TeamIcon>();
         _teamIcon.fieldTeam = this;
+
+        GameObject newTeamTimelineObj = Instantiate(teamTimelinePrefab, fieldTeamsLogic.timelineContentPanel.transform);
+        newTeamTimelineObj.transform.SetSiblingIndex(0);
+        _teamTimelineLogic = newTeamTimelineObj.GetComponent<TeamTimelineLogic>();
+        _teamTimelineLogic.fieldTeam = this;
 
         
         List<Track> tracks = Track.ReadTracksFromFile(_gpsRecordingFilePath);
@@ -134,6 +174,7 @@ public class FieldTeam : MonoBehaviour
 
             _teamPathLine = new GameObject();
             _teamPathLine.transform.parent = _map.transform;
+            _teamPathLine.transform.SetSiblingIndex(0);
             _teamPathLine.AddComponent<LineRenderer>();
             LineRenderer lineRenderer = _teamPathLine.GetComponent<LineRenderer>();
             lineRenderer.material = new Material(Shader.Find("Legacy Shaders/Particles/Alpha Blended Premultiply"));
@@ -145,20 +186,10 @@ public class FieldTeam : MonoBehaviour
             lineRenderer.numCornerVertices = 10;
             lineRenderer.numCapVertices = 5;
         }
+
+        _fieldTeamIsInstantiated = true;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        // Update path colour if team's colour changed
-        if (teamColor != _lastTeamColor)
-        {
-            _lastTeamColor = teamColor;
-
-            LineRenderer lineRenderer = _teamPathLine.GetComponent<LineRenderer>();
-            lineRenderer.startColor = lineRenderer.endColor = teamColor;
-        }
-    }
 
     public string GetPhotoPathFromTime(DateTime time)
     {

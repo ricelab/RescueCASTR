@@ -18,12 +18,6 @@ public class MapLogic : MonoBehaviour
         networkEvents.AddHandler("ConnectionRequest", AddNewMobileClient);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        ///
-    }
-
     public Vector3 ConvertLocationToMapPosition(Location location)
     {
         float x = (float)(

@@ -9,12 +9,6 @@ public class TeamIcon : MonoBehaviour
 
     private Color _lastTeamColor;
     private string _lastTeamName;
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        ///
-    }
 
     // Update is called once per frame
     void Update()

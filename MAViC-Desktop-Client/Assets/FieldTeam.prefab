@@ -46,9 +46,13 @@ MonoBehaviour:
   fieldTeamsLogic: {fileID: 0}
   teamIconPrefab: {fileID: 1821429661415914074, guid: 39fc2d9e3df274942b4ee6eac8df8ce5,
     type: 3}
+  teamTimelinePrefab: {fileID: 3989215380173099281, guid: 013f98a0716a6af46bc10b604dbb0a59,
+    type: 3}
   mapFrameDisplayPrefab: {fileID: 7884995692887825270, guid: 9a26f68059d86b8448e74e04fdcbaff0,
     type: 3}
   teamName: 
   teamColor: {r: 1, g: 1, b: 1, a: 1}
   recordingDirectoryPath: 
   ratioComplete: 0
+  startTime:
+    _dateTime: 0001-01-01 12:00:00 AM
