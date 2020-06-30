@@ -10,6 +10,8 @@ public class FieldTeamsLogic : MonoBehaviour
     public GameObject map;
     public GameObject sceneCamera;
     public GameObject sceneUi;
+    public GameObject timelineCamera;
+    public GameObject timelineUi;
     public UDateTime currentTime;
 
     public UDateTime earliestStartTime

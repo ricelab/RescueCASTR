@@ -19,7 +19,7 @@ public class TeamPathPointLogic : MonoBehaviour
 
         //this.GetComponent<MeshRenderer>().enabled = true;
 
-        string imagePath = fieldTeam.GetPhotoThumbnailPathFromTime(time);
+        string imagePath = fieldTeam.GetPhotoThumbnailPathFromActualTime(time);
 
         GameObject sceneUi = fieldTeam.fieldTeamsLogic.sceneUi;
 

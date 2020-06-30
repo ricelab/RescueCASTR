@@ -31,8 +31,7 @@ public class FieldTeam : MonoBehaviour
         {
             if (_endTime == null)
             {
-                List<Track> tracks = Track.ReadTracksFromFile(_gpsRecordingFilePath);
-                DateTime dateTime = new DateTime(startTime.dateTime.Ticks + tracks[0].Waypoints.Last().Time.Ticks - tracks[0].Waypoints.First().Time.Ticks);
+                DateTime dateTime = new DateTime(startTime.dateTime.Ticks + _actualEndTime.dateTime.Ticks - _actualStartTime.dateTime.Ticks);
                 _endTime = dateTime;
             }
             return _endTime;
@@ -47,6 +46,9 @@ public class FieldTeam : MonoBehaviour
     private bool _fieldTeamIsInstantiated = false;
 
     private UDateTime _endTime = null;
+
+    private UDateTime _actualStartTime;
+    private UDateTime _actualEndTime;
 
     private TeamIcon _teamIcon;
     private TeamTimelineLogic _teamTimelineLogic;
@@ -84,6 +86,10 @@ public class FieldTeam : MonoBehaviour
         fieldTeamsLogic = this.gameObject.transform.parent.GetComponent<FieldTeamsLogic>();
         _map = fieldTeamsLogic.map;
         _mapLogic = _map.GetComponent<MapLogic>();
+
+        List<Track> tracks = Track.ReadTracksFromFile(_gpsRecordingFilePath);
+        _actualStartTime = tracks[0].Waypoints.First().Time;
+        _actualEndTime = tracks[0].Waypoints.Last().Time;
     }
 
     // Update is called once per frame
@@ -193,14 +199,30 @@ public class FieldTeam : MonoBehaviour
 
     public string GetPhotoPathFromTime(DateTime time)
     {
-        int i = BinarySearchForClosestValue(_photoTimes, time);
-        return _timelapsePhotoDirectoryPath + _photoFileNames[i];
+        return GetPhotoPathFromActualTime(ConvertTimeToActualTime(time));
     }
 
     public string GetPhotoThumbnailPathFromTime(DateTime time)
     {
+        return GetPhotoThumbnailPathFromActualTime(ConvertTimeToActualTime(time));
+    }
+
+    public string GetPhotoPathFromActualTime(DateTime time)
+    {
+        int i = BinarySearchForClosestValue(_photoTimes, time);
+        return _timelapsePhotoDirectoryPath + _photoFileNames[i];
+    }
+
+    public string GetPhotoThumbnailPathFromActualTime(DateTime time)
+    {
         int i = BinarySearchForClosestValue(_photoTimes, time);
         return _timelapsePhotoThumbnailDirectoryPath + _photoFileNames[i];
+    }
+
+    private DateTime ConvertTimeToActualTime(DateTime time)
+    {
+        long ticksFromStart = time.Ticks - startTime.dateTime.Ticks;
+        return new DateTime(_actualStartTime.dateTime.Ticks + ticksFromStart);
     }
 
     private int BinarySearchForClosestValue(DateTime[] a, DateTime item)

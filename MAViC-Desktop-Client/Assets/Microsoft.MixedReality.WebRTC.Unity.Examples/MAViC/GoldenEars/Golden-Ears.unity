@@ -459,7 +459,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.0000712389}
+  m_AnchoredPosition: {x: 0, y: 0.0000445022}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &322617437
@@ -551,6 +551,8 @@ MonoBehaviour:
   map: {fileID: 550443983}
   sceneCamera: {fileID: 1221709216}
   sceneUi: {fileID: 1364986811}
+  timelineCamera: {fileID: 1597293473}
+  timelineUi: {fileID: 1603411208}
   currentTime:
     _dateTime: 2020-06-26 7:00:00 AM
 --- !u!1 &378033924
