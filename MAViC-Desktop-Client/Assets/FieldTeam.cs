@@ -63,6 +63,8 @@ public class FieldTeam : MonoBehaviour
     private string[] _photoFileNames;
     private DateTime[] _photoTimes;
 
+    private DateTime[] _gpsWaypointTimes;
+
     private GameObject[] _teamPathPoints;
     private GameObject _teamPathLine;
 
@@ -108,6 +110,7 @@ public class FieldTeam : MonoBehaviour
         }
     }
 
+
     public void FieldTeamInstantiate()
     {
         GameObject newTeamIconObj = Instantiate(teamIconPrefab,
@@ -148,6 +151,7 @@ public class FieldTeam : MonoBehaviour
             Vector3[] mapPositions = new Vector3[track.Waypoints.Count];
 
             _teamPathPoints = new GameObject[track.Waypoints.Count];
+            _gpsWaypointTimes = new DateTime[track.Waypoints.Count];
 
             i = 0;
             foreach (Waypoint waypoint in track.Waypoints)
@@ -175,6 +179,8 @@ public class FieldTeam : MonoBehaviour
 
                 mapPositions[i] = _mapLogic.ConvertLocationToMapPosition(location);
 
+                _gpsWaypointTimes[i] = waypoint.Time;
+
                 i++;
             }
 
@@ -194,6 +200,27 @@ public class FieldTeam : MonoBehaviour
         }
 
         _fieldTeamIsInstantiated = true;
+    }
+
+
+    public void HighlightPathAtTime(DateTime time)
+    {
+        HighlightPathAtActualTime(ConvertTimeToActualTime(time));
+    }
+
+    public void HighlightPathAtActualTime(DateTime time)
+    {
+        int i = BinarySearchForClosestValue(_gpsWaypointTimes, time);
+        _teamPathPoints[i].GetComponent<TeamPathPointLogic>().HighlightPathPoint();
+    }
+
+    public void UnhighlightPath()
+    {
+        foreach (GameObject teamPathPoint in _teamPathPoints)
+        {
+            TeamPathPointLogic teamPathPointLogic = teamPathPoint.GetComponent<TeamPathPointLogic>();
+            teamPathPointLogic.UnhighlightPathPoint();
+        }
     }
 
 
@@ -219,11 +246,13 @@ public class FieldTeam : MonoBehaviour
         return _timelapsePhotoThumbnailDirectoryPath + _photoFileNames[i];
     }
 
+
     private DateTime ConvertTimeToActualTime(DateTime time)
     {
         long ticksFromStart = time.Ticks - startTime.dateTime.Ticks;
         return new DateTime(_actualStartTime.dateTime.Ticks + ticksFromStart);
     }
+
 
     private int BinarySearchForClosestValue(DateTime[] a, DateTime item)
     {

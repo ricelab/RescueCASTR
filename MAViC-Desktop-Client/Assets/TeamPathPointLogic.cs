@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngineInternal;
 
 public class TeamPathPointLogic : MonoBehaviour
 {
@@ -13,17 +15,21 @@ public class TeamPathPointLogic : MonoBehaviour
     private GameObject _mapFrameDisplay;
     private MapFrameDisplayLogic _mapFrameDisplayLogic;
 
+    private bool _isHighlighted = false;
+
     void OnMouseEnter()
     {
         Debug.Log("MouseEnter: " + pointNumber);
 
-        //this.GetComponent<MeshRenderer>().enabled = true;
+        //this.HighlightPathPoint();
 
         string imagePath = fieldTeam.GetPhotoThumbnailPathFromActualTime(time);
 
         GameObject sceneUi = fieldTeam.fieldTeamsLogic.sceneUi;
 
         _mapFrameDisplay = Instantiate(fieldTeam.mapFrameDisplayPrefab, sceneUi.transform);
+        _mapFrameDisplay.transform.Find("Background").GetComponent<Image>().color = fieldTeam.teamColor;
+        _mapFrameDisplay.transform.Find("Arrow").GetComponent<Image>().color = fieldTeam.teamColor;
         _mapFrameDisplayLogic = _mapFrameDisplay.GetComponent<MapFrameDisplayLogic>();
         _mapFrameDisplayLogic.DisplayImage(imagePath);
 
@@ -41,8 +47,28 @@ public class TeamPathPointLogic : MonoBehaviour
     {
         Debug.Log("MouseExit: " + pointNumber);
 
-        this.GetComponent<MeshRenderer>().enabled = false;
+        //this.UnhighlightPathPoint();
 
         GameObject.Destroy(_mapFrameDisplay);
+    }
+
+    public void HighlightPathPoint()
+    {
+        if (!_isHighlighted)
+        {
+            this.transform.localScale *= 5.0f;
+            this.GetComponent<MeshRenderer>().enabled = true;
+            _isHighlighted = true;
+        }
+    }
+
+    public void UnhighlightPathPoint()
+    {
+        if (_isHighlighted)
+        {
+            this.GetComponent<MeshRenderer>().enabled = false;
+            this.transform.localScale /= 5.0f;
+            _isHighlighted = false;
+        }
     }
 }
