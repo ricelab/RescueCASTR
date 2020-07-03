@@ -50,7 +50,7 @@ public class TeamTimeline : MonoBehaviour
         _raycaster = this.GetComponentInParent<GraphicRaycaster>();
         _eventSystem = GetComponent<EventSystem>();
 
-        _sceneUi = fieldTeam.fieldTeamsLogic.sceneUi;
+        _sceneUi = fieldTeam.fieldTeamsGroup.sceneUi;
     }
 
     void Update()
@@ -83,11 +83,11 @@ public class TeamTimeline : MonoBehaviour
             
             _scaleX =
                 (float)(fieldTeam.endTime.dateTime.Ticks - fieldTeam.startTime.dateTime.Ticks) /
-                (float)(fieldTeam.fieldTeamsLogic.latestEndTime.dateTime.Ticks - fieldTeam.fieldTeamsLogic.earliestStartTime.dateTime.Ticks);
+                (float)(fieldTeam.fieldTeamsGroup.latestEndTime.dateTime.Ticks - fieldTeam.fieldTeamsGroup.earliestStartTime.dateTime.Ticks);
 
             _n =
-                (float)(fieldTeam.startTime.dateTime.Ticks - fieldTeam.fieldTeamsLogic.earliestStartTime.dateTime.Ticks) /
-                (float)(fieldTeam.fieldTeamsLogic.latestEndTime.dateTime.Ticks - fieldTeam.fieldTeamsLogic.earliestStartTime.dateTime.Ticks);
+                (float)(fieldTeam.startTime.dateTime.Ticks - fieldTeam.fieldTeamsGroup.earliestStartTime.dateTime.Ticks) /
+                (float)(fieldTeam.fieldTeamsGroup.latestEndTime.dateTime.Ticks - fieldTeam.fieldTeamsGroup.earliestStartTime.dateTime.Ticks);
             if (_scaleX == 1.0f)
                 _pivotX = 0.0f;
             else
@@ -206,8 +206,8 @@ public class TeamTimeline : MonoBehaviour
         else if (placeToHighlight > 1.0f)
             placeToHighlight = 1.0f;
 
-        Camera timelineCamera = fieldTeam.fieldTeamsLogic.timelineCamera.GetComponent<Camera>();
-        RectTransform canvasRect = fieldTeam.fieldTeamsLogic.sceneUi.GetComponent<RectTransform>();
+        Camera timelineCamera = fieldTeam.fieldTeamsGroup.timelineCamera.GetComponent<Camera>();
+        RectTransform canvasRect = fieldTeam.fieldTeamsGroup.sceneUi.GetComponent<RectTransform>();
         Vector2 viewportPos = timelineCamera.WorldToViewportPoint(_line.transform.position);
         Vector2 worldObjScreenPos = new Vector2(
             (viewportPos.x * canvasRect.sizeDelta.x * 0.75f) - (canvasRect.sizeDelta.x * 0.5f),
@@ -242,8 +242,8 @@ public class TeamTimeline : MonoBehaviour
         else if (placeToHighlight > 1.0f)
             placeToHighlight = 1.0f;
 
-        Camera timelineCamera = fieldTeam.fieldTeamsLogic.timelineCamera.GetComponent<Camera>();
-        RectTransform canvasRect = fieldTeam.fieldTeamsLogic.sceneUi.GetComponent<RectTransform>();
+        Camera timelineCamera = fieldTeam.fieldTeamsGroup.timelineCamera.GetComponent<Camera>();
+        RectTransform canvasRect = fieldTeam.fieldTeamsGroup.sceneUi.GetComponent<RectTransform>();
         Vector2 viewportPos = timelineCamera.WorldToViewportPoint(_line.transform.position);
         Vector2 worldObjScreenPos = new Vector2(
             ((viewportPos.x * canvasRect.sizeDelta.x * 0.75f) - (canvasRect.sizeDelta.x * 0.5f)),

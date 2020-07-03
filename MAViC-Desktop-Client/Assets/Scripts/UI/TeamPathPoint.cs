@@ -30,7 +30,7 @@ public class TeamPathPoint : MonoBehaviour
 
         string imagePath = fieldTeam.GetPhotoThumbnailPathFromActualTime(time);
 
-        GameObject sceneUi = fieldTeam.fieldTeamsLogic.sceneUi;
+        GameObject sceneUi = fieldTeam.fieldTeamsGroup.sceneUi;
 
         _mapFrameDisplayObj = Instantiate(fieldTeam.mapFrameDisplayPrefab, sceneUi.transform);
         _mapFrameDisplayObj.transform.Find("Background").GetComponent<Image>().color = fieldTeam.teamColor;
@@ -38,7 +38,7 @@ public class TeamPathPoint : MonoBehaviour
         _mapFrameDisplayLogic = _mapFrameDisplayObj.GetComponent<MapFrameDisplay>();
         _mapFrameDisplayLogic.DisplayImage(imagePath);
 
-        Camera sceneCamera = fieldTeam.fieldTeamsLogic.sceneCamera.GetComponent<Camera>();
+        Camera sceneCamera = fieldTeam.fieldTeamsGroup.sceneCamera.GetComponent<Camera>();
         RectTransform canvasRect = sceneUi.GetComponent<RectTransform>();
         Vector2 viewportPos = sceneCamera.WorldToViewportPoint(this.transform.position);
         Vector2 worldObjScreenPos = new Vector2(

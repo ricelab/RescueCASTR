@@ -10,7 +10,7 @@ public class FieldTeam : MonoBehaviour
 {
     #region Public Properties
 
-    public FieldTeamsGroup fieldTeamsLogic;
+    public FieldTeamsGroup fieldTeamsGroup;
 
     public GameObject teamIconPrefab;
     public GameObject teamTimelinePrefab;
@@ -20,8 +20,6 @@ public class FieldTeam : MonoBehaviour
     public string teamName;
     public Color teamColor;
     public string recordingDirectoryPath;
-
-    public double ratioComplete;
 
     public UDateTime startTime;
 
@@ -57,6 +55,8 @@ public class FieldTeam : MonoBehaviour
     private UDateTime _actualStartTime;
     private UDateTime _actualEndTime;
 
+    private double _ratioComplete;
+
     private TeamIcon _teamIcon;
     private TeamTimeline _teamTimeline;
 
@@ -90,9 +90,11 @@ public class FieldTeam : MonoBehaviour
                 PerformInitialFileRead();
             }
 
-            fieldTeamsLogic = this.gameObject.transform.parent.GetComponent<FieldTeamsGroup>();
-            _mapObj = fieldTeamsLogic.map;
+            fieldTeamsGroup = this.gameObject.transform.parent.GetComponent<FieldTeamsGroup>();
+            _mapObj = fieldTeamsGroup.map;
             _mapLogic = _mapObj.GetComponent<Map>();
+
+            UpdateRatioComplete();
 
             _fieldTeamIsStarted = true;
         }
@@ -111,6 +113,8 @@ public class FieldTeam : MonoBehaviour
                 LineRenderer lineRenderer = _teamPathLineObj.GetComponent<LineRenderer>();
                 lineRenderer.startColor = lineRenderer.endColor = teamColor;
             }
+
+            UpdateRatioComplete();
         }
     }
 
@@ -120,12 +124,12 @@ public class FieldTeam : MonoBehaviour
         Start();
         
         GameObject newTeamIconObj = Instantiate(teamIconPrefab,
-            ratioComplete < 1.0 ? fieldTeamsLogic.currentlyDeployedTeamsPanel.transform : fieldTeamsLogic.completedTeamsPanel.transform);
+            _ratioComplete < 1.0 ? fieldTeamsGroup.currentlyDeployedTeamsPanel.transform : fieldTeamsGroup.completedTeamsPanel.transform);
         newTeamIconObj.transform.SetSiblingIndex(0);
         _teamIcon = newTeamIconObj.GetComponent<TeamIcon>();
         _teamIcon.fieldTeam = this;
 
-        GameObject newTeamTimelineObj = Instantiate(teamTimelinePrefab, fieldTeamsLogic.timelineContentPanel.transform);
+        GameObject newTeamTimelineObj = Instantiate(teamTimelinePrefab, fieldTeamsGroup.timelineContentPanel.transform);
         newTeamTimelineObj.transform.SetSiblingIndex(0);
         _teamTimeline = newTeamTimelineObj.GetComponent<TeamTimeline>();
         _teamTimeline.fieldTeam = this;
@@ -284,6 +288,24 @@ public class FieldTeam : MonoBehaviour
         _actualEndTime = tracks[0].Waypoints.Last().Time;
 
         _initialFileReadDone = true;
+    }
+
+    private void UpdateRatioComplete()
+    {
+        if (fieldTeamsGroup.currentTime.dateTime >= _endTime.dateTime)
+        {
+            _ratioComplete = 1.0f;
+        }
+        else if (fieldTeamsGroup.currentTime.dateTime <= startTime.dateTime)
+        {
+            _ratioComplete = 0.0f;
+        }
+        else
+        {
+            _ratioComplete = (float)(fieldTeamsGroup.currentTime.dateTime.Ticks - startTime.dateTime.Ticks) /
+                (float)(_endTime.dateTime.Ticks - startTime.dateTime.Ticks);
+        }
+
     }
     
     private DateTime ConvertTimeToActualTime(DateTime time)
