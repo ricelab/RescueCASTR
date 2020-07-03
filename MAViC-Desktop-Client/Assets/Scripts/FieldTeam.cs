@@ -55,7 +55,7 @@ public class FieldTeam : MonoBehaviour
     private UDateTime _actualStartTime;
     private UDateTime _actualEndTime;
 
-    private double _ratioComplete;
+    private double _ratioComplete = 0.0f;
 
     private TeamIcon _teamIcon;
     private TeamTimeline _teamTimeline;
@@ -93,8 +93,6 @@ public class FieldTeam : MonoBehaviour
             fieldTeamsGroup = this.gameObject.transform.parent.GetComponent<FieldTeamsGroup>();
             _mapObj = fieldTeamsGroup.map;
             _mapLogic = _mapObj.GetComponent<Map>();
-
-            UpdateRatioComplete();
 
             _fieldTeamIsStarted = true;
         }
@@ -292,20 +290,22 @@ public class FieldTeam : MonoBehaviour
 
     private void UpdateRatioComplete()
     {
-        if (fieldTeamsGroup.currentTime.dateTime >= _endTime.dateTime)
+        if (_fieldTeamIsStarted)
         {
-            _ratioComplete = 1.0f;
+            if (fieldTeamsGroup.currentTime.dateTime >= _endTime.dateTime)
+            {
+                _ratioComplete = 1.0f;
+            }
+            else if (fieldTeamsGroup.currentTime.dateTime <= startTime.dateTime)
+            {
+                _ratioComplete = 0.0f;
+            }
+            else
+            {
+                _ratioComplete = (float)(fieldTeamsGroup.currentTime.dateTime.Ticks - startTime.dateTime.Ticks) /
+                    (float)(_endTime.dateTime.Ticks - startTime.dateTime.Ticks);
+            }
         }
-        else if (fieldTeamsGroup.currentTime.dateTime <= startTime.dateTime)
-        {
-            _ratioComplete = 0.0f;
-        }
-        else
-        {
-            _ratioComplete = (float)(fieldTeamsGroup.currentTime.dateTime.Ticks - startTime.dateTime.Ticks) /
-                (float)(_endTime.dateTime.Ticks - startTime.dateTime.Ticks);
-        }
-
     }
     
     private DateTime ConvertTimeToActualTime(DateTime time)
