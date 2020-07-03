@@ -10,6 +10,7 @@
 /[Ll]ogs/
 /[Mm]emoryCaptures/
 /[Ff]ield[Tt]eam[Rr]ecords/
+/[Aa]ssets/[Tt]errains/
 
 # Never ignore Asset meta data
 !/[Aa]ssets/**/*.meta
