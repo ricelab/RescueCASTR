@@ -10,7 +10,7 @@ public class FieldTeam : MonoBehaviour
 {
     #region Public Properties
 
-    public FieldTeamsLogic fieldTeamsLogic;
+    public FieldTeamsGroup fieldTeamsLogic;
 
     public GameObject teamIconPrefab;
     public GameObject teamTimelinePrefab;
@@ -58,22 +58,22 @@ public class FieldTeam : MonoBehaviour
     private UDateTime _actualEndTime;
 
     private TeamIcon _teamIcon;
-    private TeamTimelineLogic _teamTimelineLogic;
+    private TeamTimeline _teamTimeline;
 
     private string _gpsRecordingFilePath;
     private string _timelapsePhotoDirectoryPath;
     private string _timelapsePhotoThumbnailDirectoryPath;
 
-    private GameObject _map;
-    private MapLogic _mapLogic;
+    private GameObject _mapObj;
+    private Map _mapLogic;
 
     private string[] _photoFileNames;
     private DateTime[] _photoTimes;
 
     private DateTime[] _gpsWaypointTimes;
 
-    private GameObject[] _teamPathPoints;
-    private GameObject _teamPathLine;
+    private GameObject[] _teamPathPointObjs;
+    private GameObject _teamPathLineObj;
 
     private Color _lastTeamColor;
 
@@ -90,9 +90,9 @@ public class FieldTeam : MonoBehaviour
                 PerformInitialFileRead();
             }
 
-            fieldTeamsLogic = this.gameObject.transform.parent.GetComponent<FieldTeamsLogic>();
-            _map = fieldTeamsLogic.map;
-            _mapLogic = _map.GetComponent<MapLogic>();
+            fieldTeamsLogic = this.gameObject.transform.parent.GetComponent<FieldTeamsGroup>();
+            _mapObj = fieldTeamsLogic.map;
+            _mapLogic = _mapObj.GetComponent<Map>();
 
             _fieldTeamIsStarted = true;
         }
@@ -108,7 +108,7 @@ public class FieldTeam : MonoBehaviour
             {
                 _lastTeamColor = teamColor;
 
-                LineRenderer lineRenderer = _teamPathLine.GetComponent<LineRenderer>();
+                LineRenderer lineRenderer = _teamPathLineObj.GetComponent<LineRenderer>();
                 lineRenderer.startColor = lineRenderer.endColor = teamColor;
             }
         }
@@ -127,8 +127,8 @@ public class FieldTeam : MonoBehaviour
 
         GameObject newTeamTimelineObj = Instantiate(teamTimelinePrefab, fieldTeamsLogic.timelineContentPanel.transform);
         newTeamTimelineObj.transform.SetSiblingIndex(0);
-        _teamTimelineLogic = newTeamTimelineObj.GetComponent<TeamTimelineLogic>();
-        _teamTimelineLogic.fieldTeam = this;
+        _teamTimeline = newTeamTimelineObj.GetComponent<TeamTimeline>();
+        _teamTimeline.fieldTeam = this;
 
         
         List<Track> tracks = Track.ReadTracksFromFile(_gpsRecordingFilePath);
@@ -156,7 +156,7 @@ public class FieldTeam : MonoBehaviour
 
             Vector3[] mapPositions = new Vector3[track.Waypoints.Count];
 
-            _teamPathPoints = new GameObject[track.Waypoints.Count];
+            _teamPathPointObjs = new GameObject[track.Waypoints.Count];
             _gpsWaypointTimes = new DateTime[track.Waypoints.Count];
 
             i = 0;
@@ -171,13 +171,13 @@ public class FieldTeam : MonoBehaviour
                 location.Heading = 0;
                 location.Speed = 0;
 
-                _teamPathPoints[i] = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                _teamPathPoints[i].transform.parent = _map.transform;
-                _teamPathPoints[i].transform.position = _mapLogic.ConvertLocationToMapPosition(location);
-                _teamPathPoints[i].GetComponent<MeshRenderer>().enabled = false;
-                _teamPathPoints[i].transform.localScale.Scale(new Vector3(10, 10, 10));
+                _teamPathPointObjs[i] = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                _teamPathPointObjs[i].transform.parent = _mapObj.transform;
+                _teamPathPointObjs[i].transform.position = _mapLogic.ConvertLocationToMapPosition(location);
+                _teamPathPointObjs[i].GetComponent<MeshRenderer>().enabled = false;
+                _teamPathPointObjs[i].transform.localScale.Scale(new Vector3(10, 10, 10));
 
-                TeamPathPointLogic teamPathPointLogic = _teamPathPoints[i].AddComponent<TeamPathPointLogic>();
+                TeamPathPoint teamPathPointLogic = _teamPathPointObjs[i].AddComponent<TeamPathPoint>();
                 teamPathPointLogic.location = location;
                 teamPathPointLogic.time = waypoint.Time;
                 teamPathPointLogic.pointNumber = i;
@@ -190,11 +190,11 @@ public class FieldTeam : MonoBehaviour
                 i++;
             }
 
-            _teamPathLine = new GameObject();
-            _teamPathLine.transform.parent = _map.transform;
-            _teamPathLine.transform.SetSiblingIndex(0);
-            _teamPathLine.AddComponent<LineRenderer>();
-            LineRenderer lineRenderer = _teamPathLine.GetComponent<LineRenderer>();
+            _teamPathLineObj = new GameObject();
+            _teamPathLineObj.transform.parent = _mapObj.transform;
+            _teamPathLineObj.transform.SetSiblingIndex(0);
+            _teamPathLineObj.AddComponent<LineRenderer>();
+            LineRenderer lineRenderer = _teamPathLineObj.GetComponent<LineRenderer>();
             lineRenderer.material = new Material(Shader.Find("Legacy Shaders/Particles/Alpha Blended Premultiply"));
             lineRenderer.positionCount = track.Waypoints.Count;
             lineRenderer.SetPositions(mapPositions);
@@ -217,14 +217,14 @@ public class FieldTeam : MonoBehaviour
     public void HighlightPathAtActualTime(DateTime time)
     {
         int i = BinarySearchForClosestValue(_gpsWaypointTimes, time);
-        _teamPathPoints[i].GetComponent<TeamPathPointLogic>().HighlightPathPoint();
+        _teamPathPointObjs[i].GetComponent<TeamPathPoint>().HighlightPathPoint();
     }
 
     public void UnhighlightPath()
     {
-        foreach (GameObject teamPathPoint in _teamPathPoints)
+        foreach (GameObject teamPathPoint in _teamPathPointObjs)
         {
-            TeamPathPointLogic teamPathPointLogic = teamPathPoint.GetComponent<TeamPathPointLogic>();
+            TeamPathPoint teamPathPointLogic = teamPathPoint.GetComponent<TeamPathPoint>();
             teamPathPointLogic.UnhighlightPathPoint();
         }
     }
@@ -236,12 +236,12 @@ public class FieldTeam : MonoBehaviour
 
     public void HighlightTimeOnTimeline(DateTime timeHighlighted)
     {
-        _teamTimelineLogic.HighlightTimeOnTimeline(timeHighlighted);
+        _teamTimeline.HighlightTimeOnTimeline(timeHighlighted);
     }
 
     public void UnhighlightTimeline()
     {
-        _teamTimelineLogic.UnhighlightTimeline();
+        _teamTimeline.UnhighlightTimeline();
     }
 
 

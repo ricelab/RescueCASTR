@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FieldTeamsLogic : MonoBehaviour
+public class FieldTeamsGroup : MonoBehaviour
 {
     public GameObject currentlyDeployedTeamsPanel;
     public GameObject completedTeamsPanel;

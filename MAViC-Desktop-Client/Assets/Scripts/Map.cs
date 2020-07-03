@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class MapLogic : MonoBehaviour
+public class Map : MonoBehaviour
 {
     public NetworkEvents networkEvents;
     public GameObject mobileClientPrefab;

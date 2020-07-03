@@ -5,7 +5,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MapFrameDisplayLogic : MonoBehaviour
+public class MapFrameDisplay : MonoBehaviour
 {
     public Image image;
 

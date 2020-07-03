@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Microsoft.MixedReality.WebRTC.Unity.Examples/MAViC/GoldenEars/Golden-Ears.unity
+    path: Assets/MainScene/MainScene.unity
     guid: 93f69a34647e8c845a13be62f0967f84
   m_configObjects: {}

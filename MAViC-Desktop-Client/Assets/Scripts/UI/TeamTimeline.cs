@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Experimental.Rendering;
 using UnityEngine.UI;
 
-public class TeamTimelineLogic : MonoBehaviour
+public class TeamTimeline : MonoBehaviour
 {
     public FieldTeam fieldTeam;
 
@@ -19,8 +19,8 @@ public class TeamTimelineLogic : MonoBehaviour
 
     private GameObject _line;
 
-    private GameObject _mapFrameDisplay;
-    private MapFrameDisplayLogic _mapFrameDisplayLogic;
+    private GameObject _mapFrameDisplayObj;
+    private MapFrameDisplay _mapFrameDisplayLogic;
 
     private GraphicRaycaster _raycaster;
     private PointerEventData _pointerEventData;
@@ -135,10 +135,10 @@ public class TeamTimelineLogic : MonoBehaviour
                     
                     if (!_mapFrameDisplayShowing)
                     {
-                        _mapFrameDisplay = Instantiate(fieldTeam.mapFrameDisplayPrefab, _sceneUi.transform);
-                        _mapFrameDisplay.transform.Find("Background").GetComponent<Image>().color = fieldTeam.teamColor;
-                        _mapFrameDisplay.transform.Find("Arrow").GetComponent<Image>().color = fieldTeam.teamColor;
-                        _mapFrameDisplayLogic = _mapFrameDisplay.GetComponent<MapFrameDisplayLogic>();
+                        _mapFrameDisplayObj = Instantiate(fieldTeam.mapFrameDisplayPrefab, _sceneUi.transform);
+                        _mapFrameDisplayObj.transform.Find("Background").GetComponent<Image>().color = fieldTeam.teamColor;
+                        _mapFrameDisplayObj.transform.Find("Arrow").GetComponent<Image>().color = fieldTeam.teamColor;
+                        _mapFrameDisplayLogic = _mapFrameDisplayObj.GetComponent<MapFrameDisplay>();
                         _mapFrameDisplayShowing = true;
                     }
                     
@@ -146,9 +146,9 @@ public class TeamTimelineLogic : MonoBehaviour
                     
                     Vector2 pos = new Vector2(
                         result.screenPosition.x - 0.5f * Screen.width, result.screenPosition.y - 0.5f * Screen.height);
-                    float halfMapFrameWidth = _mapFrameDisplay.transform.Find("Background").GetComponent<RectTransform>().rect.width * 0.5f;
+                    float halfMapFrameWidth = _mapFrameDisplayObj.transform.Find("Background").GetComponent<RectTransform>().rect.width * 0.5f;
 
-                    RectTransform arrowTransform = _mapFrameDisplay.transform.Find("Arrow").GetComponent<RectTransform>();
+                    RectTransform arrowTransform = _mapFrameDisplayObj.transform.Find("Arrow").GetComponent<RectTransform>();
                     if (pos.x - halfMapFrameWidth < -0.5f * Screen.width)
                     {
                         float originalPos = pos.x;
@@ -173,7 +173,7 @@ public class TeamTimelineLogic : MonoBehaviour
                         arrowTransform.localPosition = new Vector3(0.0f, arrowTransform.localPosition.y, arrowTransform.localPosition.z);
                     }
                     
-                    _mapFrameDisplay.GetComponent<RectTransform>().anchoredPosition = pos;
+                    _mapFrameDisplayObj.GetComponent<RectTransform>().anchoredPosition = pos;
 
                     fieldTeam.UnhighlightPath();
                     fieldTeam.HighlightPathAtTime(timeHighlighted);
@@ -184,7 +184,7 @@ public class TeamTimelineLogic : MonoBehaviour
 
             if (!hoveringOverLine)
             {
-                GameObject.Destroy(_mapFrameDisplay);
+                GameObject.Destroy(_mapFrameDisplayObj);
                 _mapFrameDisplayShowing = false;
 
                 fieldTeam.UnhighlightPath();
