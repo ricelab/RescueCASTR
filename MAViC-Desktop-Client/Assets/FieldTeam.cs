@@ -31,6 +31,11 @@ public class FieldTeam : MonoBehaviour
         {
             if (_endTime == null)
             {
+                if (!_initialFileReadDone)
+                {
+                    PerformInitialFileRead();
+                }
+
                 DateTime dateTime = new DateTime(startTime.dateTime.Ticks + _actualEndTime.dateTime.Ticks - _actualStartTime.dateTime.Ticks);
                 _endTime = dateTime;
             }
@@ -43,6 +48,8 @@ public class FieldTeam : MonoBehaviour
 
     #region Private Properties
 
+    private bool _fieldTeamIsStarted = false;
+    private bool _initialFileReadDone = false;
     private bool _fieldTeamIsInstantiated = false;
 
     private UDateTime _endTime = null;
@@ -76,22 +83,19 @@ public class FieldTeam : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (!recordingDirectoryPath.EndsWith("/"))
+        if (!_fieldTeamIsStarted)
         {
-            recordingDirectoryPath += "/";
+            if (!_initialFileReadDone)
+            {
+                PerformInitialFileRead();
+            }
+
+            fieldTeamsLogic = this.gameObject.transform.parent.GetComponent<FieldTeamsLogic>();
+            _map = fieldTeamsLogic.map;
+            _mapLogic = _map.GetComponent<MapLogic>();
+
+            _fieldTeamIsStarted = true;
         }
-
-        _gpsRecordingFilePath = recordingDirectoryPath + "gps-record.gpx";
-        _timelapsePhotoDirectoryPath = recordingDirectoryPath + "photos/";
-        _timelapsePhotoThumbnailDirectoryPath = recordingDirectoryPath + "photo-thumbnails/";
-
-        fieldTeamsLogic = this.gameObject.transform.parent.GetComponent<FieldTeamsLogic>();
-        _map = fieldTeamsLogic.map;
-        _mapLogic = _map.GetComponent<MapLogic>();
-
-        List<Track> tracks = Track.ReadTracksFromFile(_gpsRecordingFilePath);
-        _actualStartTime = tracks[0].Waypoints.First().Time;
-        _actualEndTime = tracks[0].Waypoints.Last().Time;
     }
 
     // Update is called once per frame
@@ -113,6 +117,8 @@ public class FieldTeam : MonoBehaviour
 
     public void FieldTeamInstantiate()
     {
+        Start();
+        
         GameObject newTeamIconObj = Instantiate(teamIconPrefab,
             ratioComplete < 1.0 ? fieldTeamsLogic.currentlyDeployedTeamsPanel.transform : fieldTeamsLogic.completedTeamsPanel.transform);
         newTeamIconObj.transform.SetSiblingIndex(0);
@@ -223,6 +229,21 @@ public class FieldTeam : MonoBehaviour
         }
     }
 
+    public void HighlightActualTimeOnTimeline(DateTime timeHighlighted)
+    {
+        HighlightTimeOnTimeline(ConvertActualTimeToTime(timeHighlighted));
+    }
+
+    public void HighlightTimeOnTimeline(DateTime timeHighlighted)
+    {
+        _teamTimelineLogic.HighlightTimeOnTimeline(timeHighlighted);
+    }
+
+    public void UnhighlightTimeline()
+    {
+        _teamTimelineLogic.UnhighlightTimeline();
+    }
+
 
     public string GetPhotoPathFromTime(DateTime time)
     {
@@ -247,10 +268,34 @@ public class FieldTeam : MonoBehaviour
     }
 
 
+    private void PerformInitialFileRead()
+    {
+        if (!recordingDirectoryPath.EndsWith("/"))
+        {
+            recordingDirectoryPath += "/";
+        }
+
+        _gpsRecordingFilePath = recordingDirectoryPath + "gps-record.gpx";
+        _timelapsePhotoDirectoryPath = recordingDirectoryPath + "photos/";
+        _timelapsePhotoThumbnailDirectoryPath = recordingDirectoryPath + "photo-thumbnails/";
+
+        List<Track> tracks = Track.ReadTracksFromFile(_gpsRecordingFilePath);
+        _actualStartTime = tracks[0].Waypoints.First().Time;
+        _actualEndTime = tracks[0].Waypoints.Last().Time;
+
+        _initialFileReadDone = true;
+    }
+    
     private DateTime ConvertTimeToActualTime(DateTime time)
     {
         long ticksFromStart = time.Ticks - startTime.dateTime.Ticks;
         return new DateTime(_actualStartTime.dateTime.Ticks + ticksFromStart);
+    }
+
+    private DateTime ConvertActualTimeToTime(DateTime actualTime)
+    {
+        long ticksFromStart = actualTime.Ticks - _actualStartTime.dateTime.Ticks;
+        return new DateTime(startTime.dateTime.Ticks + ticksFromStart);
     }
 
 

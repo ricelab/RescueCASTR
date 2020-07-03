@@ -17,9 +17,14 @@ public class TeamPathPointLogic : MonoBehaviour
 
     private bool _isHighlighted = false;
 
+    void Start()
+    {
+        this.transform.localScale *= 2.5f;
+    }
+
     void OnMouseEnter()
     {
-        Debug.Log("MouseEnter: " + pointNumber);
+        //Debug.Log("MouseEnter: " + pointNumber);
 
         //this.HighlightPathPoint();
 
@@ -41,22 +46,26 @@ public class TeamPathPointLogic : MonoBehaviour
             ((viewportPos.y * canvasRect.sizeDelta.y * 0.8f) - (canvasRect.sizeDelta.y * 0.5f) + (canvasRect.sizeDelta.y * 0.2f))
         );
         _mapFrameDisplay.GetComponent<RectTransform>().anchoredPosition = worldObjScreenPos;
+
+        fieldTeam.HighlightActualTimeOnTimeline(time);
     }
 
     void OnMouseExit()
     {
-        Debug.Log("MouseExit: " + pointNumber);
+        //Debug.Log("MouseExit: " + pointNumber);
 
         //this.UnhighlightPathPoint();
 
         GameObject.Destroy(_mapFrameDisplay);
+
+        fieldTeam.UnhighlightTimeline();
     }
 
     public void HighlightPathPoint()
     {
         if (!_isHighlighted)
         {
-            this.transform.localScale *= 5.0f;
+            this.transform.localScale *= 2.0f;
             this.GetComponent<MeshRenderer>().enabled = true;
             _isHighlighted = true;
         }
@@ -67,7 +76,7 @@ public class TeamPathPointLogic : MonoBehaviour
         if (_isHighlighted)
         {
             this.GetComponent<MeshRenderer>().enabled = false;
-            this.transform.localScale /= 5.0f;
+            this.transform.localScale /= 2.0f;
             _isHighlighted = false;
         }
     }

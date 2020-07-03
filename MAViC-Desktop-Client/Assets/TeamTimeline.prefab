@@ -279,6 +279,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fieldTeam: {fileID: 0}
+  timelineHighlightPrefab: {fileID: 3973694264438763414, guid: e55879f4433f0814e90c1e0d64df319c,
+    type: 3}
+  timelineNeedlePrefab: {fileID: 3124076766518506149, guid: 703f266b789871b4291a027c102f3c92,
+    type: 3}
 --- !u!1 &3989215380258895746
 GameObject:
   m_ObjectHideFlags: 0

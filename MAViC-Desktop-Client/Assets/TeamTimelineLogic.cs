@@ -11,6 +11,9 @@ public class TeamTimelineLogic : MonoBehaviour
 {
     public FieldTeam fieldTeam;
 
+    public GameObject timelineHighlightPrefab;
+    public GameObject timelineNeedlePrefab;
+
     private Color _lastTeamColor;
     private string _lastTeamName;
 
@@ -25,16 +28,29 @@ public class TeamTimelineLogic : MonoBehaviour
 
     private bool _mapFrameDisplayShowing = false;
 
+    private GameObject _sceneUi;
+
+    private GameObject _timelineHighlight;
+    private bool _timelineHighlightShowing = false;
+    private GameObject _timelineNeedle;
+    private bool _timelineNeedleShowing = false;
+
+    private float _beginPos = 0.0f;
+    private float _endPos = 0.0f;
+
+    private float _scaleX = 0.0f;
+    private float _n = 0.0f;
+    private float _pivotX = 0.0f;
+
     void Start()
     {
         _line = this.transform.Find("Line").gameObject;
 
-        /* For cursor hovering/clicking on timeline */
-
-        // Fetch the Raycaster from the GameObject (the Canvas)
+        // For cursor hovering/clicking on timeline
         _raycaster = this.GetComponentInParent<GraphicRaycaster>();
-        // Fetch the Event System from the Scene
         _eventSystem = GetComponent<EventSystem>();
+
+        _sceneUi = fieldTeam.fieldTeamsLogic.sceneUi;
     }
 
     void Update()
@@ -65,17 +81,23 @@ public class TeamTimelineLogic : MonoBehaviour
 
             RectTransform lineTransform = _line.GetComponent<RectTransform>();
             
-            float scaleX =
+            _scaleX =
                 (float)(fieldTeam.endTime.dateTime.Ticks - fieldTeam.startTime.dateTime.Ticks) /
                 (float)(fieldTeam.fieldTeamsLogic.latestEndTime.dateTime.Ticks - fieldTeam.fieldTeamsLogic.earliestStartTime.dateTime.Ticks);
 
-            float n =
+            _n =
                 (float)(fieldTeam.startTime.dateTime.Ticks - fieldTeam.fieldTeamsLogic.earliestStartTime.dateTime.Ticks) /
                 (float)(fieldTeam.fieldTeamsLogic.latestEndTime.dateTime.Ticks - fieldTeam.fieldTeamsLogic.earliestStartTime.dateTime.Ticks);
-            float pivotX = n + n / (1.0f - scaleX) * scaleX;
+            if (_scaleX == 1.0f)
+                _pivotX = 0.0f;
+            else
+                _pivotX = _n + _n / (1.0f - _scaleX) * _scaleX;
 
-            lineTransform.pivot = new Vector2(pivotX, lineTransform.pivot.y);
-            lineTransform.localScale = new Vector3(scaleX, lineTransform.localScale.y, lineTransform.localScale.z);
+            lineTransform.pivot = new Vector2(_pivotX, lineTransform.pivot.y);
+            lineTransform.localScale = new Vector3(_scaleX, lineTransform.localScale.y, lineTransform.localScale.z);
+
+            _beginPos = _n * (0.75f * (float)Screen.width - 25.0f) + 5.0f;
+            _endPos = (_n + _scaleX) * (0.75f * (float)Screen.width - 25.0f) + 5.0f;
 
 
             /* Display team footage thumbnail preview if cursor hovering over timeline */
@@ -98,10 +120,7 @@ public class TeamTimelineLogic : MonoBehaviour
                 {
                     hoveringOverLine = true;
 
-                    float beginPos = n * (0.75f * (float)Screen.width - 25.0f) + 5.0f;
-                    float endPos = (n + scaleX) * (0.75f * (float)Screen.width - 25.0f) + 5.0f;
-
-                    float placeHighlighted = (result.screenPosition.x - beginPos) / (endPos - beginPos);
+                    float placeHighlighted = (result.screenPosition.x - _beginPos) / (_endPos - _beginPos);
                     if (placeHighlighted < 0)
                         placeHighlighted = 0;
                     else if (placeHighlighted > 1)
@@ -113,12 +132,10 @@ public class TeamTimelineLogic : MonoBehaviour
                     DateTime timeHighlighted = new DateTime(ticks);
 
                     string imagePath = fieldTeam.GetPhotoThumbnailPathFromTime(timeHighlighted);
-
-                    GameObject sceneUi = fieldTeam.fieldTeamsLogic.sceneUi;
                     
                     if (!_mapFrameDisplayShowing)
                     {
-                        _mapFrameDisplay = Instantiate(fieldTeam.mapFrameDisplayPrefab, sceneUi.transform);
+                        _mapFrameDisplay = Instantiate(fieldTeam.mapFrameDisplayPrefab, _sceneUi.transform);
                         _mapFrameDisplay.transform.Find("Background").GetComponent<Image>().color = fieldTeam.teamColor;
                         _mapFrameDisplay.transform.Find("Arrow").GetComponent<Image>().color = fieldTeam.teamColor;
                         _mapFrameDisplayLogic = _mapFrameDisplay.GetComponent<MapFrameDisplayLogic>();
@@ -154,9 +171,9 @@ public class TeamTimelineLogic : MonoBehaviour
                     else
                     {
                         arrowTransform.localPosition = new Vector3(0.0f, arrowTransform.localPosition.y, arrowTransform.localPosition.z);
-                    }    
+                    }
                     
-                        _mapFrameDisplay.GetComponent<RectTransform>().anchoredPosition = pos;
+                    _mapFrameDisplay.GetComponent<RectTransform>().anchoredPosition = pos;
 
                     fieldTeam.UnhighlightPath();
                     fieldTeam.HighlightPathAtTime(timeHighlighted);
@@ -175,8 +192,72 @@ public class TeamTimelineLogic : MonoBehaviour
         }
     }
 
-    public void HighlightPointOnTimeline()
+    public void HighlightTimeOnTimeline(DateTime timeHighlighted)
     {
-        ///
+        if (!_timelineHighlightShowing)
+        {
+            _timelineHighlight = Instantiate(timelineHighlightPrefab, _sceneUi.transform);
+            _timelineHighlightShowing = true;
+        }
+
+        float placeToHighlight = (float)(timeHighlighted.Ticks - fieldTeam.startTime.dateTime.Ticks) / (float)(fieldTeam.endTime.dateTime.Ticks - fieldTeam.startTime.dateTime.Ticks);
+        if (placeToHighlight < 0.0f)
+            placeToHighlight = 0.0f;
+        else if (placeToHighlight > 1.0f)
+            placeToHighlight = 1.0f;
+
+        Camera timelineCamera = fieldTeam.fieldTeamsLogic.timelineCamera.GetComponent<Camera>();
+        RectTransform canvasRect = fieldTeam.fieldTeamsLogic.sceneUi.GetComponent<RectTransform>();
+        Vector2 viewportPos = timelineCamera.WorldToViewportPoint(_line.transform.position);
+        Vector2 worldObjScreenPos = new Vector2(
+            (viewportPos.x * canvasRect.sizeDelta.x * 0.75f) - (canvasRect.sizeDelta.x * 0.5f),
+            viewportPos.y * canvasRect.sizeDelta.y * 0.2f + 5.0f
+        );
+
+        Vector2 pos = new Vector2(_beginPos + placeToHighlight * (_endPos - _beginPos) - 0.5f * Screen.width, worldObjScreenPos.y - 0.5f * Screen.height);
+
+        _timelineHighlight.GetComponent<RectTransform>().anchoredPosition = pos;
+
+        MoveNeedleToTime(timeHighlighted);
+    }
+
+    public void UnhighlightTimeline()
+    {
+        GameObject.Destroy(_timelineHighlight);
+        _timelineHighlightShowing = false;
+        RemoveNeedle();
+    }
+
+    private void MoveNeedleToTime(DateTime timeHighlighted)
+    {
+        if (!_timelineNeedleShowing)
+        {
+            _timelineNeedle = Instantiate(timelineNeedlePrefab, _sceneUi.transform);
+            _timelineNeedleShowing = true;
+        }
+
+        float placeToHighlight = (float)(timeHighlighted.Ticks - fieldTeam.startTime.dateTime.Ticks) / (float)(fieldTeam.endTime.dateTime.Ticks - fieldTeam.startTime.dateTime.Ticks);
+        if (placeToHighlight < 0.0f)
+            placeToHighlight = 0.0f;
+        else if (placeToHighlight > 1.0f)
+            placeToHighlight = 1.0f;
+
+        Camera timelineCamera = fieldTeam.fieldTeamsLogic.timelineCamera.GetComponent<Camera>();
+        RectTransform canvasRect = fieldTeam.fieldTeamsLogic.sceneUi.GetComponent<RectTransform>();
+        Vector2 viewportPos = timelineCamera.WorldToViewportPoint(_line.transform.position);
+        Vector2 worldObjScreenPos = new Vector2(
+            ((viewportPos.x * canvasRect.sizeDelta.x * 0.75f) - (canvasRect.sizeDelta.x * 0.5f)),
+            _timelineNeedle.GetComponent<RectTransform>().rect.height / 2.0f
+        );
+
+        Vector2 pos = new Vector2(_beginPos + placeToHighlight * (_endPos - _beginPos) - 0.5f * Screen.width, worldObjScreenPos.y - 0.5f * Screen.height);
+
+        _timelineNeedle.GetComponent<RectTransform>().anchoredPosition = pos;
+    }
+
+    private void RemoveNeedle()
+    {
+        GameObject.Destroy(_timelineNeedle);
+        _timelineNeedleShowing = false;
     }
 }
