@@ -8,7 +8,7 @@ using UnityEngineInternal;
 public class TeamPathPoint : MonoBehaviour
 {
     public Location location;
-    public DateTime time;
+    public DateTime actualTime;
     public int pointNumber;
     public FieldTeam fieldTeam;
 
@@ -28,13 +28,14 @@ public class TeamPathPoint : MonoBehaviour
 
         //this.HighlightPathPoint();
 
-        string imagePath = fieldTeam.GetPhotoThumbnailPathFromActualTime(time);
+        string imagePath = fieldTeam.GetPhotoThumbnailPathFromActualTime(actualTime);
 
         GameObject sceneUi = fieldTeam.fieldTeamsGroup.sceneUi;
 
         _mapFrameDisplayObj = Instantiate(fieldTeam.mapFrameDisplayPrefab, sceneUi.transform);
         _mapFrameDisplayObj.transform.Find("Background").GetComponent<Image>().color = fieldTeam.teamColor;
         _mapFrameDisplayObj.transform.Find("Arrow").GetComponent<Image>().color = fieldTeam.teamColor;
+        _mapFrameDisplayObj.transform.Find("Time").GetComponent<Text>().text = actualTime.ToString();
         _mapFrameDisplayLogic = _mapFrameDisplayObj.GetComponent<MapFrameDisplay>();
         _mapFrameDisplayLogic.DisplayImage(imagePath);
 
@@ -47,7 +48,7 @@ public class TeamPathPoint : MonoBehaviour
         );
         _mapFrameDisplayObj.GetComponent<RectTransform>().anchoredPosition = worldObjScreenPos;
 
-        fieldTeam.HighlightActualTimeOnTimeline(time);
+        fieldTeam.HighlightActualTimeOnTimeline(actualTime);
     }
 
     void OnMouseExit()

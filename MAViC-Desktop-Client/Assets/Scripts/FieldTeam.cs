@@ -181,7 +181,7 @@ public class FieldTeam : MonoBehaviour
 
                 TeamPathPoint teamPathPointLogic = _teamPathPointObjs[i].AddComponent<TeamPathPoint>();
                 teamPathPointLogic.location = location;
-                teamPathPointLogic.time = waypoint.Time;
+                teamPathPointLogic.actualTime = waypoint.Time;
                 teamPathPointLogic.pointNumber = i;
                 teamPathPointLogic.fieldTeam = this;
 
@@ -269,6 +269,23 @@ public class FieldTeam : MonoBehaviour
         return _timelapsePhotoThumbnailDirectoryPath + _photoFileNames[i];
     }
 
+    public void ShowThisFieldTeamOnly()
+    {
+        foreach (Transform t in fieldTeamsGroup.transform)
+        {
+            t.gameObject.GetComponent<FieldTeam>()._teamPathLineObj.SetActive(false);
+        }
+        _teamPathLineObj.SetActive(true);
+    }
+
+    public void ShowAllFieldTeams()
+    {
+        foreach (Transform t in fieldTeamsGroup.transform)
+        {
+            t.gameObject.GetComponent<FieldTeam>()._teamPathLineObj.SetActive(true);
+        }
+    }
+
 
     private void PerformInitialFileRead()
     {
@@ -308,13 +325,13 @@ public class FieldTeam : MonoBehaviour
         }
     }
     
-    private DateTime ConvertTimeToActualTime(DateTime time)
+    public DateTime ConvertTimeToActualTime(DateTime time)
     {
         long ticksFromStart = time.Ticks - startTime.dateTime.Ticks;
         return new DateTime(_actualStartTime.dateTime.Ticks + ticksFromStart);
     }
 
-    private DateTime ConvertActualTimeToTime(DateTime actualTime)
+    public DateTime ConvertActualTimeToTime(DateTime actualTime)
     {
         long ticksFromStart = actualTime.Ticks - _actualStartTime.dateTime.Ticks;
         return new DateTime(startTime.dateTime.Ticks + ticksFromStart);

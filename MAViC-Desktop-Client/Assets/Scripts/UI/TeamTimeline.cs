@@ -42,6 +42,8 @@ public class TeamTimeline : MonoBehaviour
     private float _n = 0.0f;
     private float _pivotX = 0.0f;
 
+    private bool _hoveringOverLine = false;
+
     void Start()
     {
         _line = this.transform.Find("Line").gameObject;
@@ -113,77 +115,90 @@ public class TeamTimeline : MonoBehaviour
             // Raycast using the Graphics Raycaster and cursor position
             _raycaster.Raycast(_pointerEventData, results);
 
-            bool hoveringOverLine = false;
-            foreach (RaycastResult result in results)
+            RaycastResult result = new RaycastResult();
+            bool prevHoveringOverLine = _hoveringOverLine;
+            _hoveringOverLine = false;
+            foreach (RaycastResult res in results)
             {
-                if (result.gameObject == _line)
+                if (res.gameObject == _line) // cursor is hovering over line
                 {
-                    hoveringOverLine = true;
-
-                    float placeHighlighted = (result.screenPosition.x - _beginPos) / (_endPos - _beginPos);
-                    if (placeHighlighted < 0)
-                        placeHighlighted = 0;
-                    else if (placeHighlighted > 1)
-                        placeHighlighted = 1;
-
-                    long ticks = fieldTeam.startTime.dateTime.Ticks +
-                        (long)(placeHighlighted * (fieldTeam.endTime.dateTime.Ticks - fieldTeam.startTime.dateTime.Ticks));
-
-                    DateTime timeHighlighted = new DateTime(ticks);
-
-                    string imagePath = fieldTeam.GetPhotoThumbnailPathFromTime(timeHighlighted);
-                    
-                    if (!_mapFrameDisplayShowing)
-                    {
-                        _mapFrameDisplayObj = Instantiate(fieldTeam.mapFrameDisplayPrefab, _sceneUi.transform);
-                        _mapFrameDisplayObj.transform.Find("Background").GetComponent<Image>().color = fieldTeam.teamColor;
-                        _mapFrameDisplayObj.transform.Find("Arrow").GetComponent<Image>().color = fieldTeam.teamColor;
-                        _mapFrameDisplayLogic = _mapFrameDisplayObj.GetComponent<MapFrameDisplay>();
-                        _mapFrameDisplayShowing = true;
-                    }
-                    
-                    _mapFrameDisplayLogic.DisplayImage(imagePath);
-                    
-                    Vector2 pos = new Vector2(
-                        result.screenPosition.x - 0.5f * Screen.width, result.screenPosition.y - 0.5f * Screen.height);
-                    float halfMapFrameWidth = _mapFrameDisplayObj.transform.Find("Background").GetComponent<RectTransform>().rect.width * 0.5f;
-
-                    RectTransform arrowTransform = _mapFrameDisplayObj.transform.Find("Arrow").GetComponent<RectTransform>();
-                    if (pos.x - halfMapFrameWidth < -0.5f * Screen.width)
-                    {
-                        float originalPos = pos.x;
-                        pos.x = -0.5f * Screen.width + halfMapFrameWidth;
-
-                        arrowTransform.localPosition = new Vector3(originalPos - pos.x, arrowTransform.localPosition.y, arrowTransform.localPosition.z);
-
-                        //float arrowWidth = arrowTransform.rect.width;
-                        //if (arrowTransform.localPosition.x - 0.5f * arrowWidth < -halfMapFrameWidth)
-                        //{
-                        //    Debug.Log("here");
-                        //    float newWidth = arrowWidth - (halfMapFrameWidth - (arrowTransform.localPosition.x - 0.5f * arrowWidth));
-                        //    arrowTransform.localScale = new Vector3(newWidth, arrowTransform.localScale.y, arrowTransform.localScale.z);
-                        //}
-                        //else
-                        //{
-                        //    arrowTransform.localScale = new Vector3(25.0f, arrowTransform.localScale.y, arrowTransform.localScale.z);
-                        //}
-                    }
-                    else
-                    {
-                        arrowTransform.localPosition = new Vector3(0.0f, arrowTransform.localPosition.y, arrowTransform.localPosition.z);
-                    }
-                    
-                    _mapFrameDisplayObj.GetComponent<RectTransform>().anchoredPosition = pos;
-
-                    fieldTeam.UnhighlightPath();
-                    fieldTeam.HighlightPathAtTime(timeHighlighted);
-
+                    _hoveringOverLine = true;
+                    result = res;
                     break;
                 }
             }
 
-            if (!hoveringOverLine)
+            if(prevHoveringOverLine == false && _hoveringOverLine == true)
             {
+                fieldTeam.ShowThisFieldTeamOnly();
+            }
+            else if (prevHoveringOverLine == true && _hoveringOverLine == false)
+            {
+                fieldTeam.ShowAllFieldTeams();
+            }
+
+            if (_hoveringOverLine)
+            {
+                float placeHighlighted = (result.screenPosition.x - _beginPos) / (_endPos - _beginPos);
+                if (placeHighlighted < 0)
+                    placeHighlighted = 0;
+                else if (placeHighlighted > 1)
+                    placeHighlighted = 1;
+
+                long ticks = fieldTeam.startTime.dateTime.Ticks +
+                    (long)(placeHighlighted * (fieldTeam.endTime.dateTime.Ticks - fieldTeam.startTime.dateTime.Ticks));
+
+                DateTime simulatedTimeHighlighted = new DateTime(ticks);
+
+                string imagePath = fieldTeam.GetPhotoThumbnailPathFromTime(simulatedTimeHighlighted);
+
+                if (!_mapFrameDisplayShowing)
+                {
+                    _mapFrameDisplayObj = Instantiate(fieldTeam.mapFrameDisplayPrefab, _sceneUi.transform);
+                    _mapFrameDisplayObj.transform.Find("Background").GetComponent<Image>().color = fieldTeam.teamColor;
+                    _mapFrameDisplayObj.transform.Find("Arrow").GetComponent<Image>().color = fieldTeam.teamColor;
+                    _mapFrameDisplayObj.transform.Find("Time").GetComponent<Text>().text = fieldTeam.ConvertTimeToActualTime(simulatedTimeHighlighted).ToString();
+                    _mapFrameDisplayLogic = _mapFrameDisplayObj.GetComponent<MapFrameDisplay>();
+                    _mapFrameDisplayShowing = true;
+                }
+
+                _mapFrameDisplayLogic.DisplayImage(imagePath);
+
+                Vector2 pos = new Vector2(
+                    result.screenPosition.x - 0.5f * Screen.width, result.screenPosition.y - 0.5f * Screen.height);
+                float halfMapFrameWidth = _mapFrameDisplayObj.transform.Find("Background").GetComponent<RectTransform>().rect.width * 0.5f;
+
+                RectTransform arrowTransform = _mapFrameDisplayObj.transform.Find("Arrow").GetComponent<RectTransform>();
+                if (pos.x - halfMapFrameWidth < -0.5f * Screen.width)
+                {
+                    float originalPos = pos.x;
+                    pos.x = -0.5f * Screen.width + halfMapFrameWidth;
+
+                    arrowTransform.localPosition = new Vector3(originalPos - pos.x, arrowTransform.localPosition.y, arrowTransform.localPosition.z);
+
+                    //float arrowWidth = arrowTransform.rect.width;
+                    //if (arrowTransform.localPosition.x - 0.5f * arrowWidth < -halfMapFrameWidth)
+                    //{
+                    //    Debug.Log("here");
+                    //    float newWidth = arrowWidth - (halfMapFrameWidth - (arrowTransform.localPosition.x - 0.5f * arrowWidth));
+                    //    arrowTransform.localScale = new Vector3(newWidth, arrowTransform.localScale.y, arrowTransform.localScale.z);
+                    //}
+                    //else
+                    //{
+                    //    arrowTransform.localScale = new Vector3(25.0f, arrowTransform.localScale.y, arrowTransform.localScale.z);
+                    //}
+                }
+                else
+                {
+                    arrowTransform.localPosition = new Vector3(0.0f, arrowTransform.localPosition.y, arrowTransform.localPosition.z);
+                }
+
+                _mapFrameDisplayObj.GetComponent<RectTransform>().anchoredPosition = pos;
+
+                fieldTeam.UnhighlightPath();
+                fieldTeam.HighlightPathAtTime(simulatedTimeHighlighted);
+            }
+            else {
                 GameObject.Destroy(_mapFrameDisplayObj);
                 _mapFrameDisplayShowing = false;
 
