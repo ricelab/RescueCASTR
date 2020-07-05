@@ -286,6 +286,25 @@ public class FieldTeam : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// To determine whether the whole path is in scene camera view
+    /// </summary>
+    /// <param name="margin">When margin is 0, then it returns true when the line is exactly at the camera edge.</param>
+    /// <returns></returns>
+    public bool IsPathInCameraView(float margin = 0.0f)
+    {
+        Camera camera = fieldTeamsGroup.sceneCamera.GetComponent<Camera>();
+        foreach (GameObject g in _teamPathPointObjs)
+        {
+            Vector3 viewportPoint = camera.WorldToViewportPoint(g.transform.position);
+            if(viewportPoint.x > 1 - margin || viewportPoint.x < 0 + margin || viewportPoint.y > 1 - margin || viewportPoint.y < 0 + margin)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     private void PerformInitialFileRead()
     {
