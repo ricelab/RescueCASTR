@@ -10,7 +10,7 @@ public class FieldTeam : MonoBehaviour
 {
     #region Public Properties
 
-    public FieldTeamsGroup fieldTeamsGroup;
+    public MainController mainController;
 
     public GameObject teamIconPrefab;
     public GameObject teamTimelinePrefab;
@@ -41,6 +41,14 @@ public class FieldTeam : MonoBehaviour
         }
     }
 
+    public bool isComplete
+    {
+        get
+        {
+            return UpdateRatioComplete() < 1.0 ? false : true;
+        }
+    }
+
     #endregion
 
 
@@ -55,9 +63,12 @@ public class FieldTeam : MonoBehaviour
     private UDateTime _actualStartTime;
     private UDateTime _actualEndTime;
 
-    private double _ratioComplete = 0.0f;
+    private float _ratioComplete = 0.0f;
 
+    private GameObject _teamIconObj;
     private TeamIcon _teamIcon;
+
+    private GameObject _teamTimelineObj;
     private TeamTimeline _teamTimeline;
 
     private string _gpsRecordingFilePath;
@@ -65,15 +76,21 @@ public class FieldTeam : MonoBehaviour
     private string _timelapsePhotoThumbnailDirectoryPath;
 
     private GameObject _mapObj;
-    private Map _mapLogic;
+    private Map _map;
 
     private string[] _photoFileNames;
     private DateTime[] _photoTimes;
 
     private DateTime[] _gpsWaypointTimes;
 
-    private GameObject[] _teamPathPointObjs;
+    private List<Vector3> _mapPositions;
+
+    private List<Vector3> _revealedMapPositions;
+
+    private List<GameObject> _teamPathPointObjs;
     private GameObject _teamPathLineObj;
+
+    private int _latestAvailableWaypointIndex = 0;
 
     private Color _lastTeamColor;
 
@@ -90,9 +107,9 @@ public class FieldTeam : MonoBehaviour
                 PerformInitialFileRead();
             }
 
-            fieldTeamsGroup = this.gameObject.transform.parent.GetComponent<FieldTeamsGroup>();
-            _mapObj = fieldTeamsGroup.map;
-            _mapLogic = _mapObj.GetComponent<Map>();
+            mainController = this.gameObject.transform.parent.GetComponent<MainController>();
+            _mapObj = mainController.map;
+            _map = _mapObj.GetComponent<Map>();
 
             _fieldTeamIsStarted = true;
         }
@@ -112,31 +129,61 @@ public class FieldTeam : MonoBehaviour
                 lineRenderer.startColor = lineRenderer.endColor = teamColor;
             }
 
+            // Add more points to revealed waypoints (if any)
+            bool updateToAddToLatestPoint = false;
+            for (int i = _latestAvailableWaypointIndex + 1; i < _teamPathPointObjs.Count; i++)
+            {
+                TeamPathPoint teamPathPoint = _teamPathPointObjs[i].GetComponent<TeamPathPoint>();
+
+                if (ConvertActualTimeToTime(teamPathPoint.actualTime) < mainController.currentTime)
+                {
+                    updateToAddToLatestPoint = true;
+                    _revealedMapPositions.Add(_mapPositions[i]);
+                    _latestAvailableWaypointIndex = i;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            if (updateToAddToLatestPoint)
+            {
+                LineRenderer lineRenderer = _teamPathLineObj.GetComponent<LineRenderer>();
+                lineRenderer.positionCount = _revealedMapPositions.Count;
+                lineRenderer.SetPositions(_revealedMapPositions.ToArray());
+            }
+
             UpdateRatioComplete();
+
+            // If the team has just completed, move its icon to the 'completed' section
+            if (isComplete && _teamIcon.transform.parent != mainController.completedTeamsPanel.transform)
+            {
+                _teamIconObj.transform.parent = mainController.completedTeamsPanel.transform;
+                _teamIconObj.transform.SetSiblingIndex(0);
+            }
         }
     }
-
 
     public void FieldTeamInstantiate()
     {
         Start();
         
-        GameObject newTeamIconObj = Instantiate(teamIconPrefab,
-            _ratioComplete < 1.0 ? fieldTeamsGroup.currentlyDeployedTeamsPanel.transform : fieldTeamsGroup.completedTeamsPanel.transform);
-        newTeamIconObj.transform.SetSiblingIndex(0);
-        _teamIcon = newTeamIconObj.GetComponent<TeamIcon>();
+        _teamIconObj = Instantiate(teamIconPrefab,
+            isComplete ? mainController.completedTeamsPanel.transform : mainController.currentlyDeployedTeamsPanel.transform);
+        _teamIconObj.transform.SetSiblingIndex(0);
+        _teamIcon = _teamIconObj.GetComponent<TeamIcon>();
         _teamIcon.fieldTeam = this;
 
-        GameObject newTeamTimelineObj = Instantiate(teamTimelinePrefab, fieldTeamsGroup.timelineContentPanel.transform);
-        newTeamTimelineObj.transform.SetSiblingIndex(0);
-        _teamTimeline = newTeamTimelineObj.GetComponent<TeamTimeline>();
+        _teamTimelineObj = Instantiate(teamTimelinePrefab, mainController.timelineContentPanel.transform);
+        _teamTimelineObj.transform.SetSiblingIndex(0);
+        _teamTimeline = _teamTimelineObj.GetComponent<TeamTimeline>();
         _teamTimeline.fieldTeam = this;
 
         
         List<Track> tracks = Track.ReadTracksFromFile(_gpsRecordingFilePath);
-        foreach (var track in tracks)
+        if (tracks.Count > 0)
         {
-            // Load photo frames
+            /* Load photo frames */
 
             DirectoryInfo d = new DirectoryInfo(_timelapsePhotoDirectoryPath);
             FileInfo[] Files = d.GetFiles("*.JPG");
@@ -154,11 +201,14 @@ public class FieldTeam : MonoBehaviour
             }
 
 
-            // Load waypoints from GPS recording
+            /* Load waypoints from GPS recording */
 
-            Vector3[] mapPositions = new Vector3[track.Waypoints.Count];
+            // Only looking at the first track of the file (should only have one track)
+            Track track = tracks[0];
 
-            _teamPathPointObjs = new GameObject[track.Waypoints.Count];
+            _mapPositions = new List<Vector3>(track.Waypoints.Count);
+
+            _teamPathPointObjs = new List<GameObject>(track.Waypoints.Count);
             _gpsWaypointTimes = new DateTime[track.Waypoints.Count];
 
             i = 0;
@@ -173,43 +223,51 @@ public class FieldTeam : MonoBehaviour
                 location.Heading = 0;
                 location.Speed = 0;
 
-                _teamPathPointObjs[i] = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                _teamPathPointObjs[i].transform.parent = _mapObj.transform;
-                _teamPathPointObjs[i].transform.position = _mapLogic.ConvertLocationToMapPosition(location);
-                _teamPathPointObjs[i].GetComponent<MeshRenderer>().enabled = false;
-                _teamPathPointObjs[i].transform.localScale.Scale(new Vector3(10, 10, 10));
+                _teamPathPointObjs.Add(GameObject.CreatePrimitive(PrimitiveType.Sphere));
+                _teamPathPointObjs.Last<GameObject>().transform.parent = _mapObj.transform;
+                _teamPathPointObjs.Last<GameObject>().transform.position = _map.ConvertLocationToMapPosition(location);
+                _teamPathPointObjs.Last<GameObject>().GetComponent<MeshRenderer>().enabled = false;
+                _teamPathPointObjs.Last<GameObject>().transform.localScale.Scale(new Vector3(10, 10, 10));
 
-                TeamPathPoint teamPathPointLogic = _teamPathPointObjs[i].AddComponent<TeamPathPoint>();
-                teamPathPointLogic.location = location;
-                teamPathPointLogic.actualTime = waypoint.Time;
-                teamPathPointLogic.pointNumber = i;
-                teamPathPointLogic.fieldTeam = this;
+                TeamPathPoint teamPathPoint = _teamPathPointObjs.Last<GameObject>().AddComponent<TeamPathPoint>();
+                teamPathPoint.location = location;
+                teamPathPoint.actualTime = waypoint.Time;
+                teamPathPoint.pointNumber = i;
+                teamPathPoint.fieldTeam = this;
 
-                mapPositions[i] = _mapLogic.ConvertLocationToMapPosition(location);
+                if (ConvertActualTimeToTime(teamPathPoint.actualTime) < mainController.currentTime)
+                {
+                    _latestAvailableWaypointIndex = i;
+                }
+
+                _mapPositions.Add(_map.ConvertLocationToMapPosition(location));
 
                 _gpsWaypointTimes[i] = waypoint.Time;
 
                 i++;
             }
 
+            // Get subset of points that are visible now (at the simulated current time)
+            _revealedMapPositions = new List<Vector3>(_mapPositions.Take(_latestAvailableWaypointIndex + 1));
+
+            // Instantiate line
             _teamPathLineObj = new GameObject();
             _teamPathLineObj.transform.parent = _mapObj.transform;
             _teamPathLineObj.transform.SetSiblingIndex(0);
-            _teamPathLineObj.AddComponent<LineRenderer>();
-            LineRenderer lineRenderer = _teamPathLineObj.GetComponent<LineRenderer>();
+            LineRenderer lineRenderer = _teamPathLineObj.AddComponent<LineRenderer>();
             lineRenderer.material = new Material(Shader.Find("Legacy Shaders/Particles/Alpha Blended Premultiply"));
-            lineRenderer.positionCount = track.Waypoints.Count;
-            lineRenderer.SetPositions(mapPositions);
+
+            // Set positions (vertices) to display only the path that has been revealed at the current time
+            lineRenderer.positionCount = _revealedMapPositions.Count;
+            lineRenderer.SetPositions(_revealedMapPositions.ToArray());
             lineRenderer.startColor = lineRenderer.endColor = teamColor;
             lineRenderer.startWidth = lineRenderer.endWidth = 1.0f;
-            lineRenderer.SetPositions(mapPositions);
             lineRenderer.numCornerVertices = 10;
             lineRenderer.numCapVertices = 5;
         }
 
         _fieldTeamIsInstantiated = true;
     }
-
 
     public void HighlightPathAtTime(DateTime time)
     {
@@ -224,10 +282,10 @@ public class FieldTeam : MonoBehaviour
 
     public void UnhighlightPath()
     {
-        foreach (GameObject teamPathPoint in _teamPathPointObjs)
+        foreach (GameObject teamPathPointObjs in _teamPathPointObjs)
         {
-            TeamPathPoint teamPathPointLogic = teamPathPoint.GetComponent<TeamPathPoint>();
-            teamPathPointLogic.UnhighlightPathPoint();
+            TeamPathPoint teamPathPoint = teamPathPointObjs.GetComponent<TeamPathPoint>();
+            teamPathPoint.UnhighlightPathPoint();
         }
     }
 
@@ -246,7 +304,6 @@ public class FieldTeam : MonoBehaviour
         _teamTimeline.UnhighlightTimeline();
     }
 
-
     public string GetPhotoPathFromTime(DateTime time)
     {
         return GetPhotoPathFromActualTime(ConvertTimeToActualTime(time));
@@ -259,30 +316,34 @@ public class FieldTeam : MonoBehaviour
 
     public string GetPhotoPathFromActualTime(DateTime time)
     {
-        int i = BinarySearchForClosestValue(_photoTimes, time);
+        int i = BinarySearchForClosestValue(_photoTimes.ToArray(), time);
         return _timelapsePhotoDirectoryPath + _photoFileNames[i];
     }
 
     public string GetPhotoThumbnailPathFromActualTime(DateTime time)
     {
-        int i = BinarySearchForClosestValue(_photoTimes, time);
+        int i = BinarySearchForClosestValue(_photoTimes.ToArray(), time);
         return _timelapsePhotoThumbnailDirectoryPath + _photoFileNames[i];
     }
 
     public void ShowThisFieldTeamOnly()
     {
-        foreach (Transform t in fieldTeamsGroup.transform)
+        foreach (Transform t in mainController.transform)
         {
-            t.gameObject.GetComponent<FieldTeam>()._teamPathLineObj.SetActive(false);
+            FieldTeam ft = t.gameObject.GetComponent<FieldTeam>();
+            if (ft != null && ft.isActiveAndEnabled)
+                ft._teamPathLineObj.SetActive(false);
         }
         _teamPathLineObj.SetActive(true);
     }
 
     public void ShowAllFieldTeams()
     {
-        foreach (Transform t in fieldTeamsGroup.transform)
+        foreach (Transform t in mainController.transform)
         {
-            t.gameObject.GetComponent<FieldTeam>()._teamPathLineObj.SetActive(true);
+            FieldTeam ft = t.gameObject.GetComponent<FieldTeam>();
+            if (ft != null && ft.isActiveAndEnabled)
+               ft._teamPathLineObj.SetActive(true);
         }
     }
 
@@ -293,7 +354,7 @@ public class FieldTeam : MonoBehaviour
     /// <returns></returns>
     public bool IsPathInCameraView(float margin = 0.0f)
     {
-        Camera camera = fieldTeamsGroup.sceneCamera.GetComponent<Camera>();
+        Camera camera = mainController.sceneCamera.GetComponent<Camera>();
         foreach (GameObject g in _teamPathPointObjs)
         {
             Vector3 viewportPoint = camera.WorldToViewportPoint(g.transform.position);
@@ -304,6 +365,18 @@ public class FieldTeam : MonoBehaviour
         }
 
         return true;
+    }
+
+    public DateTime ConvertTimeToActualTime(DateTime time)
+    {
+        long ticksFromStart = time.Ticks - startTime.dateTime.Ticks;
+        return new DateTime(_actualStartTime.dateTime.Ticks + ticksFromStart);
+    }
+
+    public DateTime ConvertActualTimeToTime(DateTime actualTime)
+    {
+        long ticksFromStart = actualTime.Ticks - _actualStartTime.dateTime.Ticks;
+        return new DateTime(startTime.dateTime.Ticks + ticksFromStart);
     }
 
     private void PerformInitialFileRead()
@@ -324,38 +397,27 @@ public class FieldTeam : MonoBehaviour
         _initialFileReadDone = true;
     }
 
-    private void UpdateRatioComplete()
+    private float UpdateRatioComplete()
     {
         if (_fieldTeamIsStarted)
         {
-            if (fieldTeamsGroup.currentTime.dateTime >= _endTime.dateTime)
+            if (mainController.currentTime.dateTime >= _endTime.dateTime)
             {
                 _ratioComplete = 1.0f;
             }
-            else if (fieldTeamsGroup.currentTime.dateTime <= startTime.dateTime)
+            else if (mainController.currentTime.dateTime <= startTime.dateTime)
             {
                 _ratioComplete = 0.0f;
             }
             else
             {
-                _ratioComplete = (float)(fieldTeamsGroup.currentTime.dateTime.Ticks - startTime.dateTime.Ticks) /
+                _ratioComplete = (float)(mainController.currentTime.dateTime.Ticks - startTime.dateTime.Ticks) /
                     (float)(_endTime.dateTime.Ticks - startTime.dateTime.Ticks);
             }
         }
-    }
-    
-    public DateTime ConvertTimeToActualTime(DateTime time)
-    {
-        long ticksFromStart = time.Ticks - startTime.dateTime.Ticks;
-        return new DateTime(_actualStartTime.dateTime.Ticks + ticksFromStart);
-    }
 
-    public DateTime ConvertActualTimeToTime(DateTime actualTime)
-    {
-        long ticksFromStart = actualTime.Ticks - _actualStartTime.dateTime.Ticks;
-        return new DateTime(startTime.dateTime.Ticks + ticksFromStart);
+        return _ratioComplete;
     }
-
 
     private int BinarySearchForClosestValue(DateTime[] a, DateTime item)
     {

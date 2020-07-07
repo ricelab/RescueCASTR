@@ -24,42 +24,44 @@ public class TeamPathPoint : MonoBehaviour
 
     void OnMouseEnter()
     {
-        //Debug.Log("MouseEnter: " + pointNumber);
+        if (fieldTeam.ConvertActualTimeToTime(actualTime) <= fieldTeam.mainController.currentTime)
+        {
+            //this.HighlightPathPoint();
 
-        //this.HighlightPathPoint();
+            string imagePath = fieldTeam.GetPhotoThumbnailPathFromActualTime(actualTime);
 
-        string imagePath = fieldTeam.GetPhotoThumbnailPathFromActualTime(actualTime);
+            GameObject sceneUi = fieldTeam.mainController.sceneUi;
 
-        GameObject sceneUi = fieldTeam.fieldTeamsGroup.sceneUi;
+            _mapFrameDisplayObj = Instantiate(fieldTeam.mapFrameDisplayPrefab, sceneUi.transform);
+            _mapFrameDisplayObj.transform.Find("Background").GetComponent<Image>().color = fieldTeam.teamColor;
+            _mapFrameDisplayObj.transform.Find("Arrow").GetComponent<Image>().color = fieldTeam.teamColor;
+            _mapFrameDisplayObj.transform.Find("Time").GetComponent<Text>().text = fieldTeam.ConvertActualTimeToTime(actualTime).ToString("MM/dd/yyyy HH:mm:ss");
+            _mapFrameDisplayLogic = _mapFrameDisplayObj.GetComponent<MapFrameDisplay>();
+            _mapFrameDisplayLogic.DisplayImage(imagePath);
 
-        _mapFrameDisplayObj = Instantiate(fieldTeam.mapFrameDisplayPrefab, sceneUi.transform);
-        _mapFrameDisplayObj.transform.Find("Background").GetComponent<Image>().color = fieldTeam.teamColor;
-        _mapFrameDisplayObj.transform.Find("Arrow").GetComponent<Image>().color = fieldTeam.teamColor;
-        _mapFrameDisplayObj.transform.Find("Time").GetComponent<Text>().text = actualTime.ToString();
-        _mapFrameDisplayLogic = _mapFrameDisplayObj.GetComponent<MapFrameDisplay>();
-        _mapFrameDisplayLogic.DisplayImage(imagePath);
+            Camera sceneCamera = fieldTeam.mainController.sceneCamera.GetComponent<Camera>();
+            RectTransform canvasRect = sceneUi.GetComponent<RectTransform>();
+            Vector2 viewportPos = sceneCamera.WorldToViewportPoint(this.transform.position);
+            Vector2 worldObjScreenPos = new Vector2(
+                ((viewportPos.x * canvasRect.sizeDelta.x * 0.75f) - (canvasRect.sizeDelta.x * 0.5f)),
+                ((viewportPos.y * canvasRect.sizeDelta.y * 0.8f) - (canvasRect.sizeDelta.y * 0.5f) + (canvasRect.sizeDelta.y * 0.2f))
+            );
+            _mapFrameDisplayObj.GetComponent<RectTransform>().anchoredPosition = worldObjScreenPos;
 
-        Camera sceneCamera = fieldTeam.fieldTeamsGroup.sceneCamera.GetComponent<Camera>();
-        RectTransform canvasRect = sceneUi.GetComponent<RectTransform>();
-        Vector2 viewportPos = sceneCamera.WorldToViewportPoint(this.transform.position);
-        Vector2 worldObjScreenPos = new Vector2(
-            ((viewportPos.x * canvasRect.sizeDelta.x * 0.75f) - (canvasRect.sizeDelta.x * 0.5f)),
-            ((viewportPos.y * canvasRect.sizeDelta.y * 0.8f) - (canvasRect.sizeDelta.y * 0.5f) + (canvasRect.sizeDelta.y * 0.2f))
-        );
-        _mapFrameDisplayObj.GetComponent<RectTransform>().anchoredPosition = worldObjScreenPos;
-
-        fieldTeam.HighlightActualTimeOnTimeline(actualTime);
+            fieldTeam.HighlightActualTimeOnTimeline(actualTime);
+        }
     }
 
     void OnMouseExit()
     {
-        //Debug.Log("MouseExit: " + pointNumber);
+        if (fieldTeam.ConvertActualTimeToTime(actualTime) <= fieldTeam.mainController.currentTime)
+        {
+            //this.UnhighlightPathPoint();
 
-        //this.UnhighlightPathPoint();
+            GameObject.Destroy(_mapFrameDisplayObj);
 
-        GameObject.Destroy(_mapFrameDisplayObj);
-
-        fieldTeam.UnhighlightTimeline();
+            fieldTeam.UnhighlightTimeline();
+        }
     }
 
     public void HighlightPathPoint()

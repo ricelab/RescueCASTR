@@ -44,6 +44,8 @@ public class TeamTimeline : MonoBehaviour
 
     private bool _hoveringOverLine = false;
 
+    private DateTime _endTimeOfTimeline;
+
     void Start()
     {
         _line = this.transform.Find("Line").gameObject;
@@ -52,7 +54,7 @@ public class TeamTimeline : MonoBehaviour
         _raycaster = this.GetComponentInParent<GraphicRaycaster>();
         _eventSystem = GetComponent<EventSystem>();
 
-        _sceneUi = fieldTeam.fieldTeamsGroup.sceneUi;
+        _sceneUi = fieldTeam.mainController.sceneUi;
     }
 
     void Update()
@@ -81,15 +83,20 @@ public class TeamTimeline : MonoBehaviour
 
             /* Draw/update timeline markings */
 
+            if (fieldTeam.mainController.currentTime.dateTime < fieldTeam.endTime.dateTime)
+                _endTimeOfTimeline = fieldTeam.mainController.currentTime.dateTime;
+            else
+                _endTimeOfTimeline = fieldTeam.endTime.dateTime;
+
             RectTransform lineTransform = _line.GetComponent<RectTransform>();
             
             _scaleX =
-                (float)(fieldTeam.endTime.dateTime.Ticks - fieldTeam.startTime.dateTime.Ticks) /
-                (float)(fieldTeam.fieldTeamsGroup.latestEndTime.dateTime.Ticks - fieldTeam.fieldTeamsGroup.earliestStartTime.dateTime.Ticks);
+                (float)(_endTimeOfTimeline.Ticks - fieldTeam.startTime.dateTime.Ticks) /
+                (float)(fieldTeam.mainController.currentTime.dateTime.Ticks - fieldTeam.mainController.earliestStartTime.dateTime.Ticks);
 
             _n =
-                (float)(fieldTeam.startTime.dateTime.Ticks - fieldTeam.fieldTeamsGroup.earliestStartTime.dateTime.Ticks) /
-                (float)(fieldTeam.fieldTeamsGroup.latestEndTime.dateTime.Ticks - fieldTeam.fieldTeamsGroup.earliestStartTime.dateTime.Ticks);
+                (float)(fieldTeam.startTime.dateTime.Ticks - fieldTeam.mainController.earliestStartTime.dateTime.Ticks) /
+                (float)(fieldTeam.mainController.currentTime.dateTime.Ticks - fieldTeam.mainController.earliestStartTime.dateTime.Ticks);
             if (_scaleX == 1.0f)
                 _pivotX = 0.0f;
             else
@@ -146,7 +153,7 @@ public class TeamTimeline : MonoBehaviour
                     placeHighlighted = 1;
 
                 long ticks = fieldTeam.startTime.dateTime.Ticks +
-                    (long)(placeHighlighted * (fieldTeam.endTime.dateTime.Ticks - fieldTeam.startTime.dateTime.Ticks));
+                    (long)(placeHighlighted * (_endTimeOfTimeline.Ticks - fieldTeam.startTime.dateTime.Ticks));
 
                 DateTime simulatedTimeHighlighted = new DateTime(ticks);
 
@@ -157,12 +164,12 @@ public class TeamTimeline : MonoBehaviour
                     _mapFrameDisplayObj = Instantiate(fieldTeam.mapFrameDisplayPrefab, _sceneUi.transform);
                     _mapFrameDisplayObj.transform.Find("Background").GetComponent<Image>().color = fieldTeam.teamColor;
                     _mapFrameDisplayObj.transform.Find("Arrow").GetComponent<Image>().color = fieldTeam.teamColor;
-                    _mapFrameDisplayObj.transform.Find("Time").GetComponent<Text>().text = fieldTeam.ConvertTimeToActualTime(simulatedTimeHighlighted).ToString();
                     _mapFrameDisplayLogic = _mapFrameDisplayObj.GetComponent<MapFrameDisplay>();
                     _mapFrameDisplayShowing = true;
                 }
 
                 _mapFrameDisplayLogic.DisplayImage(imagePath);
+                _mapFrameDisplayObj.transform.Find("Time").GetComponent<Text>().text = simulatedTimeHighlighted.ToString("MM/dd/yyyy HH:mm:ss");
 
                 Vector2 pos = new Vector2(
                     result.screenPosition.x - 0.5f * Screen.width, result.screenPosition.y - 0.5f * Screen.height);
@@ -179,7 +186,6 @@ public class TeamTimeline : MonoBehaviour
                     //float arrowWidth = arrowTransform.rect.width;
                     //if (arrowTransform.localPosition.x - 0.5f * arrowWidth < -halfMapFrameWidth)
                     //{
-                    //    Debug.Log("here");
                     //    float newWidth = arrowWidth - (halfMapFrameWidth - (arrowTransform.localPosition.x - 0.5f * arrowWidth));
                     //    arrowTransform.localScale = new Vector3(newWidth, arrowTransform.localScale.y, arrowTransform.localScale.z);
                     //}
@@ -215,14 +221,14 @@ public class TeamTimeline : MonoBehaviour
             _timelineHighlightShowing = true;
         }
 
-        float placeToHighlight = (float)(timeHighlighted.Ticks - fieldTeam.startTime.dateTime.Ticks) / (float)(fieldTeam.endTime.dateTime.Ticks - fieldTeam.startTime.dateTime.Ticks);
+        float placeToHighlight = (float)(timeHighlighted.Ticks - fieldTeam.startTime.dateTime.Ticks) / (float)(_endTimeOfTimeline.Ticks - fieldTeam.startTime.dateTime.Ticks);
         if (placeToHighlight < 0.0f)
             placeToHighlight = 0.0f;
         else if (placeToHighlight > 1.0f)
             placeToHighlight = 1.0f;
 
-        Camera timelineCamera = fieldTeam.fieldTeamsGroup.timelineCamera.GetComponent<Camera>();
-        RectTransform canvasRect = fieldTeam.fieldTeamsGroup.sceneUi.GetComponent<RectTransform>();
+        Camera timelineCamera = fieldTeam.mainController.timelineCamera.GetComponent<Camera>();
+        RectTransform canvasRect = fieldTeam.mainController.sceneUi.GetComponent<RectTransform>();
         Vector2 viewportPos = timelineCamera.WorldToViewportPoint(_line.transform.position);
         Vector2 worldObjScreenPos = new Vector2(
             (viewportPos.x * canvasRect.sizeDelta.x * 0.75f) - (canvasRect.sizeDelta.x * 0.5f),
@@ -251,14 +257,14 @@ public class TeamTimeline : MonoBehaviour
             _timelineNeedleShowing = true;
         }
 
-        float placeToHighlight = (float)(timeHighlighted.Ticks - fieldTeam.startTime.dateTime.Ticks) / (float)(fieldTeam.endTime.dateTime.Ticks - fieldTeam.startTime.dateTime.Ticks);
+        float placeToHighlight = (float)(timeHighlighted.Ticks - fieldTeam.startTime.dateTime.Ticks) / (float)(_endTimeOfTimeline.Ticks - fieldTeam.startTime.dateTime.Ticks);
         if (placeToHighlight < 0.0f)
             placeToHighlight = 0.0f;
         else if (placeToHighlight > 1.0f)
             placeToHighlight = 1.0f;
 
-        Camera timelineCamera = fieldTeam.fieldTeamsGroup.timelineCamera.GetComponent<Camera>();
-        RectTransform canvasRect = fieldTeam.fieldTeamsGroup.sceneUi.GetComponent<RectTransform>();
+        Camera timelineCamera = fieldTeam.mainController.timelineCamera.GetComponent<Camera>();
+        RectTransform canvasRect = fieldTeam.mainController.sceneUi.GetComponent<RectTransform>();
         Vector2 viewportPos = timelineCamera.WorldToViewportPoint(_line.transform.position);
         Vector2 worldObjScreenPos = new Vector2(
             ((viewportPos.x * canvasRect.sizeDelta.x * 0.75f) - (canvasRect.sizeDelta.x * 0.5f)),

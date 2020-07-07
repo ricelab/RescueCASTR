@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class FieldTeamsGroup : MonoBehaviour
+public class MainController : MonoBehaviour
 {
     public GameObject currentlyDeployedTeamsPanel;
     public GameObject completedTeamsPanel;
@@ -12,6 +14,7 @@ public class FieldTeamsGroup : MonoBehaviour
     public GameObject sceneUi;
     public GameObject timelineCamera;
     public GameObject timelineUi;
+    public GameObject currentTimeText;
     public UDateTime currentTime;
 
     public UDateTime earliestStartTime
@@ -32,13 +35,33 @@ public class FieldTeamsGroup : MonoBehaviour
     private UDateTime _earliestStartTime = null;
     private UDateTime _latestEndTime = null;
 
+    private DateTime _startTimeOfSimulation;
+    private DateTime _actualStartTime;
+
     public void Start()
     {
+        _startTimeOfSimulation = currentTime.dateTime;
+        _actualStartTime = DateTime.Now;
+        
         FieldTeam[] fieldTeams = this.GetComponentsInChildren<FieldTeam>();
         foreach (FieldTeam fieldTeam in fieldTeams)
         {
             AddFieldTeam(fieldTeam);
         }
+    }
+
+    public void Update()
+    {
+        // Update clock
+        long ticksSinceSimulationStart = DateTime.Now.Ticks - _actualStartTime.Ticks;
+        currentTime.dateTime = new DateTime(_startTimeOfSimulation.Ticks + ticksSinceSimulationStart);
+        currentTimeText.GetComponent<Text>().text = currentTime.dateTime.ToString("yyyy/MM/dd HH:mm:ss");
+
+        // Update clock position on screen (if needed, if the screen size changes)
+        currentTimeText.GetComponent<RectTransform>().localPosition = new Vector3(
+            0.0f - Screen.width * 0.25f - 5.0f + 0.5f * Screen.width,
+            -5.0f + 0.5f * Screen.height,
+            0.0f);
     }
 
     public void AddFieldTeam(FieldTeam fieldTeam)
