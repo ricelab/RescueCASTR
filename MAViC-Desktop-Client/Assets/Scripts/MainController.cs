@@ -6,16 +6,17 @@ using UnityEngine.UI;
 
 public class MainController : MonoBehaviour
 {
+    public UDateTime currentTime;
     public GameObject currentlyDeployedTeamsPanel;
     public GameObject completedTeamsPanel;
     public GameObject timelineContentPanel;
     public GameObject map;
     public GameObject sceneCamera;
     public GameObject sceneUi;
+    public GameObject wholeScreenUi;
     public GameObject timelineCamera;
     public GameObject timelineUi;
     public GameObject currentTimeText;
-    public UDateTime currentTime;
 
     public UDateTime earliestStartTime
     {
@@ -56,12 +57,6 @@ public class MainController : MonoBehaviour
         long ticksSinceSimulationStart = DateTime.Now.Ticks - _actualStartTime.Ticks;
         currentTime.dateTime = new DateTime(_startTimeOfSimulation.Ticks + ticksSinceSimulationStart);
         currentTimeText.GetComponent<Text>().text = currentTime.dateTime.ToString("yyyy/MM/dd HH:mm:ss");
-
-        // Update clock position on screen (if needed, if the screen size changes)
-        currentTimeText.GetComponent<RectTransform>().localPosition = new Vector3(
-            0.0f - Screen.width * 0.25f - 5.0f + 0.5f * Screen.width,
-            -5.0f + 0.5f * Screen.height,
-            0.0f);
     }
 
     public void AddFieldTeam(FieldTeam fieldTeam)

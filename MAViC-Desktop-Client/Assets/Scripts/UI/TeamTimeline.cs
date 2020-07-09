@@ -28,7 +28,7 @@ public class TeamTimeline : MonoBehaviour
 
     private bool _mapFrameDisplayShowing = false;
 
-    private GameObject _sceneUi;
+    private GameObject _wholeScreenUi;
 
     private GameObject _timelineHighlight;
     private bool _timelineHighlightShowing = false;
@@ -54,7 +54,7 @@ public class TeamTimeline : MonoBehaviour
         _raycaster = this.GetComponentInParent<GraphicRaycaster>();
         _eventSystem = GetComponent<EventSystem>();
 
-        _sceneUi = fieldTeam.mainController.sceneUi;
+        _wholeScreenUi = fieldTeam.mainController.wholeScreenUi;
     }
 
     void Update()
@@ -72,7 +72,7 @@ public class TeamTimeline : MonoBehaviour
 
 
             /* Update name if team's name changed */
-            
+
             if (fieldTeam.teamName != _lastTeamName)
             {
                 _lastTeamName = fieldTeam.teamName;
@@ -89,7 +89,7 @@ public class TeamTimeline : MonoBehaviour
                 _endTimeOfTimeline = fieldTeam.endTime.dateTime;
 
             RectTransform lineTransform = _line.GetComponent<RectTransform>();
-            
+
             _scaleX =
                 (float)(_endTimeOfTimeline.Ticks - fieldTeam.startTime.dateTime.Ticks) /
                 (float)(fieldTeam.mainController.currentTime.dateTime.Ticks - fieldTeam.mainController.earliestStartTime.dateTime.Ticks);
@@ -135,7 +135,7 @@ public class TeamTimeline : MonoBehaviour
                 }
             }
 
-            if(prevHoveringOverLine == false && _hoveringOverLine == true)
+            if (prevHoveringOverLine == false && _hoveringOverLine == true)
             {
                 fieldTeam.ShowThisFieldTeamOnly();
             }
@@ -161,7 +161,7 @@ public class TeamTimeline : MonoBehaviour
 
                 if (!_mapFrameDisplayShowing)
                 {
-                    _mapFrameDisplayObj = Instantiate(fieldTeam.mapFrameDisplayPrefab, _sceneUi.transform);
+                    _mapFrameDisplayObj = Instantiate(fieldTeam.mapFrameDisplayPrefab, _wholeScreenUi.transform);
                     _mapFrameDisplayObj.transform.Find("Background").GetComponent<Image>().color = fieldTeam.teamColor;
                     _mapFrameDisplayObj.transform.Find("Arrow").GetComponent<Image>().color = fieldTeam.teamColor;
                     _mapFrameDisplayLogic = _mapFrameDisplayObj.GetComponent<MapFrameDisplay>();
@@ -204,7 +204,8 @@ public class TeamTimeline : MonoBehaviour
                 fieldTeam.UnhighlightPath();
                 fieldTeam.HighlightPathAtTime(simulatedTimeHighlighted);
             }
-            else {
+            else
+            {
                 GameObject.Destroy(_mapFrameDisplayObj);
                 _mapFrameDisplayShowing = false;
 
@@ -217,7 +218,7 @@ public class TeamTimeline : MonoBehaviour
     {
         if (!_timelineHighlightShowing)
         {
-            _timelineHighlight = Instantiate(timelineHighlightPrefab, _sceneUi.transform);
+            _timelineHighlight = Instantiate(timelineHighlightPrefab, _wholeScreenUi.transform);
             _timelineHighlightShowing = true;
         }
 
@@ -228,7 +229,7 @@ public class TeamTimeline : MonoBehaviour
             placeToHighlight = 1.0f;
 
         Camera timelineCamera = fieldTeam.mainController.timelineCamera.GetComponent<Camera>();
-        RectTransform canvasRect = fieldTeam.mainController.sceneUi.GetComponent<RectTransform>();
+        RectTransform canvasRect = fieldTeam.mainController.wholeScreenUi.GetComponent<RectTransform>();
         Vector2 viewportPos = timelineCamera.WorldToViewportPoint(_line.transform.position);
         Vector2 worldObjScreenPos = new Vector2(
             (viewportPos.x * canvasRect.sizeDelta.x * 0.75f) - (canvasRect.sizeDelta.x * 0.5f),
@@ -253,7 +254,7 @@ public class TeamTimeline : MonoBehaviour
     {
         if (!_timelineNeedleShowing)
         {
-            _timelineNeedle = Instantiate(timelineNeedlePrefab, _sceneUi.transform);
+            _timelineNeedle = Instantiate(timelineNeedlePrefab, _wholeScreenUi.transform);
             _timelineNeedleShowing = true;
         }
 
@@ -264,7 +265,7 @@ public class TeamTimeline : MonoBehaviour
             placeToHighlight = 1.0f;
 
         Camera timelineCamera = fieldTeam.mainController.timelineCamera.GetComponent<Camera>();
-        RectTransform canvasRect = fieldTeam.mainController.sceneUi.GetComponent<RectTransform>();
+        RectTransform canvasRect = fieldTeam.mainController.wholeScreenUi.GetComponent<RectTransform>();
         Vector2 viewportPos = timelineCamera.WorldToViewportPoint(_line.transform.position);
         Vector2 worldObjScreenPos = new Vector2(
             ((viewportPos.x * canvasRect.sizeDelta.x * 0.75f) - (canvasRect.sizeDelta.x * 0.5f)),

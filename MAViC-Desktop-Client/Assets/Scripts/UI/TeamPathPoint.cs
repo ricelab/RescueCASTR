@@ -13,13 +13,13 @@ public class TeamPathPoint : MonoBehaviour
     public FieldTeam fieldTeam;
 
     private GameObject _mapFrameDisplayObj;
-    private MapFrameDisplay _mapFrameDisplayLogic;
+    private MapFrameDisplay _mapFrameDisplay;
 
     private bool _isHighlighted = false;
 
     void Start()
     {
-        this.transform.localScale *= 2.5f;
+        this.transform.localScale = new Vector3(2.0f, 2.0f, 2.0f);
     }
 
     void OnMouseEnter()
@@ -30,17 +30,17 @@ public class TeamPathPoint : MonoBehaviour
 
             string imagePath = fieldTeam.GetPhotoThumbnailPathFromActualTime(actualTime);
 
-            GameObject sceneUi = fieldTeam.mainController.sceneUi;
+            GameObject wholeScreenUi = fieldTeam.mainController.wholeScreenUi;
 
-            _mapFrameDisplayObj = Instantiate(fieldTeam.mapFrameDisplayPrefab, sceneUi.transform);
+            _mapFrameDisplayObj = Instantiate(fieldTeam.mapFrameDisplayPrefab, wholeScreenUi.transform);
             _mapFrameDisplayObj.transform.Find("Background").GetComponent<Image>().color = fieldTeam.teamColor;
             _mapFrameDisplayObj.transform.Find("Arrow").GetComponent<Image>().color = fieldTeam.teamColor;
             _mapFrameDisplayObj.transform.Find("Time").GetComponent<Text>().text = fieldTeam.ConvertActualTimeToTime(actualTime).ToString("MM/dd/yyyy HH:mm:ss");
-            _mapFrameDisplayLogic = _mapFrameDisplayObj.GetComponent<MapFrameDisplay>();
-            _mapFrameDisplayLogic.DisplayImage(imagePath);
+            _mapFrameDisplay = _mapFrameDisplayObj.GetComponent<MapFrameDisplay>();
+            _mapFrameDisplay.DisplayImage(imagePath);
 
             Camera sceneCamera = fieldTeam.mainController.sceneCamera.GetComponent<Camera>();
-            RectTransform canvasRect = sceneUi.GetComponent<RectTransform>();
+            RectTransform canvasRect = wholeScreenUi.GetComponent<RectTransform>();
             Vector2 viewportPos = sceneCamera.WorldToViewportPoint(this.transform.position);
             Vector2 worldObjScreenPos = new Vector2(
                 ((viewportPos.x * canvasRect.sizeDelta.x * 0.75f) - (canvasRect.sizeDelta.x * 0.5f)),

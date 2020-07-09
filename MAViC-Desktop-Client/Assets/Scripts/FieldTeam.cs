@@ -5,6 +5,7 @@ using GPXparser;
 using System.IO;
 using System;
 using System.Linq;
+using UnityEngine.UI;
 
 public class FieldTeam : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class FieldTeam : MonoBehaviour
     public GameObject teamTimelinePrefab;
 
     public GameObject mapFrameDisplayPrefab;
+    public GameObject currentLocationFrameDisplayPrefab;
 
     public string teamName;
     public Color teamColor;
@@ -41,13 +43,10 @@ public class FieldTeam : MonoBehaviour
         }
     }
 
-    public bool isComplete
-    {
-        get
-        {
-            return UpdateRatioComplete() < 1.0 ? false : true;
-        }
-    }
+    public bool isComplete => UpdateRatioComplete() < 1.0 ? false : true;
+
+    public Location currentLocation => _revealedMapLocations.Last();
+    public Vector3 currentScenePosition => _revealedMapPositions.Last();
 
     #endregion
 
@@ -83,14 +82,21 @@ public class FieldTeam : MonoBehaviour
 
     private DateTime[] _gpsWaypointTimes;
 
-    private List<Vector3> _mapPositions;
+    private List<Location> _mapLocations;
+    private List<Location> _revealedMapLocations;
 
+    private List<Vector3> _mapPositions;
     private List<Vector3> _revealedMapPositions;
 
     private List<GameObject> _teamPathPointObjs;
     private GameObject _teamPathLineObj;
 
     private int _latestAvailableWaypointIndex = 0;
+
+    private GameObject _currentLocationIndicator;
+    private GameObject _currentLocationFrameDisplayObj;
+    private CurrentLocationFrameDisplay _currentLocationFrameDisplay;
+    private bool _currentLocationFrameDisplayIsShowing = false;
 
     private Color _lastTeamColor;
 
@@ -126,19 +132,21 @@ public class FieldTeam : MonoBehaviour
                 _lastTeamColor = teamColor;
 
                 LineRenderer lineRenderer = _teamPathLineObj.GetComponent<LineRenderer>();
-                lineRenderer.startColor = lineRenderer.endColor = teamColor;
+                lineRenderer.startColor = new Color(0.5f * teamColor.r, 0.5f * teamColor.g, 0.5f * teamColor.b, teamColor.a);
+                lineRenderer.endColor = teamColor;
             }
 
             // Add more points to revealed waypoints (if any)
-            bool updateToAddToLatestPoint = false;
+            bool updateLatestPoint = false;
             for (int i = _latestAvailableWaypointIndex + 1; i < _teamPathPointObjs.Count; i++)
             {
                 TeamPathPoint teamPathPoint = _teamPathPointObjs[i].GetComponent<TeamPathPoint>();
 
                 if (ConvertActualTimeToTime(teamPathPoint.actualTime) < mainController.currentTime)
                 {
-                    updateToAddToLatestPoint = true;
+                    updateLatestPoint = true;
                     _revealedMapPositions.Add(_mapPositions[i]);
+                    _revealedMapLocations.Add(_mapLocations[i]);
                     _latestAvailableWaypointIndex = i;
                 }
                 else
@@ -146,11 +154,13 @@ public class FieldTeam : MonoBehaviour
                     break;
                 }
             }
-            if (updateToAddToLatestPoint)
+            if (updateLatestPoint)
             {
                 LineRenderer lineRenderer = _teamPathLineObj.GetComponent<LineRenderer>();
                 lineRenderer.positionCount = _revealedMapPositions.Count;
                 lineRenderer.SetPositions(_revealedMapPositions.ToArray());
+
+                _currentLocationIndicator.transform.position = currentScenePosition;
             }
 
             UpdateRatioComplete();
@@ -160,6 +170,13 @@ public class FieldTeam : MonoBehaviour
             {
                 _teamIconObj.transform.parent = mainController.completedTeamsPanel.transform;
                 _teamIconObj.transform.SetSiblingIndex(0);
+                _currentLocationIndicator.GetComponent<MeshRenderer>().enabled = false;
+                HideCurrentLocationFrameDisplay();
+            }
+
+            if (_currentLocationFrameDisplayIsShowing)
+            {
+                DisplayOrUpdateCurrentLocationFrameDisplay();
             }
         }
     }
@@ -206,6 +223,7 @@ public class FieldTeam : MonoBehaviour
             // Only looking at the first track of the file (should only have one track)
             Track track = tracks[0];
 
+            _mapLocations = new List<Location>(track.Waypoints.Count);
             _mapPositions = new List<Vector3>(track.Waypoints.Count);
 
             _teamPathPointObjs = new List<GameObject>(track.Waypoints.Count);
@@ -224,12 +242,11 @@ public class FieldTeam : MonoBehaviour
                 location.Speed = 0;
 
                 _teamPathPointObjs.Add(GameObject.CreatePrimitive(PrimitiveType.Sphere));
-                _teamPathPointObjs.Last<GameObject>().transform.parent = _mapObj.transform;
-                _teamPathPointObjs.Last<GameObject>().transform.position = _map.ConvertLocationToMapPosition(location);
-                _teamPathPointObjs.Last<GameObject>().GetComponent<MeshRenderer>().enabled = false;
-                _teamPathPointObjs.Last<GameObject>().transform.localScale.Scale(new Vector3(10, 10, 10));
+                _teamPathPointObjs.Last().transform.parent = _mapObj.transform;
+                _teamPathPointObjs.Last().transform.position = _map.ConvertLocationToMapPosition(location);
+                _teamPathPointObjs.Last().GetComponent<MeshRenderer>().enabled = false;
 
-                TeamPathPoint teamPathPoint = _teamPathPointObjs.Last<GameObject>().AddComponent<TeamPathPoint>();
+                TeamPathPoint teamPathPoint = _teamPathPointObjs.Last().AddComponent<TeamPathPoint>();
                 teamPathPoint.location = location;
                 teamPathPoint.actualTime = waypoint.Time;
                 teamPathPoint.pointNumber = i;
@@ -240,6 +257,7 @@ public class FieldTeam : MonoBehaviour
                     _latestAvailableWaypointIndex = i;
                 }
 
+                _mapLocations.Add(location);
                 _mapPositions.Add(_map.ConvertLocationToMapPosition(location));
 
                 _gpsWaypointTimes[i] = waypoint.Time;
@@ -248,6 +266,7 @@ public class FieldTeam : MonoBehaviour
             }
 
             // Get subset of points that are visible now (at the simulated current time)
+            _revealedMapLocations = new List<Location>(_mapLocations.Take(_latestAvailableWaypointIndex + 1));
             _revealedMapPositions = new List<Vector3>(_mapPositions.Take(_latestAvailableWaypointIndex + 1));
 
             // Instantiate line
@@ -260,10 +279,25 @@ public class FieldTeam : MonoBehaviour
             // Set positions (vertices) to display only the path that has been revealed at the current time
             lineRenderer.positionCount = _revealedMapPositions.Count;
             lineRenderer.SetPositions(_revealedMapPositions.ToArray());
-            lineRenderer.startColor = lineRenderer.endColor = teamColor;
+            lineRenderer.startColor = new Color(teamColor.r, teamColor.g, teamColor.b, 0.5f);
+            lineRenderer.endColor = teamColor;
             lineRenderer.startWidth = lineRenderer.endWidth = 1.0f;
             lineRenderer.numCornerVertices = 10;
             lineRenderer.numCapVertices = 5;
+
+            // Instantiate current location indicator
+            _currentLocationIndicator = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            _currentLocationIndicator.transform.parent = _mapObj.transform;
+            _currentLocationIndicator.transform.position = currentScenePosition;
+            _currentLocationIndicator.transform.localScale = new Vector3(4.0f, 4.0f, 4.0f);
+            _currentLocationIndicator.GetComponent<MeshRenderer>().material.color = teamColor;
+            _currentLocationIndicator.GetComponent<MeshRenderer>().enabled = !isComplete;
+
+            // Display current location frame display
+            if (!isComplete)
+            {
+                DisplayOrUpdateCurrentLocationFrameDisplay();
+            }
         }
 
         _fieldTeamIsInstantiated = true;
@@ -332,9 +366,19 @@ public class FieldTeam : MonoBehaviour
         {
             FieldTeam ft = t.gameObject.GetComponent<FieldTeam>();
             if (ft != null && ft.isActiveAndEnabled)
-                ft._teamPathLineObj.SetActive(false);
+            {
+                ft._teamPathLineObj.GetComponent<LineRenderer>().enabled = false;
+                ft._currentLocationIndicator.GetComponent<MeshRenderer>().enabled = false;
+                ft.HideCurrentLocationFrameDisplay();
+            }
         }
-        _teamPathLineObj.SetActive(true);
+        _teamPathLineObj.GetComponent<LineRenderer>().enabled = true;
+
+        if (!isComplete)
+        {
+            _currentLocationIndicator.GetComponent<MeshRenderer>().enabled = true;
+            DisplayOrUpdateCurrentLocationFrameDisplay();
+        }
     }
 
     public void ShowAllFieldTeams()
@@ -343,7 +387,15 @@ public class FieldTeam : MonoBehaviour
         {
             FieldTeam ft = t.gameObject.GetComponent<FieldTeam>();
             if (ft != null && ft.isActiveAndEnabled)
-               ft._teamPathLineObj.SetActive(true);
+            {
+                ft._teamPathLineObj.GetComponent<LineRenderer>().enabled = true;
+
+                if (!ft.isComplete)
+                {
+                    ft._currentLocationIndicator.GetComponent<MeshRenderer>().enabled = true;
+                    ft.DisplayOrUpdateCurrentLocationFrameDisplay();
+                }
+            }
         }
     }
 
@@ -417,6 +469,42 @@ public class FieldTeam : MonoBehaviour
         }
 
         return _ratioComplete;
+    }
+
+    private void DisplayOrUpdateCurrentLocationFrameDisplay()
+    {
+        if (!_currentLocationFrameDisplayIsShowing)
+        {
+            _currentLocationFrameDisplayObj = GameObject.Instantiate(currentLocationFrameDisplayPrefab, mainController.sceneUi.transform);
+            _currentLocationFrameDisplayObj.transform.SetAsFirstSibling();
+            _currentLocationFrameDisplayObj.transform.Find("Background").GetComponent<Image>().color = teamColor;
+            _currentLocationFrameDisplayObj.transform.Find("Arrow").GetComponent<Image>().color = teamColor;
+
+            _currentLocationFrameDisplay = _currentLocationFrameDisplayObj.GetComponent<CurrentLocationFrameDisplay>();
+            _currentLocationFrameDisplay.SetTeamName(teamName);
+
+            _currentLocationFrameDisplayIsShowing = true;
+        }
+
+        Camera sceneCamera = mainController.sceneCamera.GetComponent<Camera>();
+        RectTransform canvasRect = mainController.sceneUi.GetComponent<RectTransform>();
+        Vector2 viewportPos = sceneCamera.WorldToViewportPoint(currentScenePosition);
+        Vector2 worldObjScreenPos = new Vector2(
+            ((viewportPos.x * canvasRect.sizeDelta.x) - (canvasRect.sizeDelta.x * 0.5f)),
+            ((viewportPos.y * canvasRect.sizeDelta.y) - (canvasRect.sizeDelta.y * 0.5f))
+        );
+        _currentLocationFrameDisplayObj.GetComponent<RectTransform>().anchoredPosition = worldObjScreenPos;
+
+        _currentLocationFrameDisplay.DisplayImage(GetPhotoThumbnailPathFromTime(mainController.currentTime));
+    }
+
+    private void HideCurrentLocationFrameDisplay()
+    {
+        if (_currentLocationFrameDisplayIsShowing)
+        {
+            GameObject.Destroy(_currentLocationFrameDisplayObj);
+            _currentLocationFrameDisplayIsShowing = false;
+        }
     }
 
     private int BinarySearchForClosestValue(DateTime[] a, DateTime item)
