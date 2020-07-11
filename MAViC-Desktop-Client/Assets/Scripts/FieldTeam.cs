@@ -114,7 +114,7 @@ public class FieldTeam : MonoBehaviour
             }
 
             mainController = this.gameObject.transform.parent.GetComponent<MainController>();
-            _mapObj = mainController.map;
+            _mapObj = mainController.mapObj;
             _map = _mapObj.GetComponent<Map>();
 
             _fieldTeamIsStarted = true;
@@ -475,7 +475,7 @@ public class FieldTeam : MonoBehaviour
     {
         if (!_currentLocationFrameDisplayIsShowing)
         {
-            _currentLocationFrameDisplayObj = GameObject.Instantiate(currentLocationFrameDisplayPrefab, mainController.sceneUi.transform);
+            _currentLocationFrameDisplayObj = GameObject.Instantiate(currentLocationFrameDisplayPrefab, mainController.sceneUiObj.transform);
             _currentLocationFrameDisplayObj.transform.SetAsFirstSibling();
             _currentLocationFrameDisplayObj.transform.Find("Background").GetComponent<Image>().color = teamColor;
             _currentLocationFrameDisplayObj.transform.Find("Arrow").GetComponent<Image>().color = teamColor;
@@ -487,7 +487,7 @@ public class FieldTeam : MonoBehaviour
         }
 
         Camera sceneCamera = mainController.sceneCamera.GetComponent<Camera>();
-        RectTransform canvasRect = mainController.sceneUi.GetComponent<RectTransform>();
+        RectTransform canvasRect = mainController.sceneUiObj.GetComponent<RectTransform>();
         Vector2 viewportPos = sceneCamera.WorldToViewportPoint(currentScenePosition);
         Vector2 worldObjScreenPos = new Vector2(
             ((viewportPos.x * canvasRect.sizeDelta.x) - (canvasRect.sizeDelta.x * 0.5f)),
@@ -496,6 +496,10 @@ public class FieldTeam : MonoBehaviour
         _currentLocationFrameDisplayObj.GetComponent<RectTransform>().anchoredPosition = worldObjScreenPos;
 
         _currentLocationFrameDisplay.DisplayImage(GetPhotoThumbnailPathFromTime(mainController.currentTime));
+
+        // Display on side UI
+        if (mainController.sideUi.selectedFieldTeam == this)
+            mainController.sideUi.DisplayFieldTeamLiveImage(GetPhotoThumbnailPathFromTime(mainController.currentTime));
     }
 
     private void HideCurrentLocationFrameDisplay()

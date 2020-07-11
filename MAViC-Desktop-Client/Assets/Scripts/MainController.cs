@@ -10,12 +10,14 @@ public class MainController : MonoBehaviour
     public GameObject currentlyDeployedTeamsPanel;
     public GameObject completedTeamsPanel;
     public GameObject timelineContentPanel;
-    public GameObject map;
+    public GameObject mapObj;
     public GameObject sceneCamera;
-    public GameObject sceneUi;
-    public GameObject wholeScreenUi;
+    public GameObject sceneUiObj;
+    public GameObject wholeScreenUiObj;
     public GameObject timelineCamera;
-    public GameObject timelineUi;
+    public GameObject timelineUiObj;
+    public GameObject sideUiObj;
+    public SideUi sideUi;
     public GameObject currentTimeText;
 
     public UDateTime earliestStartTime

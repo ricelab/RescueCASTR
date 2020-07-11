@@ -54,7 +54,7 @@ public class TeamTimeline : MonoBehaviour
         _raycaster = this.GetComponentInParent<GraphicRaycaster>();
         _eventSystem = GetComponent<EventSystem>();
 
-        _wholeScreenUi = fieldTeam.mainController.wholeScreenUi;
+        _wholeScreenUi = fieldTeam.mainController.wholeScreenUiObj;
     }
 
     void Update()
@@ -229,7 +229,7 @@ public class TeamTimeline : MonoBehaviour
             placeToHighlight = 1.0f;
 
         Camera timelineCamera = fieldTeam.mainController.timelineCamera.GetComponent<Camera>();
-        RectTransform canvasRect = fieldTeam.mainController.wholeScreenUi.GetComponent<RectTransform>();
+        RectTransform canvasRect = fieldTeam.mainController.wholeScreenUiObj.GetComponent<RectTransform>();
         Vector2 viewportPos = timelineCamera.WorldToViewportPoint(_line.transform.position);
         Vector2 worldObjScreenPos = new Vector2(
             (viewportPos.x * canvasRect.sizeDelta.x * 0.75f) - (canvasRect.sizeDelta.x * 0.5f),
@@ -265,7 +265,7 @@ public class TeamTimeline : MonoBehaviour
             placeToHighlight = 1.0f;
 
         Camera timelineCamera = fieldTeam.mainController.timelineCamera.GetComponent<Camera>();
-        RectTransform canvasRect = fieldTeam.mainController.wholeScreenUi.GetComponent<RectTransform>();
+        RectTransform canvasRect = fieldTeam.mainController.wholeScreenUiObj.GetComponent<RectTransform>();
         Vector2 viewportPos = timelineCamera.WorldToViewportPoint(_line.transform.position);
         Vector2 worldObjScreenPos = new Vector2(
             ((viewportPos.x * canvasRect.sizeDelta.x * 0.75f) - (canvasRect.sizeDelta.x * 0.5f)),

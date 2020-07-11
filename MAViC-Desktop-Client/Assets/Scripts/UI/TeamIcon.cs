@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class TeamIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class TeamIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     public FieldTeam fieldTeam;
 
@@ -46,4 +46,10 @@ public class TeamIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         fieldTeam.ShowAllFieldTeams();
     }
 
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        this.GetComponent<Image>().color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+        fieldTeam.ShowThisFieldTeamOnly();
+        fieldTeam.mainController.sideUi.ShowTeamDetails(fieldTeam);
+    }
 }

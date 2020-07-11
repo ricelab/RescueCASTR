@@ -30,7 +30,7 @@ public class TeamPathPoint : MonoBehaviour
 
             string imagePath = fieldTeam.GetPhotoThumbnailPathFromActualTime(actualTime);
 
-            GameObject wholeScreenUi = fieldTeam.mainController.wholeScreenUi;
+            GameObject wholeScreenUi = fieldTeam.mainController.wholeScreenUiObj;
 
             _mapFrameDisplayObj = Instantiate(fieldTeam.mapFrameDisplayPrefab, wholeScreenUi.transform);
             _mapFrameDisplayObj.transform.Find("Background").GetComponent<Image>().color = fieldTeam.teamColor;
