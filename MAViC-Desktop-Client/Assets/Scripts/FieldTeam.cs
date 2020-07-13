@@ -397,6 +397,8 @@ public class FieldTeam : MonoBehaviour
         {
             foreach (Message message in messages)
             {
+                message.fieldTeam = this;
+
                 // Start the Message if it hasn't been started
                 message.Start();
 
@@ -419,6 +421,8 @@ public class FieldTeam : MonoBehaviour
         {
             foreach (Clue clue in clues)
             {
+                clue.fieldTeam = this;
+
                 // Start the Clue if it hasn't been started
                 clue.Start();
 
