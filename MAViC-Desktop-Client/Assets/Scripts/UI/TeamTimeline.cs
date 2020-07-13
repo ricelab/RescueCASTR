@@ -135,13 +135,16 @@ public class TeamTimeline : MonoBehaviour
                 }
             }
 
-            if (prevHoveringOverLine == false && _hoveringOverLine == true)
+            if (fieldTeam.mainController.sideUi.selectedFieldTeam == null)
             {
-                fieldTeam.ShowThisFieldTeamOnly();
-            }
-            else if (prevHoveringOverLine == true && _hoveringOverLine == false)
-            {
-                fieldTeam.ShowAllFieldTeams();
+                if (prevHoveringOverLine == false && _hoveringOverLine == true)
+                {
+                    fieldTeam.ShowThisFieldTeamOnly();
+                }
+                else if (prevHoveringOverLine == true && _hoveringOverLine == false)
+                {
+                    fieldTeam.ShowAllFieldTeams();
+                }
             }
 
             if (_hoveringOverLine)

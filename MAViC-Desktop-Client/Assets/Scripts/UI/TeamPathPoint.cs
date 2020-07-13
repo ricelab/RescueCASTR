@@ -24,7 +24,8 @@ public class TeamPathPoint : MonoBehaviour
 
     void OnMouseEnter()
     {
-        if (fieldTeam.ConvertActualTimeToTime(actualTime) <= fieldTeam.mainController.currentTime)
+        if (fieldTeam.ConvertActualTimeToTime(actualTime) <= fieldTeam.mainController.currentTime &&
+            fieldTeam.fieldTeamAppearStatus == FieldTeam.FieldTeamAppearStatus.Showing)
         {
             //this.HighlightPathPoint();
 
@@ -54,7 +55,8 @@ public class TeamPathPoint : MonoBehaviour
 
     void OnMouseExit()
     {
-        if (fieldTeam.ConvertActualTimeToTime(actualTime) <= fieldTeam.mainController.currentTime)
+        if (fieldTeam.ConvertActualTimeToTime(actualTime) <= fieldTeam.mainController.currentTime &&
+            fieldTeam.fieldTeamAppearStatus == FieldTeam.FieldTeamAppearStatus.Showing)
         {
             //this.UnhighlightPathPoint();
 

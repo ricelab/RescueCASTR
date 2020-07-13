@@ -4,9 +4,11 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SideUi : MonoBehaviour
+public class SideUi : ABackButtonClickHandler // ABackButtonClickHandler inherits MonoBehaviour, and is defined in BackButton.cs
 {
     public MainController mainController;
+
+    public ScrollRect scrollRect;
 
     public GameObject mainMenuContentPanel;
     public GameObject fieldTeamDetailsContentPanel;
@@ -16,7 +18,7 @@ public class SideUi : MonoBehaviour
 
     public GameObject liveFootageObj;
 
-    public FieldTeam selectedFieldTeam;
+    public FieldTeam selectedFieldTeam = null;
 
     public void ShowTeamDetails(FieldTeam ft)
     {
@@ -28,7 +30,9 @@ public class SideUi : MonoBehaviour
         mainMenuContentPanel.SetActive(false);
         fieldTeamDetailsContentPanel.SetActive(true);
 
-        mainController.sideUi.DisplayFieldTeamLiveImage(selectedFieldTeam.GetPhotoThumbnailPathFromTime(mainController.currentTime));
+        scrollRect.content = fieldTeamDetailsContentPanel.GetComponent<RectTransform>();
+
+        DisplayFieldTeamLiveImage(selectedFieldTeam.GetPhotoThumbnailPathFromTime(mainController.currentTime));
     }
 
     public void DisplayFieldTeamLiveImage(string path)
@@ -37,5 +41,13 @@ public class SideUi : MonoBehaviour
 
         Texture2D texture = Utility.LoadImageFile(path);
         liveFootageImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+    }
+
+    public override void OnBackButtonClick(GameObject fromPage, GameObject toPage)
+    {
+        selectedFieldTeam.ShowAllFieldTeams();
+        selectedFieldTeam = null;
+
+        scrollRect.content = mainMenuContentPanel.GetComponent<RectTransform>();
     }
 }

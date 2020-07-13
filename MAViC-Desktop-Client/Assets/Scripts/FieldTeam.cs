@@ -11,6 +11,86 @@ public class FieldTeam : MonoBehaviour
 {
     #region Public Properties
 
+    public enum FieldTeamAppearStatus
+    {
+        Showing,
+        Dimmed,
+        Hidden
+    };
+
+    public FieldTeamAppearStatus fieldTeamAppearStatus
+    {
+        get
+        {
+            return _fieldTeamAppearStatus;
+        }
+        set
+        {
+            _fieldTeamAppearStatus = value;
+
+            if (_fieldTeamIsInstantiated)
+            {
+                LineRenderer pathLineRenderer = _teamPathLineObj.GetComponent<LineRenderer>();
+                MeshRenderer currentLocationMeshRenderer = _currentLocationIndicator.GetComponent<MeshRenderer>();
+
+                switch (value)
+                {
+                    case FieldTeamAppearStatus.Showing:
+                        pathLineRenderer.enabled = true;
+                        pathLineRenderer.startColor = new Color(
+                            pathLineRenderer.startColor.r, pathLineRenderer.startColor.g, pathLineRenderer.startColor.b, 1.0f);
+                        pathLineRenderer.endColor = new Color(
+                            pathLineRenderer.endColor.r, pathLineRenderer.endColor.g, pathLineRenderer.endColor.b, 1.0f);
+
+                        if (!isComplete)
+                        {
+                            currentLocationMeshRenderer.enabled = true;
+                            currentLocationMeshRenderer.material.color = new Color(
+                                currentLocationMeshRenderer.material.color.r,
+                                currentLocationMeshRenderer.material.color.g,
+                                currentLocationMeshRenderer.material.color.b,
+                                1.0f);
+
+                            DisplayOrUpdateCurrentLocationFrameDisplay();
+                        }
+                        else
+                        {
+                            HideCurrentLocationFrameDisplay();
+                        }
+
+                        break;
+
+                    case FieldTeamAppearStatus.Dimmed:
+                        pathLineRenderer.enabled = true;
+                        pathLineRenderer.startColor = new Color(
+                            pathLineRenderer.startColor.r, pathLineRenderer.startColor.g, pathLineRenderer.startColor.b, 0.15f);
+                        pathLineRenderer.endColor = new Color(
+                            pathLineRenderer.endColor.r, pathLineRenderer.endColor.g, pathLineRenderer.endColor.b, 0.15f);
+
+                        if (!isComplete)
+                        {
+                            currentLocationMeshRenderer.enabled = false;
+                            //currentLocationMeshRenderer.material.color = new Color(
+                            //    currentLocationMeshRenderer.material.color.r,
+                            //    currentLocationMeshRenderer.material.color.g,
+                            //    currentLocationMeshRenderer.material.color.b,
+                            //    0.25f);
+                        }
+                        HideCurrentLocationFrameDisplay();
+
+                        break;
+
+                    case FieldTeamAppearStatus.Hidden:
+                        pathLineRenderer.enabled = false;
+                        currentLocationMeshRenderer.enabled = false;
+                        HideCurrentLocationFrameDisplay();
+
+                        break;
+                }
+            }
+        }
+    }
+
     public MainController mainController;
 
     public GameObject teamIconPrefab;
@@ -52,6 +132,8 @@ public class FieldTeam : MonoBehaviour
 
 
     #region Private Properties
+
+    private FieldTeamAppearStatus _fieldTeamAppearStatus = FieldTeamAppearStatus.Showing;
 
     private bool _fieldTeamIsStarted = false;
     private bool _initialFileReadDone = false;
@@ -274,7 +356,7 @@ public class FieldTeam : MonoBehaviour
             _teamPathLineObj.transform.parent = _mapObj.transform;
             _teamPathLineObj.transform.SetSiblingIndex(0);
             LineRenderer lineRenderer = _teamPathLineObj.AddComponent<LineRenderer>();
-            lineRenderer.material = new Material(Shader.Find("Legacy Shaders/Particles/Alpha Blended Premultiply"));
+            lineRenderer.material = new Material(Shader.Find("Legacy Shaders/Particles/Alpha Blended"));
 
             // Set positions (vertices) to display only the path that has been revealed at the current time
             lineRenderer.positionCount = _revealedMapPositions.Count;
@@ -367,18 +449,10 @@ public class FieldTeam : MonoBehaviour
             FieldTeam ft = t.gameObject.GetComponent<FieldTeam>();
             if (ft != null && ft.isActiveAndEnabled)
             {
-                ft._teamPathLineObj.GetComponent<LineRenderer>().enabled = false;
-                ft._currentLocationIndicator.GetComponent<MeshRenderer>().enabled = false;
-                ft.HideCurrentLocationFrameDisplay();
+                ft.fieldTeamAppearStatus = FieldTeamAppearStatus.Dimmed;
             }
         }
-        _teamPathLineObj.GetComponent<LineRenderer>().enabled = true;
-
-        if (!isComplete)
-        {
-            _currentLocationIndicator.GetComponent<MeshRenderer>().enabled = true;
-            DisplayOrUpdateCurrentLocationFrameDisplay();
-        }
+        fieldTeamAppearStatus = FieldTeamAppearStatus.Showing;
     }
 
     public void ShowAllFieldTeams()
@@ -388,13 +462,7 @@ public class FieldTeam : MonoBehaviour
             FieldTeam ft = t.gameObject.GetComponent<FieldTeam>();
             if (ft != null && ft.isActiveAndEnabled)
             {
-                ft._teamPathLineObj.GetComponent<LineRenderer>().enabled = true;
-
-                if (!ft.isComplete)
-                {
-                    ft._currentLocationIndicator.GetComponent<MeshRenderer>().enabled = true;
-                    ft.DisplayOrUpdateCurrentLocationFrameDisplay();
-                }
+                ft.fieldTeamAppearStatus = FieldTeamAppearStatus.Showing;
             }
         }
     }
@@ -499,7 +567,9 @@ public class FieldTeam : MonoBehaviour
 
         // Display on side UI
         if (mainController.sideUi.selectedFieldTeam == this)
+        {
             mainController.sideUi.DisplayFieldTeamLiveImage(GetPhotoThumbnailPathFromTime(mainController.currentTime));
+        }
     }
 
     private void HideCurrentLocationFrameDisplay()
