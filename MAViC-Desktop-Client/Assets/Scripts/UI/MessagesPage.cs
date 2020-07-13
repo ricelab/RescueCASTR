@@ -15,5 +15,7 @@ public class MessagesPage : MonoBehaviour
     {
         GameObject messageBoxToAdd = Instantiate(messageBoxPrefab, messagesContainerContentPanel.transform);
         messageBoxToAdd.transform.Find("MessageText").GetComponent<Text>().text = message.messageContent;
+
+        messageBoxToAdd.transform.Find("MessageTimeText").GetComponent<Text>().text = message.simulatedTime.dateTime.ToString("MM/dd/yyyy HH:mm:ss");
     }
 }

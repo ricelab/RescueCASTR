@@ -15,9 +15,14 @@ public class CluesPage : MonoBehaviour
     {
         GameObject clueBoxToAdd = Instantiate(clueBoxPrefab, cluesContainerContentPanel.transform);
 
+        clueBoxToAdd.GetComponent<ClueBox>().clue = clue;
+
         clueBoxToAdd.transform.Find("ClueText").GetComponent<Text>().text = clue.textDescription;
 
         Texture2D texture = Utility.LoadImageFile(sideUi.selectedFieldTeam.recordingDirectoryPath + "clues-photos/" + clue.photoFileName); ;
-        clueBoxToAdd.transform.Find("Image").GetComponent<Image>().sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+        clueBoxToAdd.transform.Find("Image").GetComponent<Image>().sprite =
+            Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+
+        clueBoxToAdd.transform.Find("ClueTimeText").GetComponent<Text>().text = clue.simulatedTime.dateTime.ToString("MM/dd/yyyy HH:mm:ss");
     }
 }

@@ -43,6 +43,7 @@ public class TeamTimeline : MonoBehaviour
     private float _pivotX = 0.0f;
 
     private bool _hoveringOverLine = false;
+    private bool _hoveringOverLineOnLastFrame = false;
 
     private DateTime _endTimeOfTimeline;
 
@@ -149,6 +150,8 @@ public class TeamTimeline : MonoBehaviour
 
             if (_hoveringOverLine)
             {
+                _hoveringOverLineOnLastFrame = true;
+
                 float placeHighlighted = (result.screenPosition.x - _beginPos) / (_endPos - _beginPos);
                 if (placeHighlighted < 0)
                     placeHighlighted = 0;
@@ -207,12 +210,13 @@ public class TeamTimeline : MonoBehaviour
                 fieldTeam.UnhighlightPath();
                 fieldTeam.HighlightPathAtTime(simulatedTimeHighlighted);
             }
-            else
+            else if (_hoveringOverLineOnLastFrame)
             {
                 GameObject.Destroy(_mapFrameDisplayObj);
                 _mapFrameDisplayShowing = false;
 
                 fieldTeam.UnhighlightPath();
+                _hoveringOverLineOnLastFrame = false;
             }
         }
     }
