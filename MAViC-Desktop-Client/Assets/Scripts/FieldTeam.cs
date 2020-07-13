@@ -457,14 +457,7 @@ public class FieldTeam : MonoBehaviour
 
     public void ShowAllFieldTeams()
     {
-        foreach (Transform t in mainController.transform)
-        {
-            FieldTeam ft = t.gameObject.GetComponent<FieldTeam>();
-            if (ft != null && ft.isActiveAndEnabled)
-            {
-                ft.fieldTeamAppearStatus = FieldTeamAppearStatus.Showing;
-            }
-        }
+        mainController.ShowAllFieldTeams();
     }
 
     /// <summary>

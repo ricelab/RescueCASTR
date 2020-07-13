@@ -74,4 +74,16 @@ public class MainController : MonoBehaviour
 
         fieldTeam.FieldTeamInstantiate();
     }
+
+    public void ShowAllFieldTeams()
+    {
+        foreach (Transform t in this.transform)
+        {
+            FieldTeam ft = t.gameObject.GetComponent<FieldTeam>();
+            if (ft != null && ft.isActiveAndEnabled)
+            {
+                ft.fieldTeamAppearStatus = FieldTeam.FieldTeamAppearStatus.Showing;
+            }
+        }
+    }
 }
