@@ -6,6 +6,15 @@ using UnityEngine.UI;
 
 public class SideUi : ABackButtonClickHandler // ABackButtonClickHandler inherits MonoBehaviour, and is defined in BackButton.cs
 {
+    public enum CurrentlyActivePage
+    {
+        MainMenu,
+        FieldTeamDetails,
+        Messages,
+        Clues
+    };
+
+
     public MainController mainController;
 
     public ScrollRect scrollRect;
@@ -26,7 +35,13 @@ public class SideUi : ABackButtonClickHandler // ABackButtonClickHandler inherit
 
     public GameObject liveFootageObj;
 
+    public MessagesPage messagesPage;
+    public CluesPage cluesPage;
+
     public FieldTeam selectedFieldTeam = null;
+
+    public CurrentlyActivePage currentlyActivePage = CurrentlyActivePage.MainMenu;
+
 
     public void ShowTeamDetails(FieldTeam ft)
     {
@@ -43,6 +58,8 @@ public class SideUi : ABackButtonClickHandler // ABackButtonClickHandler inherit
         scrollRect.content = fieldTeamDetailsContentPanel.GetComponent<RectTransform>();
 
         DisplayFieldTeamLiveImage(selectedFieldTeam.GetPhotoThumbnailPathFromTime(mainController.currentTime));
+
+        currentlyActivePage = CurrentlyActivePage.FieldTeamDetails;
     }
 
     public void ShowMessages()
@@ -54,6 +71,14 @@ public class SideUi : ABackButtonClickHandler // ABackButtonClickHandler inherit
         messagesContentPanel.SetActive(true);
 
         scrollRect.content = messagesContentPanel.GetComponent<RectTransform>();
+
+        // Load field team's message history
+        foreach (Message message in selectedFieldTeam.revealedMessages)
+        {
+            messagesPage.AddMessageBox(message);
+        }
+
+        currentlyActivePage = CurrentlyActivePage.Messages;
     }
 
     public void ShowClues()
@@ -65,14 +90,14 @@ public class SideUi : ABackButtonClickHandler // ABackButtonClickHandler inherit
         cluesContentPanel.SetActive(true);
 
         scrollRect.content = cluesContentPanel.GetComponent<RectTransform>();
-    }
 
-    public void DisplayFieldTeamLiveImage(string path)
-    {
-        Image liveFootageImage = liveFootageObj.GetComponent<Image>();
+        // Load field team's clues
+        foreach (Clue clue in selectedFieldTeam.revealedClues)
+        {
+            cluesPage.AddClueBox(clue);
+        }
 
-        Texture2D texture = Utility.LoadImageFile(path);
-        liveFootageImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+        currentlyActivePage = CurrentlyActivePage.Clues;
     }
 
     public override void OnBackButtonClick(GameObject fromPage, GameObject toPage)
@@ -81,5 +106,14 @@ public class SideUi : ABackButtonClickHandler // ABackButtonClickHandler inherit
         selectedFieldTeam = null;
 
         scrollRect.content = mainMenuContentPanel.GetComponent<RectTransform>();
+        currentlyActivePage = CurrentlyActivePage.MainMenu;
+    }
+
+    public void DisplayFieldTeamLiveImage(string path)
+    {
+        Image liveFootageImage = liveFootageObj.GetComponent<Image>();
+
+        Texture2D texture = Utility.LoadImageFile(path);
+        liveFootageImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
     }
 }

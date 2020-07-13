@@ -125,6 +125,12 @@ public class FieldTeam : MonoBehaviour
 
     public bool isComplete => UpdateRatioComplete() < 1.0 ? false : true;
 
+    public Message[] messages;
+    public Clue[] clues;
+
+    public List<Message> revealedMessages;
+    public List<Clue> revealedClues;
+
     public Location currentLocation => _revealedMapLocations.Last();
     public Vector3 currentScenePosition => _revealedMapPositions.Last();
 
@@ -174,6 +180,9 @@ public class FieldTeam : MonoBehaviour
     private GameObject _teamPathLineObj;
 
     private int _latestAvailableWaypointIndex = 0;
+
+    private int _latestAvailableMessageIndex = 0;
+    private int _latestAvailableClueIndex = 0;
 
     private GameObject _currentLocationIndicator;
     private GameObject _currentLocationFrameDisplayObj;
@@ -379,6 +388,50 @@ public class FieldTeam : MonoBehaviour
             if (!isComplete)
             {
                 DisplayOrUpdateCurrentLocationFrameDisplay();
+            }
+        }
+
+        // Setup revealed messages
+        revealedMessages = new List<Message>();
+        if (messages != null && messages.Length > 0)
+        {
+            foreach (Message message in messages)
+            {
+                // Start the Message if it hasn't been started
+                message.Start();
+
+                // Assuming messages are sorted by date/time in ascending order (TODO: need to assure this later)
+                if (message.simulatedTime.dateTime < mainController.currentTime.dateTime)
+                {
+                    revealedMessages.Add(message);
+                    _latestAvailableMessageIndex++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        // Setup revealed clues
+        revealedClues = new List<Clue>();
+        if (clues != null && clues.Length > 0)
+        {
+            foreach (Clue clue in clues)
+            {
+                // Start the Clue if it hasn't been started
+                clue.Start();
+
+                // Assuming clues are sorted by date/time in ascending order (TODO: need to assure this later)
+                if (clue.simulatedTime.dateTime < mainController.currentTime.dateTime)
+                {
+                    revealedClues.Add(clue);
+                    _latestAvailableClueIndex++;
+                }
+                else
+                {
+                    break;
+                }
             }
         }
 

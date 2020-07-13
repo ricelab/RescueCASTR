@@ -1,18 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MessagesPage : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        ///
-    }
+    public SideUi sideUi;
 
-    // Update is called once per frame
-    void Update()
+    public GameObject messagesContainerContentPanel;
+
+    public GameObject messageBoxPrefab;
+
+    public void AddMessageBox(Message message)
     {
-        ///
+        GameObject messageBoxToAdd = Instantiate(messageBoxPrefab, messagesContainerContentPanel.transform);
+        messageBoxToAdd.transform.Find("MessageText").GetComponent<Text>().text = message.messageContent;
     }
 }

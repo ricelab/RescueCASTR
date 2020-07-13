@@ -8,6 +8,16 @@ public class FieldTeamsDetailsPage : ABackButtonClickHandler // ABackButtonClick
 
     public override void OnBackButtonClick(GameObject fromPage, GameObject toPage)
     {
-        sideUi.scrollRect.content = sideUi.mainMenuContentPanel.GetComponent<RectTransform>();
+        sideUi.scrollRect.content = sideUi.fieldTeamDetailsContentPanel.GetComponent<RectTransform>();
+
+        foreach(Transform child in sideUi.messagesPage.messagesContainerContentPanel.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+
+        foreach (Transform child in sideUi.cluesPage.cluesContainerContentPanel.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
     }
 }
