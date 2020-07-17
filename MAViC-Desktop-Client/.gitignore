@@ -9,10 +9,13 @@
 /[Bb]uilds/
 /[Ww]in[Bb]uild/
 /[Mm]ac[Bb]uild/
+/[Ww]eb[Bb]uild/
 /[Ll]ogs/
 /[Mm]emoryCaptures/
 /[Ff]ield[Tt]eam[Rr]ecords/
 /[Aa]ssets/[Tt]errains/
+/[Aa]ssets/[Ff]ield[Tt]eam[Rr]ecords/
+/[Aa]ssets/[Rr]esources/[Ff]ield[Tt]eam[Rr]ecords/
 
 # Never ignore Asset meta data
 !/[Aa]ssets/**/*.meta

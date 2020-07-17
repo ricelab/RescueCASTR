@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Map : MonoBehaviour
 {
-    public NetworkEvents networkEvents;
+    //public NetworkEvents networkEvents;
     public GameObject mobileClientPrefab;
 
     public Location[] referenceLocations;
@@ -15,7 +15,7 @@ public class Map : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        networkEvents.AddHandler("ConnectionRequest", AddNewMobileClient);
+        //networkEvents.AddHandler("ConnectionRequest", AddNewMobileClient);
     }
 
     public Vector3 ConvertLocationToMapPosition(Location location)
@@ -41,14 +41,14 @@ public class Map : MonoBehaviour
         return new Vector3(x, y, z);
     }
 
-    private void AddNewMobileClient(string clientID)
-    {
-        Debug.Log("AddNewMobileClient: " + clientID);
+    //private void AddNewMobileClient(string clientID)
+    //{
+    //    Debug.Log("AddNewMobileClient: " + clientID);
 
-        GameObject newMobileClientObj = Instantiate(mobileClientPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-        newMobileClientObj.transform.parent = this.transform;
-        MobileClient newMobileClient = newMobileClientObj.GetComponent<MobileClient>();
-        newMobileClient.clientID = clientID;
-        newMobileClient.StartCall();
-    }
+    //    GameObject newMobileClientObj = Instantiate(mobileClientPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+    //    newMobileClientObj.transform.parent = this.transform;
+    //    //MobileClient newMobileClient = newMobileClientObj.GetComponent<MobileClient>();
+    //    //newMobileClient.clientID = clientID;
+    //    //newMobileClient.StartCall();
+    //}
 }

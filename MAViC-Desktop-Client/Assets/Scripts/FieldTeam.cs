@@ -161,6 +161,7 @@ public class FieldTeam : MonoBehaviour
     private string _gpsRecordingFilePath;
     private string _timelapsePhotoDirectoryPath;
     private string _timelapsePhotoThumbnailDirectoryPath;
+    private string _photosFileNamesListPath;
 
     private GameObject _mapObj;
     private Map _map;
@@ -293,17 +294,19 @@ public class FieldTeam : MonoBehaviour
         {
             /* Load photo frames */
 
-            DirectoryInfo d = new DirectoryInfo(_timelapsePhotoDirectoryPath);
-            FileInfo[] Files = d.GetFiles("*.JPG");
+            TextAsset photoFileNames = Resources.Load<TextAsset>(_photosFileNamesListPath);
+            _photoFileNames = photoFileNames.text.Split(
+                new[] { Environment.NewLine },
+                StringSplitOptions.None
+            );
+            //_photoFileNames.Take(_photoFileNames.Count() - 1).ToArray();
 
-            _photoFileNames = new string[Files.Length];
-            _photoTimes = new DateTime[Files.Length];
+            _photoTimes = new DateTime[_photoFileNames.Length];
 
             int i = 0;
-            foreach (FileInfo file in Files)
+            foreach (string photoFileName in _photoFileNames)
             {
-                _photoFileNames[i] = file.Name;
-                _photoTimes[i] = DateTime.ParseExact(Path.GetFileNameWithoutExtension(file.Name), "yyyy_MM_dd_HH_mm_ss", null);
+                _photoTimes[i] = DateTime.ParseExact(Path.GetFileNameWithoutExtension(photoFileName), "yyyy_MM_dd_HH_mm_ss", null);
 
                 i++;
             }
@@ -556,9 +559,10 @@ public class FieldTeam : MonoBehaviour
             recordingDirectoryPath += "/";
         }
 
-        _gpsRecordingFilePath = recordingDirectoryPath + "gps-record.gpx";
+        _gpsRecordingFilePath = recordingDirectoryPath + "gps-record";
         _timelapsePhotoDirectoryPath = recordingDirectoryPath + "photos/";
         _timelapsePhotoThumbnailDirectoryPath = recordingDirectoryPath + "photo-thumbnails/";
+        _photosFileNamesListPath = recordingDirectoryPath + "photos-filenames";
 
         List<Track> tracks = Track.ReadTracksFromFile(_gpsRecordingFilePath);
         _actualStartTime = tracks[0].Waypoints.First().Time;
