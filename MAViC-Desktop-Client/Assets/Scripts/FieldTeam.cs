@@ -260,7 +260,7 @@ public class FieldTeam : MonoBehaviour
             // If the team has just completed, move its icon to the 'completed' section
             if (isComplete && _teamIcon.transform.parent != mainController.completedTeamsPanel.transform)
             {
-                _teamIconObj.transform.parent = mainController.completedTeamsPanel.transform;
+                _teamIconObj.transform.SetParent(mainController.completedTeamsPanel.transform);
                 _teamIconObj.transform.SetSiblingIndex(0);
                 _currentLocationIndicator.GetComponent<MeshRenderer>().enabled = false;
                 HideCurrentLocationFrameDisplay();
