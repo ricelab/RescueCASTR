@@ -7,7 +7,7 @@ using UnityEngine;
 public class Map : MonoBehaviour
 {
     //public NetworkEvents networkEvents;
-    public GameObject mobileClientPrefab;
+    //public GameObject mobileClientPrefab;
 
     public Location[] referenceLocations;
     public Vector3[] referenceMapPositions;

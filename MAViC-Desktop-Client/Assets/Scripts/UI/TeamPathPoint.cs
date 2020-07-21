@@ -17,9 +17,24 @@ public class TeamPathPoint : MonoBehaviour
 
     private bool _isHighlighted = false;
 
-    void Start()
+    void Update()
     {
-        this.transform.localScale = new Vector3(2.0f, 2.0f, 2.0f);
+        float scaleFactor = 2.0f;
+        if (fieldTeam.mainController.sceneCamera.orthographic)
+        {
+            scaleFactor = scaleFactor / 50.0f * fieldTeam.mainController.sceneCamera.orthographicSize;
+        }
+        else // if (!fieldTeam.mainController.sceneCamera.orthographic)
+        {
+            scaleFactor = scaleFactor / 50.0f *
+                (fieldTeam.mainController.sceneCameraObj.transform.position.y - fieldTeam.mainController.sceneCameraControls.minimumY);
+        }
+
+        this.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
+        if (_isHighlighted)
+        {
+            this.transform.localScale *= 2.0f;
+        }
     }
 
     void OnMouseEnter()
@@ -40,7 +55,7 @@ public class TeamPathPoint : MonoBehaviour
             _mapFrameDisplay = _mapFrameDisplayObj.GetComponent<MapFrameDisplay>();
             _mapFrameDisplay.DisplayImage(imagePath);
 
-            Camera sceneCamera = fieldTeam.mainController.sceneCamera.GetComponent<Camera>();
+            Camera sceneCamera = fieldTeam.mainController.sceneCameraObj.GetComponent<Camera>();
             RectTransform canvasRect = wholeScreenUi.GetComponent<RectTransform>();
             Vector2 viewportPos = sceneCamera.WorldToViewportPoint(this.transform.position);
             Vector2 worldObjScreenPos = new Vector2(
@@ -70,7 +85,7 @@ public class TeamPathPoint : MonoBehaviour
     {
         if (!_isHighlighted)
         {
-            this.transform.localScale *= 2.0f;
+            //this.transform.localScale *= 2.0f;
             this.GetComponent<MeshRenderer>().enabled = true;
             _isHighlighted = true;
         }
@@ -81,7 +96,7 @@ public class TeamPathPoint : MonoBehaviour
         if (_isHighlighted)
         {
             this.GetComponent<MeshRenderer>().enabled = false;
-            this.transform.localScale /= 2.0f;
+            //this.transform.localScale /= 2.0f;
             _isHighlighted = false;
         }
     }

@@ -235,7 +235,7 @@ public class TeamTimeline : MonoBehaviour
         else if (placeToHighlight > 1.0f)
             placeToHighlight = 1.0f;
 
-        Camera timelineCamera = fieldTeam.mainController.timelineCamera.GetComponent<Camera>();
+        Camera timelineCamera = fieldTeam.mainController.timelineCameraObj.GetComponent<Camera>();
         RectTransform canvasRect = fieldTeam.mainController.wholeScreenUiObj.GetComponent<RectTransform>();
         Vector2 viewportPos = timelineCamera.WorldToViewportPoint(_line.transform.position);
         Vector2 worldObjScreenPos = new Vector2(
@@ -271,7 +271,7 @@ public class TeamTimeline : MonoBehaviour
         else if (placeToHighlight > 1.0f)
             placeToHighlight = 1.0f;
 
-        Camera timelineCamera = fieldTeam.mainController.timelineCamera.GetComponent<Camera>();
+        Camera timelineCamera = fieldTeam.mainController.timelineCameraObj.GetComponent<Camera>();
         RectTransform canvasRect = fieldTeam.mainController.wholeScreenUiObj.GetComponent<RectTransform>();
         Vector2 viewportPos = timelineCamera.WorldToViewportPoint(_line.transform.position);
         Vector2 worldObjScreenPos = new Vector2(

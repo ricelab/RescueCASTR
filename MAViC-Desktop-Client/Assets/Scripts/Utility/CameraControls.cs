@@ -4,6 +4,18 @@ using UnityEngine;
 
 public class CameraControls : MonoBehaviour
 {
+    public enum CameraViewingMode
+    {
+        _2D,
+        _3D
+    };
+
+    private Camera _camera;
+
+    // Viewing mode
+    public CameraViewingMode cameraViewingMode = CameraViewingMode._3D;
+    private CameraViewingMode _oldCameraViewingMode;
+
     // Rotation
     public float rotateSpeed = -3.0f;
     private float X;
@@ -22,6 +34,8 @@ public class CameraControls : MonoBehaviour
     public float maximumY = 500.0f;
     public float minimumZ = -650.0f;
     public float maximumZ = 550.0f;
+    public float minimumOrthographicSize = 10.0f;
+    public float maximumOrthographicSize = 100.0f;
 
     private float mouseRatioX;
     private float mouseRatioY;
@@ -29,9 +43,50 @@ public class CameraControls : MonoBehaviour
     private bool rightMouseButtonStartedInScene = false;
     private bool leftMouseButtonStartedInScene = false;
 
-    // Update is called once per frame
-    void Update()
+    // Old rotation values in 3D mode (for when switching to 2D mode)
+    private float _oldRotationX;
+    private float _oldRotationY;
+    private float _oldPositionZ;
+
+    public void Start()
     {
+        _camera = GetComponent<Camera>();
+
+        if (cameraViewingMode == CameraViewingMode._2D)
+            _oldCameraViewingMode = CameraViewingMode._3D;
+        else
+            _oldCameraViewingMode = CameraViewingMode._2D;
+    }
+
+    public void Update()
+    {
+        // If switching from 3D to 2D mode
+        if (_oldCameraViewingMode == CameraViewingMode._3D && cameraViewingMode == CameraViewingMode._2D)
+        {
+            _oldCameraViewingMode = cameraViewingMode;
+
+            _oldRotationX = transform.rotation.eulerAngles.x;
+            _oldRotationY = transform.rotation.eulerAngles.y;
+            _oldPositionZ = transform.position.z;
+
+            transform.rotation = Quaternion.Euler(90.0f, 180.0f, transform.rotation.z);
+            transform.position = new Vector3(transform.position.x, transform.position.y, 0.0f);
+
+            _camera.clearFlags = CameraClearFlags.SolidColor;
+            _camera.orthographic = true;
+        }
+        // If switching from 2D to 3D mode
+        else if (_oldCameraViewingMode == CameraViewingMode._2D && cameraViewingMode == CameraViewingMode._3D)
+        {
+            _oldCameraViewingMode = cameraViewingMode;
+
+            transform.rotation = Quaternion.Euler(_oldRotationX, _oldRotationY, transform.rotation.z);
+            transform.position = new Vector3(transform.position.x, transform.position.y, _oldPositionZ);
+
+            _camera.clearFlags = CameraClearFlags.Skybox;
+            _camera.orthographic = false;
+        }
+
         mouseRatioX = Input.mousePosition.x / Screen.width;
         mouseRatioY = Input.mousePosition.y / Screen.height;
         
@@ -47,11 +102,18 @@ public class CameraControls : MonoBehaviour
             }
 
             // Can adjust zoom based on scroll wheel
-            transform.Translate(Vector3.forward * Input.GetAxis("Mouse ScrollWheel") * zoomSpeed);
+            if (cameraViewingMode == CameraViewingMode._3D)
+            {
+                transform.Translate(Vector3.forward * Input.GetAxis("Mouse ScrollWheel") * zoomSpeed);
+            }
+            else // if (cameraViewingMode == CameraViewingMode._2D)
+            {
+                _camera.orthographicSize -= Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
+            }
         }
 
 
-        if (Input.GetMouseButton(1) && rightMouseButtonStartedInScene)
+        if (cameraViewingMode == CameraViewingMode._3D && Input.GetMouseButton(1) && rightMouseButtonStartedInScene)
         {
             transform.Rotate(new Vector3(Input.GetAxis("Mouse Y") * rotateSpeed, -Input.GetAxis("Mouse X") * rotateSpeed, 0));
             X = transform.rotation.eulerAngles.x;
@@ -80,7 +142,7 @@ public class CameraControls : MonoBehaviour
         {
             transform.position = new Vector3(mimimumX, transform.position.y, transform.position.z);
         }
-        if (transform.position.x > maximumX)
+        else if (transform.position.x > maximumX)
         {
             transform.position = new Vector3(maximumX, transform.position.y, transform.position.z);
         }
@@ -89,7 +151,7 @@ public class CameraControls : MonoBehaviour
         {
             transform.position = new Vector3(transform.position.x, minimumY, transform.position.z);
         }
-        if (transform.position.y > maximumY)
+        else if (transform.position.y > maximumY)
         {
             transform.position = new Vector3(transform.position.x, maximumY, transform.position.z);
         }
@@ -98,9 +160,18 @@ public class CameraControls : MonoBehaviour
         {
             transform.position = new Vector3(transform.position.x, transform.position.y, minimumZ);
         }
-        if (transform.position.z > maximumZ)
+        else if (transform.position.z > maximumZ)
         {
             transform.position = new Vector3(transform.position.x, transform.position.y, maximumZ);
+        }
+
+        if (_camera.orthographicSize > maximumOrthographicSize)
+        {
+            _camera.orthographicSize = maximumOrthographicSize;
+        }
+        else if (_camera.orthographicSize < minimumOrthographicSize)
+        {
+            _camera.orthographicSize = minimumOrthographicSize;
         }
     }
 }

@@ -218,15 +218,40 @@ public class FieldTeam : MonoBehaviour
     {
         if (_fieldTeamIsInstantiated)
         {
+            LineRenderer lineRenderer = _teamPathLineObj.GetComponent<LineRenderer>();
+
             // Update path colour if team's colour changed
             if (teamColor != _lastTeamColor)
             {
                 _lastTeamColor = teamColor;
 
-                LineRenderer lineRenderer = _teamPathLineObj.GetComponent<LineRenderer>();
                 lineRenderer.startColor = new Color(0.5f * teamColor.r, 0.5f * teamColor.g, 0.5f * teamColor.b, teamColor.a);
                 lineRenderer.endColor = teamColor;
             }
+
+            // Update size of path
+            if (mainController.sceneCamera.orthographic)
+            {
+                lineRenderer.startWidth = lineRenderer.endWidth = 1.0f / 50.0f * mainController.sceneCamera.orthographicSize;
+            }
+            else // if (!mainController.sceneCamera.orthographic)
+            {
+                lineRenderer.startWidth = lineRenderer.endWidth =
+                    1.0f / 50.0f * (mainController.sceneCameraObj.transform.position.y - mainController.sceneCameraControls.minimumY);
+            }
+
+            // Update size of current location indicator
+            float scaleFactor = 4.0f;
+            if (mainController.sceneCamera.orthographic)
+            {
+                scaleFactor = scaleFactor / 50.0f * mainController.sceneCamera.orthographicSize;
+            }
+            else // if (!mainController.sceneCamera.orthographic)
+            {
+                scaleFactor = scaleFactor / 50.0f *
+                    (mainController.sceneCameraObj.transform.position.y - mainController.sceneCameraControls.minimumY);
+            }
+            _currentLocationIndicator.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
 
             // Add more points to revealed waypoints (if any)
             bool updateLatestPoint = false;
@@ -248,7 +273,6 @@ public class FieldTeam : MonoBehaviour
             }
             if (updateLatestPoint)
             {
-                LineRenderer lineRenderer = _teamPathLineObj.GetComponent<LineRenderer>();
                 lineRenderer.positionCount = _revealedMapPositions.Count;
                 lineRenderer.SetPositions(_revealedMapPositions.ToArray());
 
@@ -375,7 +399,15 @@ public class FieldTeam : MonoBehaviour
             lineRenderer.SetPositions(_revealedMapPositions.ToArray());
             lineRenderer.startColor = new Color(teamColor.r, teamColor.g, teamColor.b, 0.5f);
             lineRenderer.endColor = teamColor;
-            lineRenderer.startWidth = lineRenderer.endWidth = 1.0f;
+            //if (mainController.sceneCamera.orthographic)
+            //{
+            //    lineRenderer.startWidth = lineRenderer.endWidth = 1.0f / 50.0f * mainController.sceneCamera.orthographicSize;
+            //}
+            //else // if (!mainController.sceneCamera.orthographic)
+            //{
+            //    lineRenderer.startWidth = lineRenderer.endWidth =
+            //        1.0f / 50.0f * (mainController.sceneCameraObj.transform.position.y - mainController.sceneCameraControls.minimumY);
+            //}
             lineRenderer.numCornerVertices = 10;
             lineRenderer.numCapVertices = 5;
 
@@ -383,7 +415,17 @@ public class FieldTeam : MonoBehaviour
             _currentLocationIndicator = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             _currentLocationIndicator.transform.parent = _mapObj.transform;
             _currentLocationIndicator.transform.position = currentScenePosition;
-            _currentLocationIndicator.transform.localScale = new Vector3(4.0f, 4.0f, 4.0f);
+            //float scaleFactor = 4.0f;
+            //if (mainController.sceneCamera.orthographic)
+            //{
+            //    scaleFactor = scaleFactor / 50.0f * mainController.sceneCamera.orthographicSize;
+            //}
+            //else // if (!mainController.sceneCamera.orthographic)
+            //{
+            //    scaleFactor = scaleFactor / 50.0f *
+            //        (mainController.sceneCameraObj.transform.position.y - mainController.sceneCameraControls.minimumY);
+            //}
+            //_currentLocationIndicator.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
             _currentLocationIndicator.GetComponent<MeshRenderer>().material.color = teamColor;
             _currentLocationIndicator.GetComponent<MeshRenderer>().enabled = !isComplete;
 
@@ -527,7 +569,7 @@ public class FieldTeam : MonoBehaviour
     /// <returns></returns>
     public bool IsPathInCameraView(float margin = 0.0f)
     {
-        Camera camera = mainController.sceneCamera.GetComponent<Camera>();
+        Camera camera = mainController.sceneCameraObj.GetComponent<Camera>();
         foreach (GameObject g in _teamPathPointObjs)
         {
             Vector3 viewportPoint = camera.WorldToViewportPoint(g.transform.position);
@@ -608,7 +650,7 @@ public class FieldTeam : MonoBehaviour
             _currentLocationFrameDisplayIsShowing = true;
         }
 
-        Camera sceneCamera = mainController.sceneCamera.GetComponent<Camera>();
+        Camera sceneCamera = mainController.sceneCameraObj.GetComponent<Camera>();
         RectTransform canvasRect = mainController.sceneUiObj.GetComponent<RectTransform>();
         Vector2 viewportPos = sceneCamera.WorldToViewportPoint(currentScenePosition);
         Vector2 worldObjScreenPos = new Vector2(

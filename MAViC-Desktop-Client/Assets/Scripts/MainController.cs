@@ -11,14 +11,17 @@ public class MainController : MonoBehaviour
     public GameObject completedTeamsPanel;
     public GameObject timelineContentPanel;
     public GameObject mapObj;
-    public GameObject sceneCamera;
+    public GameObject sceneCameraObj;
+    public Camera sceneCamera;
+    public CameraControls sceneCameraControls;
     public GameObject sceneUiObj;
     public GameObject wholeScreenUiObj;
-    public GameObject timelineCamera;
+    public GameObject timelineCameraObj;
+    public Camera timelineCamera;
     public GameObject timelineUiObj;
     public GameObject sideUiObj;
     public SideUi sideUi;
-    public GameObject currentTimeText;
+    public GameObject currentTimeTextObj;
 
     public UDateTime earliestStartTime
     {
@@ -45,6 +48,10 @@ public class MainController : MonoBehaviour
     {
         _startTimeOfSimulation = currentTime.dateTime;
         _actualStartTime = DateTime.Now;
+
+        sceneCamera = sceneCameraObj.GetComponent<Camera>();
+        sceneCameraControls = sceneCameraObj.GetComponent<CameraControls>();
+        timelineCamera = timelineCameraObj.GetComponent<Camera>();
         
         FieldTeam[] fieldTeams = this.GetComponentsInChildren<FieldTeam>();
         foreach (FieldTeam fieldTeam in fieldTeams)
@@ -58,7 +65,7 @@ public class MainController : MonoBehaviour
         // Update clock
         long ticksSinceSimulationStart = DateTime.Now.Ticks - _actualStartTime.Ticks;
         currentTime.dateTime = new DateTime(_startTimeOfSimulation.Ticks + ticksSinceSimulationStart);
-        currentTimeText.GetComponent<Text>().text = currentTime.dateTime.ToString("yyyy/MM/dd HH:mm:ss");
+        currentTimeTextObj.GetComponent<Text>().text = currentTime.dateTime.ToString("yyyy/MM/dd HH:mm:ss");
     }
 
     public void AddFieldTeam(FieldTeam fieldTeam)
