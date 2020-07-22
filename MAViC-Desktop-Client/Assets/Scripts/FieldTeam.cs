@@ -230,11 +230,11 @@ public class FieldTeam : MonoBehaviour
             }
 
             // Update size of path
-            if (mainController.sceneCamera.orthographic)
+            if (mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._2D)
             {
                 lineRenderer.startWidth = lineRenderer.endWidth = 1.0f / 50.0f * mainController.sceneCamera.orthographicSize;
             }
-            else // if (!mainController.sceneCamera.orthographic)
+            else // if (mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._3D)
             {
                 lineRenderer.startWidth = lineRenderer.endWidth =
                     1.0f / 50.0f * (mainController.sceneCameraObj.transform.position.y - mainController.sceneCameraControls.minimumY);
@@ -242,11 +242,11 @@ public class FieldTeam : MonoBehaviour
 
             // Update size of current location indicator
             float scaleFactor = 4.0f;
-            if (mainController.sceneCamera.orthographic)
+            if (mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._2D)
             {
                 scaleFactor = scaleFactor / 50.0f * mainController.sceneCamera.orthographicSize;
             }
-            else // if (!mainController.sceneCamera.orthographic)
+            else // if (mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._3D)
             {
                 scaleFactor = scaleFactor / 50.0f *
                     (mainController.sceneCameraObj.transform.position.y - mainController.sceneCameraControls.minimumY);
@@ -399,11 +399,11 @@ public class FieldTeam : MonoBehaviour
             lineRenderer.SetPositions(_revealedMapPositions.ToArray());
             lineRenderer.startColor = new Color(teamColor.r, teamColor.g, teamColor.b, 0.5f);
             lineRenderer.endColor = teamColor;
-            //if (mainController.sceneCamera.orthographic)
+            //if (mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._2D)
             //{
             //    lineRenderer.startWidth = lineRenderer.endWidth = 1.0f / 50.0f * mainController.sceneCamera.orthographicSize;
             //}
-            //else // if (!mainController.sceneCamera.orthographic)
+            //else // if (mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._3D)
             //{
             //    lineRenderer.startWidth = lineRenderer.endWidth =
             //        1.0f / 50.0f * (mainController.sceneCameraObj.transform.position.y - mainController.sceneCameraControls.minimumY);
@@ -416,11 +416,11 @@ public class FieldTeam : MonoBehaviour
             _currentLocationIndicator.transform.parent = _mapObj.transform;
             _currentLocationIndicator.transform.position = currentScenePosition;
             //float scaleFactor = 4.0f;
-            //if (mainController.sceneCamera.orthographic)
+            //if (mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._2D)
             //{
             //    scaleFactor = scaleFactor / 50.0f * mainController.sceneCamera.orthographicSize;
             //}
-            //else // if (!mainController.sceneCamera.orthographic)
+            //else // if (mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._3D)
             //{
             //    scaleFactor = scaleFactor / 50.0f *
             //        (mainController.sceneCameraObj.transform.position.y - mainController.sceneCameraControls.minimumY);

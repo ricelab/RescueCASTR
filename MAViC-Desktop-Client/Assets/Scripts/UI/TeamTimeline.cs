@@ -28,7 +28,8 @@ public class TeamTimeline : MonoBehaviour
 
     private bool _mapFrameDisplayShowing = false;
 
-    private GameObject _wholeScreenUi;
+    private GameObject _wholeScreenUiObj;
+    private GameObject _timelineUiObj;
 
     private GameObject _timelineHighlight;
     private bool _timelineHighlightShowing = false;
@@ -55,7 +56,8 @@ public class TeamTimeline : MonoBehaviour
         _raycaster = this.GetComponentInParent<GraphicRaycaster>();
         _eventSystem = GetComponent<EventSystem>();
 
-        _wholeScreenUi = fieldTeam.mainController.wholeScreenUiObj;
+        _wholeScreenUiObj = fieldTeam.mainController.wholeScreenUiObj;
+        _timelineUiObj = fieldTeam.mainController.timelineUiObj;
     }
 
     void Update()
@@ -167,7 +169,7 @@ public class TeamTimeline : MonoBehaviour
 
                 if (!_mapFrameDisplayShowing)
                 {
-                    _mapFrameDisplayObj = Instantiate(fieldTeam.mapFrameDisplayPrefab, _wholeScreenUi.transform);
+                    _mapFrameDisplayObj = Instantiate(fieldTeam.mapFrameDisplayPrefab, _wholeScreenUiObj.transform);
                     _mapFrameDisplayObj.transform.Find("Background").GetComponent<Image>().color = fieldTeam.teamColor;
                     _mapFrameDisplayObj.transform.Find("Arrow").GetComponent<Image>().color = fieldTeam.teamColor;
                     _mapFrameDisplayLogic = _mapFrameDisplayObj.GetComponent<MapFrameDisplay>();
@@ -223,9 +225,35 @@ public class TeamTimeline : MonoBehaviour
 
     public void HighlightTimeOnTimeline(DateTime timeHighlighted)
     {
+        //if (!_timelineHighlightShowing)
+        //{
+        //    _timelineHighlight = Instantiate(timelineHighlightPrefab, _wholeScreenUi.transform);
+        //    _timelineHighlightShowing = true;
+        //}
+
+        //float placeToHighlight = (float)(timeHighlighted.Ticks - fieldTeam.startTime.dateTime.Ticks) / (float)(_endTimeOfTimeline.Ticks - fieldTeam.startTime.dateTime.Ticks);
+        //if (placeToHighlight < 0.0f)
+        //    placeToHighlight = 0.0f;
+        //else if (placeToHighlight > 1.0f)
+        //    placeToHighlight = 1.0f;
+
+        //Camera timelineCamera = fieldTeam.mainController.timelineCameraObj.GetComponent<Camera>();
+        //RectTransform canvasRect = fieldTeam.mainController.wholeScreenUiObj.GetComponent<RectTransform>();
+        //Vector2 viewportPos = timelineCamera.WorldToViewportPoint(_line.transform.position);
+        //Vector2 worldObjScreenPos = new Vector2(
+        //    (viewportPos.x * canvasRect.sizeDelta.x * 0.75f) - (canvasRect.sizeDelta.x * 0.5f),
+        //    viewportPos.y * canvasRect.sizeDelta.y * 0.2f + 5.0f
+        //);
+
+        //Vector2 pos = new Vector2(_beginPos + placeToHighlight * (_endPos - _beginPos) - 0.5f * Screen.width, worldObjScreenPos.y - 0.5f * Screen.height);
+
+        //_timelineHighlight.GetComponent<RectTransform>().anchoredPosition = pos;
+
+        //MoveNeedleToTime(timeHighlighted);
+
         if (!_timelineHighlightShowing)
         {
-            _timelineHighlight = Instantiate(timelineHighlightPrefab, _wholeScreenUi.transform);
+            _timelineHighlight = Instantiate(timelineHighlightPrefab, _timelineUiObj.transform);
             _timelineHighlightShowing = true;
         }
 
@@ -236,14 +264,14 @@ public class TeamTimeline : MonoBehaviour
             placeToHighlight = 1.0f;
 
         Camera timelineCamera = fieldTeam.mainController.timelineCameraObj.GetComponent<Camera>();
-        RectTransform canvasRect = fieldTeam.mainController.wholeScreenUiObj.GetComponent<RectTransform>();
+        RectTransform canvasRect = _timelineUiObj.GetComponent<RectTransform>();
         Vector2 viewportPos = timelineCamera.WorldToViewportPoint(_line.transform.position);
-        Vector2 worldObjScreenPos = new Vector2(
-            (viewportPos.x * canvasRect.sizeDelta.x * 0.75f) - (canvasRect.sizeDelta.x * 0.5f),
-            viewportPos.y * canvasRect.sizeDelta.y * 0.2f + 5.0f
+        Vector2 worldObjTimelineViewPos = new Vector2(
+            viewportPos.x * canvasRect.sizeDelta.x,
+            viewportPos.y * canvasRect.sizeDelta.y + 5.0f
         );
 
-        Vector2 pos = new Vector2(_beginPos + placeToHighlight * (_endPos - _beginPos) - 0.5f * Screen.width, worldObjScreenPos.y - 0.5f * Screen.height);
+        Vector2 pos = new Vector2(_beginPos + placeToHighlight * (_endPos - _beginPos) - 0.5f * canvasRect.sizeDelta.x, worldObjTimelineViewPos.y - 0.5f * canvasRect.sizeDelta.y);
 
         _timelineHighlight.GetComponent<RectTransform>().anchoredPosition = pos;
 
@@ -259,9 +287,33 @@ public class TeamTimeline : MonoBehaviour
 
     private void MoveNeedleToTime(DateTime timeHighlighted)
     {
+        //if (!_timelineNeedleShowing)
+        //{
+        //    _timelineNeedle = Instantiate(timelineNeedlePrefab, _wholeScreenUi.transform);
+        //    _timelineNeedleShowing = true;
+        //}
+
+        //float placeToHighlight = (float)(timeHighlighted.Ticks - fieldTeam.startTime.dateTime.Ticks) / (float)(_endTimeOfTimeline.Ticks - fieldTeam.startTime.dateTime.Ticks);
+        //if (placeToHighlight < 0.0f)
+        //    placeToHighlight = 0.0f;
+        //else if (placeToHighlight > 1.0f)
+        //    placeToHighlight = 1.0f;
+
+        //Camera timelineCamera = fieldTeam.mainController.timelineCameraObj.GetComponent<Camera>();
+        //RectTransform canvasRect = fieldTeam.mainController.wholeScreenUiObj.GetComponent<RectTransform>();
+        //Vector2 viewportPos = timelineCamera.WorldToViewportPoint(_line.transform.position);
+        //Vector2 worldObjScreenPos = new Vector2(
+        //    ((viewportPos.x * canvasRect.sizeDelta.x * 0.75f) - (canvasRect.sizeDelta.x * 0.5f)),
+        //    _timelineNeedle.GetComponent<RectTransform>().rect.height / 2.0f
+        //);
+
+        //Vector2 pos = new Vector2(_beginPos + placeToHighlight * (_endPos - _beginPos) - 0.5f * Screen.width, worldObjScreenPos.y - 0.5f * Screen.height);
+
+        //_timelineNeedle.GetComponent<RectTransform>().anchoredPosition = pos;
+
         if (!_timelineNeedleShowing)
         {
-            _timelineNeedle = Instantiate(timelineNeedlePrefab, _wholeScreenUi.transform);
+            _timelineNeedle = Instantiate(timelineNeedlePrefab, _timelineUiObj.transform);
             _timelineNeedleShowing = true;
         }
 
@@ -272,14 +324,14 @@ public class TeamTimeline : MonoBehaviour
             placeToHighlight = 1.0f;
 
         Camera timelineCamera = fieldTeam.mainController.timelineCameraObj.GetComponent<Camera>();
-        RectTransform canvasRect = fieldTeam.mainController.wholeScreenUiObj.GetComponent<RectTransform>();
+        RectTransform canvasRect = _timelineUiObj.GetComponent<RectTransform>();
         Vector2 viewportPos = timelineCamera.WorldToViewportPoint(_line.transform.position);
         Vector2 worldObjScreenPos = new Vector2(
-            ((viewportPos.x * canvasRect.sizeDelta.x * 0.75f) - (canvasRect.sizeDelta.x * 0.5f)),
+            viewportPos.x * canvasRect.sizeDelta.x,
             _timelineNeedle.GetComponent<RectTransform>().rect.height / 2.0f
         );
 
-        Vector2 pos = new Vector2(_beginPos + placeToHighlight * (_endPos - _beginPos) - 0.5f * Screen.width, worldObjScreenPos.y - 0.5f * Screen.height);
+        Vector2 pos = new Vector2(_beginPos + placeToHighlight * (_endPos - _beginPos) - 0.5f * canvasRect.sizeDelta.x, worldObjScreenPos.y - 0.5f * canvasRect.sizeDelta.y);
 
         _timelineNeedle.GetComponent<RectTransform>().anchoredPosition = pos;
     }

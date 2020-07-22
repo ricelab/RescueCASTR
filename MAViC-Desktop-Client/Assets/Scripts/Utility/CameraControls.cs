@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CameraControls : MonoBehaviour
 {
@@ -48,6 +49,8 @@ public class CameraControls : MonoBehaviour
     private float _oldRotationY;
     private float _oldPositionZ;
 
+    public GameObject toggleButtonTextObj;
+
     public void Start()
     {
         _camera = GetComponent<Camera>();
@@ -74,6 +77,8 @@ public class CameraControls : MonoBehaviour
 
             _camera.clearFlags = CameraClearFlags.SolidColor;
             _camera.orthographic = true;
+
+            toggleButtonTextObj.GetComponent<Text>().text = "3D";
         }
         // If switching from 2D to 3D mode
         else if (_oldCameraViewingMode == CameraViewingMode._2D && cameraViewingMode == CameraViewingMode._3D)
@@ -85,11 +90,14 @@ public class CameraControls : MonoBehaviour
 
             _camera.clearFlags = CameraClearFlags.Skybox;
             _camera.orthographic = false;
+
+            toggleButtonTextObj.GetComponent<Text>().text = "2D";
         }
 
         mouseRatioX = Input.mousePosition.x / Screen.width;
         mouseRatioY = Input.mousePosition.y / Screen.height;
         
+        // Zoom
         if (mouseRatioX < 0.75 && mouseRatioY > 0.2)
         {
             if (Input.GetMouseButtonDown(1))
@@ -113,6 +121,7 @@ public class CameraControls : MonoBehaviour
         }
 
 
+        // Rotate
         if (cameraViewingMode == CameraViewingMode._3D && Input.GetMouseButton(1) && rightMouseButtonStartedInScene)
         {
             transform.Rotate(new Vector3(Input.GetAxis("Mouse Y") * rotateSpeed, -Input.GetAxis("Mouse X") * rotateSpeed, 0));
@@ -121,9 +130,23 @@ public class CameraControls : MonoBehaviour
             transform.rotation = Quaternion.Euler(X, Y, 0);
         }
         
+        // Drag
         if (Input.GetMouseButton(0) && leftMouseButtonStartedInScene)
         {
-            transform.Translate(new Vector3(-Input.GetAxis("Mouse X") * dragSpeed, -Input.GetAxis("Mouse Y") * dragSpeed, 0));
+            if (cameraViewingMode == CameraViewingMode._3D)
+            {
+                transform.Translate(new Vector3(
+                    -Input.GetAxis("Mouse X") * dragSpeed * 1.0f / 50.0f * (transform.position.y - minimumY + 10.0f),
+                    -Input.GetAxis("Mouse Y") * dragSpeed * 1.0f / 50.0f * (transform.position.y - minimumY + 10.0f),
+                    0));
+            }
+            else // if (cameraViewingMode == CameraViewingMode._2D)
+            {
+                transform.Translate(new Vector3(
+                    -Input.GetAxis("Mouse X") * dragSpeed * 1.0f / 50.0f * _camera.orthographicSize,
+                    -Input.GetAxis("Mouse Y") * dragSpeed * 1.0f / 50.0f * _camera.orthographicSize,
+                    0));
+            }
         }
 
 
@@ -172,6 +195,18 @@ public class CameraControls : MonoBehaviour
         else if (_camera.orthographicSize < minimumOrthographicSize)
         {
             _camera.orthographicSize = minimumOrthographicSize;
+        }
+    }
+
+    public void ToggleCameraViewingMode()
+    {
+        if (cameraViewingMode == CameraViewingMode._2D)
+        {
+            cameraViewingMode = CameraViewingMode._3D;
+        }
+        else
+        {
+            cameraViewingMode = CameraViewingMode._2D;
         }
     }
 }

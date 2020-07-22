@@ -20,11 +20,11 @@ public class TeamPathPoint : MonoBehaviour
     void Update()
     {
         float scaleFactor = 2.0f;
-        if (fieldTeam.mainController.sceneCamera.orthographic)
+        if (fieldTeam.mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._2D)
         {
             scaleFactor = scaleFactor / 50.0f * fieldTeam.mainController.sceneCamera.orthographicSize;
         }
-        else // if (!fieldTeam.mainController.sceneCamera.orthographic)
+        else // if (fieldTeam.mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._3D)
         {
             scaleFactor = scaleFactor / 50.0f *
                 (fieldTeam.mainController.sceneCameraObj.transform.position.y - fieldTeam.mainController.sceneCameraControls.minimumY);
