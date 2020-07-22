@@ -46,9 +46,9 @@ public class TeamPathPoint : MonoBehaviour
 
             string imagePath = fieldTeam.GetPhotoThumbnailPathFromActualTime(actualTime);
 
-            GameObject wholeScreenUi = fieldTeam.mainController.wholeScreenUiObj;
+            GameObject wholeScreenUiObj = fieldTeam.mainController.wholeScreenUiObj;
 
-            _mapFrameDisplayObj = Instantiate(fieldTeam.mapFrameDisplayPrefab, wholeScreenUi.transform);
+            _mapFrameDisplayObj = Instantiate(fieldTeam.mapFrameDisplayPrefab, wholeScreenUiObj.transform);
             _mapFrameDisplayObj.transform.Find("Background").GetComponent<Image>().color = fieldTeam.teamColor;
             _mapFrameDisplayObj.transform.Find("Arrow").GetComponent<Image>().color = fieldTeam.teamColor;
             _mapFrameDisplayObj.transform.Find("Time").GetComponent<Text>().text = fieldTeam.ConvertActualTimeToTime(actualTime).ToString("MM/dd/yyyy HH:mm:ss");
@@ -56,7 +56,7 @@ public class TeamPathPoint : MonoBehaviour
             _mapFrameDisplay.DisplayImage(imagePath);
 
             Camera sceneCamera = fieldTeam.mainController.sceneCameraObj.GetComponent<Camera>();
-            RectTransform canvasRect = wholeScreenUi.GetComponent<RectTransform>();
+            RectTransform canvasRect = wholeScreenUiObj.GetComponent<RectTransform>();
             Vector2 viewportPos = sceneCamera.WorldToViewportPoint(this.transform.position);
             Vector2 worldObjScreenPos = new Vector2(
                 ((viewportPos.x * canvasRect.sizeDelta.x * 0.75f) - (canvasRect.sizeDelta.x * 0.5f)),

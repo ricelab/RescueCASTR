@@ -19,8 +19,8 @@ public class CameraControls : MonoBehaviour
 
     // Rotation
     public float rotateSpeed = -3.0f;
-    private float X;
-    private float Y;
+    private float _rotateX;
+    private float _rotateY;
 
     // Dragging
     public float dragSpeed = 12.0f;
@@ -38,18 +38,25 @@ public class CameraControls : MonoBehaviour
     public float minimumOrthographicSize = 10.0f;
     public float maximumOrthographicSize = 100.0f;
 
-    private float mouseRatioX;
-    private float mouseRatioY;
+    private float _mouseRatioX;
+    private float _mouseRatioY;
 
-    private bool rightMouseButtonStartedInScene = false;
-    private bool leftMouseButtonStartedInScene = false;
+    private bool _rightMouseButtonStartedInScene = false;
+    private bool _leftMouseButtonStartedInScene = false;
 
     // Old rotation values in 3D mode (for when switching to 2D mode)
     private float _oldRotationX;
     private float _oldRotationY;
     private float _oldPositionZ;
 
+    // Camera viewing mode toggle button
     public GameObject toggleButtonTextObj;
+
+    // For maintaining consistent control between varying screen sizes
+    public MainController mainController;
+    private GameObject _wholeScreenUiObj;
+    private RectTransform _wholeScreenUiCanvasRect;
+    private Vector2 _referencePosition;
 
     public void Start()
     {
@@ -59,6 +66,16 @@ public class CameraControls : MonoBehaviour
             _oldCameraViewingMode = CameraViewingMode._3D;
         else
             _oldCameraViewingMode = CameraViewingMode._2D;
+
+        _wholeScreenUiObj = mainController.wholeScreenUiObj;
+        _wholeScreenUiCanvasRect = _wholeScreenUiObj.GetComponent<RectTransform>();
+
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        {
+            rotateSpeed /= 2.0f;
+            dragSpeed /= 2.0f;
+            zoomSpeed /= 2.0f;
+        }
     }
 
     public void Update()
@@ -94,19 +111,24 @@ public class CameraControls : MonoBehaviour
             toggleButtonTextObj.GetComponent<Text>().text = "2D";
         }
 
-        mouseRatioX = Input.mousePosition.x / Screen.width;
-        mouseRatioY = Input.mousePosition.y / Screen.height;
+        _referencePosition = new Vector2(
+            Input.mousePosition.x / _wholeScreenUiObj.GetComponent<Canvas>().pixelRect.size.x * _wholeScreenUiObj.GetComponent<CanvasScaler>().referenceResolution.x,
+            Input.mousePosition.y / _wholeScreenUiObj.GetComponent<Canvas>().pixelRect.size.y * _wholeScreenUiObj.GetComponent<CanvasScaler>().referenceResolution.y
+        );
+
+        _mouseRatioX = _referencePosition.x / _wholeScreenUiCanvasRect.sizeDelta.x;
+        _mouseRatioY = _referencePosition.y / _wholeScreenUiCanvasRect.sizeDelta.y;
         
         // Zoom
-        if (mouseRatioX < 0.75 && mouseRatioY > 0.2)
+        if (_mouseRatioX < 0.75 && _mouseRatioY > 0.2)
         {
             if (Input.GetMouseButtonDown(1))
             {
-                rightMouseButtonStartedInScene = true;
+                _rightMouseButtonStartedInScene = true;
             }
             if (Input.GetMouseButtonDown(0))
             {
-                leftMouseButtonStartedInScene = true;
+                _leftMouseButtonStartedInScene = true;
             }
 
             // Can adjust zoom based on scroll wheel
@@ -122,16 +144,16 @@ public class CameraControls : MonoBehaviour
 
 
         // Rotate
-        if (cameraViewingMode == CameraViewingMode._3D && Input.GetMouseButton(1) && rightMouseButtonStartedInScene)
+        if (cameraViewingMode == CameraViewingMode._3D && Input.GetMouseButton(1) && _rightMouseButtonStartedInScene)
         {
             transform.Rotate(new Vector3(Input.GetAxis("Mouse Y") * rotateSpeed, -Input.GetAxis("Mouse X") * rotateSpeed, 0));
-            X = transform.rotation.eulerAngles.x;
-            Y = transform.rotation.eulerAngles.y;
-            transform.rotation = Quaternion.Euler(X, Y, 0);
+            _rotateX = transform.rotation.eulerAngles.x;
+            _rotateY = transform.rotation.eulerAngles.y;
+            transform.rotation = Quaternion.Euler(_rotateX, _rotateY, 0);
         }
         
         // Drag
-        if (Input.GetMouseButton(0) && leftMouseButtonStartedInScene)
+        if (Input.GetMouseButton(0) && _leftMouseButtonStartedInScene)
         {
             if (cameraViewingMode == CameraViewingMode._3D)
             {
@@ -152,11 +174,11 @@ public class CameraControls : MonoBehaviour
 
         if (Input.GetMouseButtonUp(1))
         {
-            rightMouseButtonStartedInScene = false;
+            _rightMouseButtonStartedInScene = false;
         }
         if (Input.GetMouseButtonUp(0))
         {
-            leftMouseButtonStartedInScene = false;
+            _leftMouseButtonStartedInScene = false;
         }
 
         // Keep camera position within constraints
