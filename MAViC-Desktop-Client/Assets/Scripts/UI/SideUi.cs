@@ -57,7 +57,7 @@ public class SideUi : ABackButtonClickHandler // ABackButtonClickHandler inherit
 
         scrollRect.content = fieldTeamDetailsContentPanel.GetComponent<RectTransform>();
 
-        DisplayFieldTeamLiveImage(selectedFieldTeam.GetPhotoThumbnailPathFromTime(mainController.currentTime));
+        DisplayFieldTeamLiveImage(selectedFieldTeam.GetPhotoThumbnailPathFromSimulatedTime(mainController.currentSimulatedTime));
 
         currentlyActivePage = CurrentlyActivePage.FieldTeamDetails;
     }

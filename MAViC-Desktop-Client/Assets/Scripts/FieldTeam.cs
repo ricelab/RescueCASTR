@@ -103,23 +103,23 @@ public class FieldTeam : MonoBehaviour
     public Color teamColor;
     public string recordingDirectoryPath;
 
-    public UDateTime startTime;
+    public UDateTime simulatedStartTime;
 
-    public UDateTime endTime
+    public UDateTime simulatedEndTime
     {
         get
         {
-            if (_endTime == null)
+            if (_simulatedEndTime == null)
             {
                 if (!_initialFileReadDone)
                 {
                     PerformInitialFileRead();
                 }
 
-                DateTime dateTime = new DateTime(startTime.dateTime.Ticks + _actualEndTime.dateTime.Ticks - _actualStartTime.dateTime.Ticks);
-                _endTime = dateTime;
+                DateTime dateTime = new DateTime(simulatedStartTime.dateTime.Ticks + _actualEndTime.dateTime.Ticks - _actualStartTime.dateTime.Ticks);
+                _simulatedEndTime = dateTime;
             }
-            return _endTime;
+            return _simulatedEndTime;
         }
     }
 
@@ -145,7 +145,7 @@ public class FieldTeam : MonoBehaviour
     private bool _initialFileReadDone = false;
     private bool _fieldTeamIsInstantiated = false;
 
-    private UDateTime _endTime = null;
+    private UDateTime _simulatedEndTime = null;
 
     private UDateTime _actualStartTime;
     private UDateTime _actualEndTime;
@@ -195,8 +195,9 @@ public class FieldTeam : MonoBehaviour
     #endregion
 
 
-    // Start is called before the first frame update
-    void Start()
+    #region Public Methods
+
+    public void Start()
     {
         if (!_fieldTeamIsStarted)
         {
@@ -213,8 +214,7 @@ public class FieldTeam : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Update()
     {
         if (_fieldTeamIsInstantiated)
         {
@@ -259,7 +259,7 @@ public class FieldTeam : MonoBehaviour
             {
                 TeamPathPoint teamPathPoint = _teamPathPointObjs[i].GetComponent<TeamPathPoint>();
 
-                if (ConvertActualTimeToTime(teamPathPoint.actualTime) < mainController.currentTime)
+                if (ConvertActualTimeToSimulatedTime(teamPathPoint.actualTime) < mainController.currentSimulatedTime)
                 {
                     updateLatestPoint = true;
                     _revealedMapPositions.Add(_mapPositions[i]);
@@ -294,6 +294,14 @@ public class FieldTeam : MonoBehaviour
             {
                 DisplayOrUpdateCurrentLocationFrameDisplay();
             }
+
+            // Add more messages to revealed messages (if any)
+            // ...
+            // ...
+
+            // Add more clues to revealed clues (if any)
+            // ...
+            // ...
         }
     }
 
@@ -370,7 +378,7 @@ public class FieldTeam : MonoBehaviour
                 teamPathPoint.pointNumber = i;
                 teamPathPoint.fieldTeam = this;
 
-                if (ConvertActualTimeToTime(teamPathPoint.actualTime) < mainController.currentTime)
+                if (ConvertActualTimeToSimulatedTime(teamPathPoint.actualTime) < mainController.currentSimulatedTime)
                 {
                     _latestAvailableWaypointIndex = i;
                 }
@@ -399,15 +407,6 @@ public class FieldTeam : MonoBehaviour
             lineRenderer.SetPositions(_revealedMapPositions.ToArray());
             lineRenderer.startColor = new Color(teamColor.r, teamColor.g, teamColor.b, 0.5f);
             lineRenderer.endColor = teamColor;
-            //if (mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._2D)
-            //{
-            //    lineRenderer.startWidth = lineRenderer.endWidth = 1.0f / 50.0f * mainController.sceneCamera.orthographicSize;
-            //}
-            //else // if (mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._3D)
-            //{
-            //    lineRenderer.startWidth = lineRenderer.endWidth =
-            //        1.0f / 50.0f * (mainController.sceneCameraObj.transform.position.y - mainController.sceneCameraControls.minimumY);
-            //}
             lineRenderer.numCornerVertices = 10;
             lineRenderer.numCapVertices = 5;
 
@@ -415,17 +414,6 @@ public class FieldTeam : MonoBehaviour
             _currentLocationIndicator = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             _currentLocationIndicator.transform.parent = _mapObj.transform;
             _currentLocationIndicator.transform.position = currentScenePosition;
-            //float scaleFactor = 4.0f;
-            //if (mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._2D)
-            //{
-            //    scaleFactor = scaleFactor / 50.0f * mainController.sceneCamera.orthographicSize;
-            //}
-            //else // if (mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._3D)
-            //{
-            //    scaleFactor = scaleFactor / 50.0f *
-            //        (mainController.sceneCameraObj.transform.position.y - mainController.sceneCameraControls.minimumY);
-            //}
-            //_currentLocationIndicator.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
             _currentLocationIndicator.GetComponent<MeshRenderer>().material.color = teamColor;
             _currentLocationIndicator.GetComponent<MeshRenderer>().enabled = !isComplete;
 
@@ -448,7 +436,7 @@ public class FieldTeam : MonoBehaviour
                 message.Start();
 
                 // Assuming messages are sorted by date/time in ascending order (TODO: need to assure this later)
-                if (message.simulatedTime.dateTime < mainController.currentTime.dateTime)
+                if (message.simulatedTime.dateTime < mainController.currentSimulatedTime.dateTime)
                 {
                     revealedMessages.Add(message);
                     _latestAvailableMessageIndex++;
@@ -472,7 +460,7 @@ public class FieldTeam : MonoBehaviour
                 clue.Start();
 
                 // Assuming clues are sorted by date/time in ascending order (TODO: need to assure this later)
-                if (clue.simulatedTime.dateTime < mainController.currentTime.dateTime)
+                if (clue.simulatedTime.dateTime < mainController.currentSimulatedTime.dateTime)
                 {
                     revealedClues.Add(clue);
                     _latestAvailableClueIndex++;
@@ -487,9 +475,9 @@ public class FieldTeam : MonoBehaviour
         _fieldTeamIsInstantiated = true;
     }
 
-    public void HighlightPathAtTime(DateTime time)
+    public void HighlightPathAtSimulatedTime(DateTime time)
     {
-        HighlightPathAtActualTime(ConvertTimeToActualTime(time));
+        HighlightPathAtActualTime(ConvertSimulatedTimeToActualTime(time));
     }
 
     public void HighlightPathAtActualTime(DateTime time)
@@ -509,10 +497,10 @@ public class FieldTeam : MonoBehaviour
 
     public void HighlightActualTimeOnTimeline(DateTime timeHighlighted)
     {
-        HighlightTimeOnTimeline(ConvertActualTimeToTime(timeHighlighted));
+        HighlightSimulatedTimeOnTimeline(ConvertActualTimeToSimulatedTime(timeHighlighted));
     }
 
-    public void HighlightTimeOnTimeline(DateTime timeHighlighted)
+    public void HighlightSimulatedTimeOnTimeline(DateTime timeHighlighted)
     {
         _teamTimeline.HighlightTimeOnTimeline(timeHighlighted);
     }
@@ -522,14 +510,14 @@ public class FieldTeam : MonoBehaviour
         _teamTimeline.UnhighlightTimeline();
     }
 
-    public string GetPhotoPathFromTime(DateTime time)
+    public string GetPhotoPathFromSimulatedTime(DateTime time)
     {
-        return GetPhotoPathFromActualTime(ConvertTimeToActualTime(time));
+        return GetPhotoPathFromActualTime(ConvertSimulatedTimeToActualTime(time));
     }
 
-    public string GetPhotoThumbnailPathFromTime(DateTime time)
+    public string GetPhotoThumbnailPathFromSimulatedTime(DateTime time)
     {
-        return GetPhotoThumbnailPathFromActualTime(ConvertTimeToActualTime(time));
+        return GetPhotoThumbnailPathFromActualTime(ConvertSimulatedTimeToActualTime(time));
     }
 
     public string GetPhotoPathFromActualTime(DateTime time)
@@ -542,6 +530,18 @@ public class FieldTeam : MonoBehaviour
     {
         int i = BinarySearchForClosestValue(_photoTimes.ToArray(), time);
         return _timelapsePhotoThumbnailDirectoryPath + _photoFileNames[i];
+    }
+
+    public DateTime ConvertSimulatedTimeToActualTime(DateTime time)
+    {
+        long ticksFromStart = time.Ticks - simulatedStartTime.dateTime.Ticks;
+        return new DateTime(_actualStartTime.dateTime.Ticks + ticksFromStart);
+    }
+
+    public DateTime ConvertActualTimeToSimulatedTime(DateTime actualTime)
+    {
+        long ticksFromStart = actualTime.Ticks - _actualStartTime.dateTime.Ticks;
+        return new DateTime(simulatedStartTime.dateTime.Ticks + ticksFromStart);
     }
 
     public void ShowThisFieldTeamOnly()
@@ -582,17 +582,10 @@ public class FieldTeam : MonoBehaviour
         return true;
     }
 
-    public DateTime ConvertTimeToActualTime(DateTime time)
-    {
-        long ticksFromStart = time.Ticks - startTime.dateTime.Ticks;
-        return new DateTime(_actualStartTime.dateTime.Ticks + ticksFromStart);
-    }
+    #endregion
 
-    public DateTime ConvertActualTimeToTime(DateTime actualTime)
-    {
-        long ticksFromStart = actualTime.Ticks - _actualStartTime.dateTime.Ticks;
-        return new DateTime(startTime.dateTime.Ticks + ticksFromStart);
-    }
+
+    #region Private Methods
 
     private void PerformInitialFileRead()
     {
@@ -617,18 +610,18 @@ public class FieldTeam : MonoBehaviour
     {
         if (_fieldTeamIsStarted)
         {
-            if (mainController.currentTime.dateTime >= _endTime.dateTime)
+            if (mainController.currentSimulatedTime.dateTime >= _simulatedEndTime.dateTime)
             {
                 _ratioComplete = 1.0f;
             }
-            else if (mainController.currentTime.dateTime <= startTime.dateTime)
+            else if (mainController.currentSimulatedTime.dateTime <= simulatedStartTime.dateTime)
             {
                 _ratioComplete = 0.0f;
             }
             else
             {
-                _ratioComplete = (float)(mainController.currentTime.dateTime.Ticks - startTime.dateTime.Ticks) /
-                    (float)(_endTime.dateTime.Ticks - startTime.dateTime.Ticks);
+                _ratioComplete = (float)(mainController.currentSimulatedTime.dateTime.Ticks - simulatedStartTime.dateTime.Ticks) /
+                    (float)(_simulatedEndTime.dateTime.Ticks - simulatedStartTime.dateTime.Ticks);
             }
         }
 
@@ -659,12 +652,12 @@ public class FieldTeam : MonoBehaviour
         );
         _currentLocationFrameDisplayObj.GetComponent<RectTransform>().anchoredPosition = worldObjScreenPos;
 
-        _currentLocationFrameDisplay.DisplayImage(GetPhotoThumbnailPathFromTime(mainController.currentTime));
+        _currentLocationFrameDisplay.DisplayImage(GetPhotoThumbnailPathFromSimulatedTime(mainController.currentSimulatedTime));
 
         // Display on side UI
         if (mainController.sideUi.selectedFieldTeam == this)
         {
-            mainController.sideUi.DisplayFieldTeamLiveImage(GetPhotoThumbnailPathFromTime(mainController.currentTime));
+            mainController.sideUi.DisplayFieldTeamLiveImage(GetPhotoThumbnailPathFromSimulatedTime(mainController.currentSimulatedTime));
         }
     }
 
@@ -701,4 +694,6 @@ public class FieldTeam : MonoBehaviour
         
         return mid;
     }
+
+    #endregion
 }

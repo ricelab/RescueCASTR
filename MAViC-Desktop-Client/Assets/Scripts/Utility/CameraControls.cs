@@ -89,8 +89,8 @@ public class CameraControls : MonoBehaviour
             _oldRotationY = transform.rotation.eulerAngles.y;
             _oldPositionZ = transform.position.z;
 
-            transform.rotation = Quaternion.Euler(90.0f, 180.0f, transform.rotation.z);
-            transform.position = new Vector3(transform.position.x, transform.position.y, 0.0f);
+            transform.rotation = Quaternion.Euler(90.0f, 180.0f, 0.0f);
+            transform.position = new Vector3(transform.position.x, 0.0f, transform.position.z);
 
             _camera.clearFlags = CameraClearFlags.SolidColor;
             _camera.orthographic = true;

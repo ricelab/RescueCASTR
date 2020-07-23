@@ -17,9 +17,9 @@ public class ClueBox : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         this.transform.Find("Background").GetComponent<Image>().color = new Color(0.98f, 0.88f, 0.74f, 1.0f);
 
-        clue.fieldTeam.HighlightPathAtTime(clue.simulatedTime.dateTime);
+        clue.fieldTeam.HighlightPathAtSimulatedTime(clue.simulatedTime.dateTime);
 
-        clue.fieldTeam.HighlightTimeOnTimeline(clue.simulatedTime);
+        clue.fieldTeam.HighlightSimulatedTimeOnTimeline(clue.simulatedTime);
     }
 
     public void OnPointerExit(PointerEventData eventData)

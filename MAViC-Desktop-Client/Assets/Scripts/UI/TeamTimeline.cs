@@ -90,20 +90,20 @@ public class TeamTimeline : MonoBehaviour
 
             /* Draw/update timeline markings */
 
-            if (fieldTeam.mainController.currentTime.dateTime < fieldTeam.endTime.dateTime)
-                _endTimeOfTimeline = fieldTeam.mainController.currentTime.dateTime;
+            if (fieldTeam.mainController.currentSimulatedTime.dateTime < fieldTeam.simulatedEndTime.dateTime)
+                _endTimeOfTimeline = fieldTeam.mainController.currentSimulatedTime.dateTime;
             else
-                _endTimeOfTimeline = fieldTeam.endTime.dateTime;
+                _endTimeOfTimeline = fieldTeam.simulatedEndTime.dateTime;
 
             RectTransform lineTransform = _line.GetComponent<RectTransform>();
 
             _scaleX =
-                (float)(_endTimeOfTimeline.Ticks - fieldTeam.startTime.dateTime.Ticks) /
-                (float)(fieldTeam.mainController.currentTime.dateTime.Ticks - fieldTeam.mainController.earliestStartTime.dateTime.Ticks);
+                (float)(_endTimeOfTimeline.Ticks - fieldTeam.simulatedStartTime.dateTime.Ticks) /
+                (float)(fieldTeam.mainController.currentSimulatedTime.dateTime.Ticks - fieldTeam.mainController.earliestSimulatedStartTime.dateTime.Ticks);
 
             _n =
-                (float)(fieldTeam.startTime.dateTime.Ticks - fieldTeam.mainController.earliestStartTime.dateTime.Ticks) /
-                (float)(fieldTeam.mainController.currentTime.dateTime.Ticks - fieldTeam.mainController.earliestStartTime.dateTime.Ticks);
+                (float)(fieldTeam.simulatedStartTime.dateTime.Ticks - fieldTeam.mainController.earliestSimulatedStartTime.dateTime.Ticks) /
+                (float)(fieldTeam.mainController.currentSimulatedTime.dateTime.Ticks - fieldTeam.mainController.earliestSimulatedStartTime.dateTime.Ticks);
             if (_scaleX == 1.0f)
                 _pivotX = 0.0f;
             else
@@ -169,12 +169,12 @@ public class TeamTimeline : MonoBehaviour
                 else if (placeHighlighted > 1)
                     placeHighlighted = 1;
 
-                long ticks = fieldTeam.startTime.dateTime.Ticks +
-                    (long)(placeHighlighted * (_endTimeOfTimeline.Ticks - fieldTeam.startTime.dateTime.Ticks));
+                long ticks = fieldTeam.simulatedStartTime.dateTime.Ticks +
+                    (long)(placeHighlighted * (_endTimeOfTimeline.Ticks - fieldTeam.simulatedStartTime.dateTime.Ticks));
 
                 DateTime simulatedTimeHighlighted = new DateTime(ticks);
 
-                string imagePath = fieldTeam.GetPhotoThumbnailPathFromTime(simulatedTimeHighlighted);
+                string imagePath = fieldTeam.GetPhotoThumbnailPathFromSimulatedTime(simulatedTimeHighlighted);
 
                 if (!_mapFrameDisplayShowing)
                 {
@@ -220,7 +220,7 @@ public class TeamTimeline : MonoBehaviour
                 _mapFrameDisplayObj.GetComponent<RectTransform>().anchoredPosition = pos;
 
                 fieldTeam.UnhighlightPath();
-                fieldTeam.HighlightPathAtTime(simulatedTimeHighlighted);
+                fieldTeam.HighlightPathAtSimulatedTime(simulatedTimeHighlighted);
             }
             else if (_hoveringOverLineOnLastFrame)
             {
@@ -241,7 +241,7 @@ public class TeamTimeline : MonoBehaviour
             _timelineHighlightShowing = true;
         }
 
-        float placeToHighlight = (float)(timeHighlighted.Ticks - fieldTeam.startTime.dateTime.Ticks) / (float)(_endTimeOfTimeline.Ticks - fieldTeam.startTime.dateTime.Ticks);
+        float placeToHighlight = (float)(timeHighlighted.Ticks - fieldTeam.simulatedStartTime.dateTime.Ticks) / (float)(_endTimeOfTimeline.Ticks - fieldTeam.simulatedStartTime.dateTime.Ticks);
         if (placeToHighlight < 0.0f)
             placeToHighlight = 0.0f;
         else if (placeToHighlight > 1.0f)
@@ -277,7 +277,7 @@ public class TeamTimeline : MonoBehaviour
             _timelineNeedleShowing = true;
         }
 
-        float placeToHighlight = (float)(timeHighlighted.Ticks - fieldTeam.startTime.dateTime.Ticks) / (float)(_endTimeOfTimeline.Ticks - fieldTeam.startTime.dateTime.Ticks);
+        float placeToHighlight = (float)(timeHighlighted.Ticks - fieldTeam.simulatedStartTime.dateTime.Ticks) / (float)(_endTimeOfTimeline.Ticks - fieldTeam.simulatedStartTime.dateTime.Ticks);
         if (placeToHighlight < 0.0f)
             placeToHighlight = 0.0f;
         else if (placeToHighlight > 1.0f)

@@ -24,11 +24,11 @@ public class Message
         {
             if (instantiateBySimulatedTime)
             {
-                actualTime = fieldTeam.ConvertTimeToActualTime(simulatedTime);
+                actualTime = fieldTeam.ConvertSimulatedTimeToActualTime(simulatedTime);
             }
             else
             {
-                simulatedTime = fieldTeam.ConvertActualTimeToTime(actualTime);
+                simulatedTime = fieldTeam.ConvertActualTimeToSimulatedTime(actualTime);
             }
 
             isStarted = true;

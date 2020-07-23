@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class MainController : MonoBehaviour
 {
-    public UDateTime currentTime;
+    public UDateTime currentSimulatedTime;
     public GameObject currentlyDeployedTeamsPanel;
     public GameObject completedTeamsPanel;
     public GameObject timelineContentPanel;
@@ -23,30 +23,30 @@ public class MainController : MonoBehaviour
     public SideUi sideUi;
     public GameObject currentTimeTextObj;
 
-    public UDateTime earliestStartTime
+    public UDateTime earliestSimulatedStartTime
     {
         get
         {
-            return _earliestStartTime;
+            return _earliestSimulatedStartTime;
         }
     }
-    public UDateTime latestEndTime
+    public UDateTime latestSimulatedEndTime
     {
         get
         {
-            return _latestEndTime;
+            return _latestSimulatedEndTime;
         }
     }
 
-    private UDateTime _earliestStartTime = null;
-    private UDateTime _latestEndTime = null;
+    private UDateTime _earliestSimulatedStartTime = null;
+    private UDateTime _latestSimulatedEndTime = null;
 
     private DateTime _startTimeOfSimulation;
     private DateTime _actualStartTime;
 
     public void Start()
     {
-        _startTimeOfSimulation = currentTime.dateTime;
+        _startTimeOfSimulation = currentSimulatedTime.dateTime;
         _actualStartTime = DateTime.Now;
 
         sceneCamera = sceneCameraObj.GetComponent<Camera>();
@@ -64,19 +64,19 @@ public class MainController : MonoBehaviour
     {
         // Update clock
         long ticksSinceSimulationStart = DateTime.Now.Ticks - _actualStartTime.Ticks;
-        currentTime.dateTime = new DateTime(_startTimeOfSimulation.Ticks + ticksSinceSimulationStart);
-        currentTimeTextObj.GetComponent<Text>().text = currentTime.dateTime.ToString("yyyy/MM/dd HH:mm:ss");
+        currentSimulatedTime.dateTime = new DateTime(_startTimeOfSimulation.Ticks + ticksSinceSimulationStart);
+        currentTimeTextObj.GetComponent<Text>().text = currentSimulatedTime.dateTime.ToString("yyyy/MM/dd HH:mm:ss");
     }
 
     public void AddFieldTeam(FieldTeam fieldTeam)
     {
-        if (_earliestStartTime == null || fieldTeam.startTime.dateTime < _earliestStartTime.dateTime)
+        if (_earliestSimulatedStartTime == null || fieldTeam.simulatedStartTime.dateTime < _earliestSimulatedStartTime.dateTime)
         {
-            _earliestStartTime = fieldTeam.startTime;
+            _earliestSimulatedStartTime = fieldTeam.simulatedStartTime;
         }
-        if (_latestEndTime == null || fieldTeam.endTime.dateTime > _latestEndTime)
+        if (_latestSimulatedEndTime == null || fieldTeam.simulatedEndTime.dateTime > _latestSimulatedEndTime)
         {
-            _latestEndTime = fieldTeam.endTime;
+            _latestSimulatedEndTime = fieldTeam.simulatedEndTime;
         }
 
         fieldTeam.FieldTeamInstantiate();

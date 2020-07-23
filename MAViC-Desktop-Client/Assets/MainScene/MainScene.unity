@@ -1248,7 +1248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4b19fd9484a57f4881f7befc19eb278, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentTime:
+  currentSimulatedTime:
     _dateTime: 2020-07-13 8:20:00 AM
   currentlyDeployedTeamsPanel: {fileID: 899663793}
   completedTeamsPanel: {fileID: 1567310394}
@@ -2569,8 +2569,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1534020812}
   m_HandleRect: {fileID: 1534020811}
   m_Direction: 0
-  m_Value: 1
-  m_Size: 1
+  m_Value: -1.8918918
+  m_Size: 0.99999624
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2842,6 +2842,11 @@ PrefabInstance:
         type: 3}
       propertyPath: clues.Array.data[3].photoFileName
       value: 2020-07-11_12-28-10.jpg
+      objectReference: {fileID: 0}
+    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
+        type: 3}
+      propertyPath: simulatedStartTime._dateTime
+      value: 2020-07-13 8:00:30 AM
       objectReference: {fileID: 0}
     - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
         type: 3}
@@ -3844,6 +3849,11 @@ PrefabInstance:
       propertyPath: clues.Array.data[4].photoFileName
       value: 2020-07-11_11-47-26.jpg
       objectReference: {fileID: 0}
+    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
+        type: 3}
+      propertyPath: simulatedStartTime._dateTime
+      value: 2020-07-13 7:52:20 AM
+      objectReference: {fileID: 0}
     - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4526,7 +4536,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 251239931}
   m_HandleRect: {fileID: 251239930}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -4896,7 +4906,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 2D
+  m_Text: 3D
 --- !u!222 &884728581
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6178,7 +6188,7 @@ Camera:
   near clip plane: 0.1
   far clip plane: 10000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 50
   m_Depth: -1
   m_CullingMask:
@@ -6202,13 +6212,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1221709216}
-  m_LocalRotation: {x: 0.04571122, y: -0.92865884, z: 0.12226021, w: 0.3472113}
-  m_LocalPosition: {x: 25, y: -64, z: 32}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: -0.7071068, w: 0}
+  m_LocalPosition: {x: -3, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 15, y: -139, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 180, z: 0}
 --- !u!114 &1221709221
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6987,7 +6997,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1166337282}
   m_HandleRect: {fileID: 1166337281}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -9906,6 +9916,11 @@ PrefabInstance:
         type: 3}
       propertyPath: clues.Array.data[7].instantiateBySimulatedTime
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
+        type: 3}
+      propertyPath: simulatedStartTime._dateTime
+      value: 2020-07-13 7:50:00 AM
       objectReference: {fileID: 0}
     - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
         type: 3}

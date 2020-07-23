@@ -39,7 +39,7 @@ public class TeamPathPoint : MonoBehaviour
 
     void OnMouseEnter()
     {
-        if (fieldTeam.ConvertActualTimeToTime(actualTime) <= fieldTeam.mainController.currentTime &&
+        if (fieldTeam.ConvertActualTimeToSimulatedTime(actualTime) <= fieldTeam.mainController.currentSimulatedTime &&
             fieldTeam.fieldTeamAppearStatus == FieldTeam.FieldTeamAppearStatus.Showing)
         {
             //this.HighlightPathPoint();
@@ -51,7 +51,7 @@ public class TeamPathPoint : MonoBehaviour
             _mapFrameDisplayObj = Instantiate(fieldTeam.mapFrameDisplayPrefab, wholeScreenUiObj.transform);
             _mapFrameDisplayObj.transform.Find("Background").GetComponent<Image>().color = fieldTeam.teamColor;
             _mapFrameDisplayObj.transform.Find("Arrow").GetComponent<Image>().color = fieldTeam.teamColor;
-            _mapFrameDisplayObj.transform.Find("Time").GetComponent<Text>().text = fieldTeam.ConvertActualTimeToTime(actualTime).ToString("MM/dd/yyyy HH:mm:ss");
+            _mapFrameDisplayObj.transform.Find("Time").GetComponent<Text>().text = fieldTeam.ConvertActualTimeToSimulatedTime(actualTime).ToString("MM/dd/yyyy HH:mm:ss");
             _mapFrameDisplay = _mapFrameDisplayObj.GetComponent<MapFrameDisplay>();
             _mapFrameDisplay.DisplayImage(imagePath);
 
@@ -70,7 +70,7 @@ public class TeamPathPoint : MonoBehaviour
 
     void OnMouseExit()
     {
-        if (fieldTeam.ConvertActualTimeToTime(actualTime) <= fieldTeam.mainController.currentTime &&
+        if (fieldTeam.ConvertActualTimeToSimulatedTime(actualTime) <= fieldTeam.mainController.currentSimulatedTime &&
             fieldTeam.fieldTeamAppearStatus == FieldTeam.FieldTeamAppearStatus.Showing)
         {
             //this.UnhighlightPathPoint();
