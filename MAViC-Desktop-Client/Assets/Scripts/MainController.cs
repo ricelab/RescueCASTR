@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +9,7 @@ public class MainController : MonoBehaviour
     public GameObject completedTeamsPanel;
     public GameObject timelineContentPanel;
     public GameObject mapObj;
+    public Map map;
     public GameObject sceneCameraObj;
     public Camera sceneCamera;
     public CameraControls sceneCameraControls;
@@ -49,6 +48,7 @@ public class MainController : MonoBehaviour
         _startTimeOfSimulation = currentSimulatedTime.dateTime;
         _actualStartTime = DateTime.Now;
 
+        map = mapObj.GetComponent<Map>();
         sceneCamera = sceneCameraObj.GetComponent<Camera>();
         sceneCameraControls = sceneCameraObj.GetComponent<CameraControls>();
         timelineCamera = timelineCameraObj.GetComponent<Camera>();
@@ -82,13 +82,14 @@ public class MainController : MonoBehaviour
         fieldTeam.FieldTeamInstantiate();
     }
 
-    public void ShowAllFieldTeams()
+    public void ShowAllFieldTeams(bool showFootageThumbnails = false)
     {
         foreach (Transform t in this.transform)
         {
             FieldTeam ft = t.gameObject.GetComponent<FieldTeam>();
             if (ft != null && ft.isActiveAndEnabled)
             {
+                ft.showFootageThumbnail = showFootageThumbnails;
                 ft.fieldTeamAppearStatus = FieldTeam.FieldTeamAppearStatus.Showing;
             }
         }

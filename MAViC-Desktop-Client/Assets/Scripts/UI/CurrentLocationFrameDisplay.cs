@@ -19,4 +19,18 @@ public class CurrentLocationFrameDisplay : MonoBehaviour
         Texture2D texture = Utility.LoadImageFile(path);
         image.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
     }
+
+    public void ShowThumbnail()
+    {
+        this.transform.Find("Background").gameObject.SetActive(true);
+        this.transform.Find("Image").gameObject.SetActive(true);
+        this.transform.Find("Arrow").gameObject.SetActive(true);
+    }
+
+    public void HideThumbnail()
+    {
+        this.transform.Find("Background").gameObject.SetActive(false);
+        this.transform.Find("Image").gameObject.SetActive(false);
+        this.transform.Find("Arrow").gameObject.SetActive(false);
+    }
 }

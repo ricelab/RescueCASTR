@@ -52,8 +52,15 @@ MonoBehaviour:
     type: 3}
   currentLocationFrameDisplayPrefab: {fileID: 7884995692887825270, guid: 30078bd182f63400e89a34bc959b58a6,
     type: 3}
+  messageIconMapPrefab: {fileID: 0}
+  clueIconMapPrefab: {fileID: 1020587267390854333, guid: 2ceaec636ad9048108da6920cab27173,
+    type: 3}
   teamName: 
   teamColor: {r: 1, g: 1, b: 1, a: 1}
   recordingDirectoryPath: 
-  startTime:
+  simulatedStartTime:
     _dateTime: 0001-01-01 12:00:00 AM
+  messages: []
+  clues: []
+  revealedMessages: []
+  revealedClues: []

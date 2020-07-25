@@ -1254,6 +1254,7 @@ MonoBehaviour:
   completedTeamsPanel: {fileID: 1567310394}
   timelineContentPanel: {fileID: 322617435}
   mapObj: {fileID: 550443983}
+  map: {fileID: 0}
   sceneCameraObj: {fileID: 1221709216}
   sceneCamera: {fileID: 1221709219}
   sceneCameraControls: {fileID: 1221709221}
@@ -2569,8 +2570,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1534020812}
   m_HandleRect: {fileID: 1534020811}
   m_Direction: 0
-  m_Value: -1.8918918
-  m_Size: 0.99999624
+  m_Value: -6.64
+  m_Size: 0.9999975
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4536,7 +4537,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 251239931}
   m_HandleRect: {fileID: 251239930}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

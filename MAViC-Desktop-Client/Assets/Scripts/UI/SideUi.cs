@@ -47,7 +47,7 @@ public class SideUi : ABackButtonClickHandler // ABackButtonClickHandler inherit
     {
         selectedFieldTeam = ft;
 
-        selectedFieldTeam.ShowThisFieldTeamOnly();
+        selectedFieldTeam.ShowThisFieldTeamOnly(true);
 
         ftdPageTeamColorIconObj.GetComponent<Image>().color = selectedFieldTeam.teamColor;
         ftdPageTeamNameTextObj.GetComponent<Text>().text = selectedFieldTeam.teamName;
@@ -102,7 +102,7 @@ public class SideUi : ABackButtonClickHandler // ABackButtonClickHandler inherit
 
     public override void OnBackButtonClick(GameObject fromPage, GameObject toPage)
     {
-        mainController.ShowAllFieldTeams();
+        mainController.ShowAllFieldTeams(false);
         selectedFieldTeam = null;
 
         scrollRect.content = mainMenuContentPanel.GetComponent<RectTransform>();
