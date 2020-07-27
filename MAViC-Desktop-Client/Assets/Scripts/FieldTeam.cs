@@ -98,8 +98,8 @@ public class FieldTeam : MonoBehaviour
     public GameObject mapFrameDisplayPrefab;
     public GameObject currentLocationFrameDisplayPrefab;
 
-    public GameObject messageIconMapPrefab;
-    public GameObject clueIconMapPrefab;
+    public GameObject messageMapIconPrefab;
+    public GameObject clueMapIconPrefab;
 
     public string teamName;
     public Color teamColor;
@@ -185,11 +185,12 @@ public class FieldTeam : MonoBehaviour
     private GameObject _teamPathLineObj;
 
     private List<GameObject> _clueMapIconObjs;
+    private List<GameObject> _messageMapIconObjs;
 
     private int _latestAvailableWaypointIndex = 0;
 
-    private int _latestAvailableMessageIndex = 0;
-    private int _latestAvailableClueIndex = 0;
+    private int _latestAvailableMessageIndex = -1;
+    private int _latestAvailableClueIndex = -1;
 
     private GameObject _currentLocationIndicator;
     private GameObject _currentLocationFrameDisplayObj;
@@ -341,11 +342,16 @@ public class FieldTeam : MonoBehaviour
 
         // Setup revealed messages
         revealedMessages = new List<Message>();
+        _messageMapIconObjs = new List<GameObject>();
         if (messages != null && messages.Length > 0)
         {
             foreach (Message message in messages)
             {
                 message.fieldTeam = this;
+                if (message.instantiateBySimulatedTime)
+                    message.location = GetLocationAtSimulatedTime(message.simulatedTime);
+                else
+                    message.location = GetLocationAtActualTime(message.actualTime);
 
                 // Start the Message if it hasn't been started
                 message.Start();
@@ -464,6 +470,12 @@ public class FieldTeam : MonoBehaviour
                     {
                         revealedMessages.Add(messages[i]);
                         _latestAvailableMessageIndex++;
+
+                        // Add message icon to scene UI
+                        GameObject messageMapIconObj = GameObject.Instantiate(messageMapIconPrefab, mainController.sceneUiObj.transform);
+                        messageMapIconObj.transform.SetSiblingIndex(0);
+                        messageMapIconObj.GetComponent<MessageMapIcon>().message = messages[i];
+                        _messageMapIconObjs.Add(messageMapIconObj);
                     }
                     else
                     {
@@ -484,7 +496,8 @@ public class FieldTeam : MonoBehaviour
                         _latestAvailableClueIndex++;
 
                         // Add clue icon to scene UI
-                        GameObject clueMapIconObj = GameObject.Instantiate(clueIconMapPrefab, mainController.sceneUiObj.transform);
+                        GameObject clueMapIconObj = GameObject.Instantiate(clueMapIconPrefab, mainController.sceneUiObj.transform);
+                        clueMapIconObj.transform.SetSiblingIndex(0);
                         clueMapIconObj.GetComponent<ClueMapIcon>().clue = clues[i];
                         _clueMapIconObjs.Add(clueMapIconObj);
                     }
