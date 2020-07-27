@@ -17,12 +17,12 @@ public class SideUi : ABackButtonClickHandler // ABackButtonClickHandler inherit
 
     public MainController mainController;
 
-    public ScrollRect scrollRect;
+    //public ScrollRect scrollRect;
 
-    public GameObject mainMenuContentPanel;
-    public GameObject fieldTeamDetailsContentPanel;
-    public GameObject messagesContentPanel;
-    public GameObject cluesContentPanel;
+    public GameObject mainMenuPageObj;
+    public GameObject fieldTeamDetailsPageObj;
+    public GameObject messagesPageObj;
+    public GameObject cluesPageObj;
 
     public GameObject ftdPageTeamColorIconObj;
     public GameObject ftdPageTeamNameTextObj;
@@ -52,10 +52,10 @@ public class SideUi : ABackButtonClickHandler // ABackButtonClickHandler inherit
         ftdPageTeamColorIconObj.GetComponent<Image>().color = selectedFieldTeam.teamColor;
         ftdPageTeamNameTextObj.GetComponent<Text>().text = selectedFieldTeam.teamName;
 
-        mainMenuContentPanel.SetActive(false);
-        fieldTeamDetailsContentPanel.SetActive(true);
+        mainMenuPageObj.SetActive(false);
+        fieldTeamDetailsPageObj.SetActive(true);
 
-        scrollRect.content = fieldTeamDetailsContentPanel.GetComponent<RectTransform>();
+        //scrollRect.content = fieldTeamDetailsPageObj.GetComponent<RectTransform>();
 
         DisplayFieldTeamLiveImage(selectedFieldTeam.GetPhotoThumbnailPathFromSimulatedTime(mainController.currentSimulatedTime));
 
@@ -67,10 +67,10 @@ public class SideUi : ABackButtonClickHandler // ABackButtonClickHandler inherit
         messagesPageTeamColorIconObj.GetComponent<Image>().color = selectedFieldTeam.teamColor;
         messagesPageTeamNameTextObj.GetComponent<Text>().text = selectedFieldTeam.teamName + " Messages";
 
-        fieldTeamDetailsContentPanel.SetActive(false);
-        messagesContentPanel.SetActive(true);
+        fieldTeamDetailsPageObj.SetActive(false);
+        messagesPageObj.SetActive(true);
 
-        scrollRect.content = messagesContentPanel.GetComponent<RectTransform>();
+        //scrollRect.content = messagesPageObj.GetComponent<RectTransform>();
 
         // Load field team's message history
         foreach (Message message in selectedFieldTeam.revealedMessages)
@@ -86,10 +86,10 @@ public class SideUi : ABackButtonClickHandler // ABackButtonClickHandler inherit
         cluesPageTeamColorIconObj.GetComponent<Image>().color = selectedFieldTeam.teamColor;
         cluesPageTeamNameTextObj.GetComponent<Text>().text = selectedFieldTeam.teamName + " Clues";
 
-        fieldTeamDetailsContentPanel.SetActive(false);
-        cluesContentPanel.SetActive(true);
+        fieldTeamDetailsPageObj.SetActive(false);
+        cluesPageObj.SetActive(true);
 
-        scrollRect.content = cluesContentPanel.GetComponent<RectTransform>();
+        //scrollRect.content = cluesPageObj.GetComponent<RectTransform>();
 
         // Load field team's clues
         foreach (Clue clue in selectedFieldTeam.revealedClues)
@@ -105,7 +105,7 @@ public class SideUi : ABackButtonClickHandler // ABackButtonClickHandler inherit
         mainController.ShowAllFieldTeams(false);
         selectedFieldTeam = null;
 
-        scrollRect.content = mainMenuContentPanel.GetComponent<RectTransform>();
+        //scrollRect.content = mainMenuPageObj.GetComponent<RectTransform>();
         currentlyActivePage = CurrentlyActivePage.MainMenu;
     }
 

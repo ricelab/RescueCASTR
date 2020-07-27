@@ -8,7 +8,7 @@ public class FieldTeamsDetailsPage : ABackButtonClickHandler // ABackButtonClick
 
     public override void OnBackButtonClick(GameObject fromPage, GameObject toPage)
     {
-        sideUi.scrollRect.content = sideUi.fieldTeamDetailsContentPanel.GetComponent<RectTransform>();
+        //sideUi.scrollRect.content = sideUi.fieldTeamDetailsPageObj.GetComponent<RectTransform>();
 
         foreach(Transform child in sideUi.messagesPage.messagesContainerContentPanel.transform)
         {
