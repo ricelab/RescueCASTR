@@ -83,12 +83,12 @@ public class CameraControls : MonoBehaviour
         {
             _oldCameraViewingMode = cameraViewingMode;
 
-            _oldRotationX = transform.rotation.eulerAngles.x;
+            _oldRotationX = 45.0f;
             _oldRotationY = transform.rotation.eulerAngles.y;
             _oldPositionZ = transform.position.z;
 
             transform.rotation = Quaternion.Euler(90.0f, 180.0f, 0.0f);
-            transform.position = new Vector3(transform.position.x, 0.0f, transform.position.z);
+            transform.position = new Vector3(transform.position.x, -20.0f, transform.position.z);
 
             _camera.clearFlags = CameraClearFlags.SolidColor;
             _camera.orthographic = true;
