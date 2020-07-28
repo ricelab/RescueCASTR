@@ -93,6 +93,7 @@ public class FieldTeam : MonoBehaviour
     public MainController mainController;
 
     public GameObject teamIconPrefab;
+    public GameObject deployedTeamIconPrefab;
     public GameObject teamTimelinePrefab;
 
     public GameObject mapFrameDisplayPrefab;
@@ -225,7 +226,7 @@ public class FieldTeam : MonoBehaviour
     {
         Start();
 
-        _teamIconObj = Instantiate(teamIconPrefab,
+        _teamIconObj = Instantiate(isComplete ? teamIconPrefab : deployedTeamIconPrefab,
             isComplete ? mainController.completedTeamsPanel.transform : mainController.currentlyDeployedTeamsPanel.transform);
         _teamIconObj.transform.SetSiblingIndex(0);
         _teamIcon = _teamIconObj.GetComponent<TeamIcon>();
@@ -321,7 +322,7 @@ public class FieldTeam : MonoBehaviour
             // Set positions (vertices) to display only the path that has been revealed at the current time
             lineRenderer.positionCount = _revealedMapPositions.Count;
             lineRenderer.SetPositions(_revealedMapPositions.ToArray());
-            lineRenderer.startColor = new Color(teamColor.r, teamColor.g, teamColor.b, 0.5f);
+            lineRenderer.startColor = new Color(0.5f * teamColor.r, 0.5f * teamColor.g, 0.5f * teamColor.b, teamColor.a);
             lineRenderer.endColor = teamColor;
             lineRenderer.numCornerVertices = 10;
             lineRenderer.numCapVertices = 5;
@@ -401,8 +402,11 @@ public class FieldTeam : MonoBehaviour
             }
             else // if (mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._3D)
             {
-                lineRenderer.startWidth = lineRenderer.endWidth =
-                    1.0f / 50.0f * (mainController.sceneCameraObj.transform.position.y - mainController.sceneCameraControls.minimumY);
+                float width = 1.0f / 50.0f * (mainController.sceneCameraObj.transform.position.y - mainController.sceneCameraControls.minimumY);
+                if (width < 0.1f)
+                    width = 0.1f;
+
+                lineRenderer.startWidth = lineRenderer.endWidth = width;
             }
 
             // Update size of current location indicator
@@ -449,8 +453,11 @@ public class FieldTeam : MonoBehaviour
             // If the team has just completed, move its icon to the 'completed' section
             if (isComplete && _teamIcon.transform.parent != mainController.completedTeamsPanel.transform)
             {
-                _teamIconObj.transform.SetParent(mainController.completedTeamsPanel.transform);
+                GameObject.Destroy(_teamIconObj);
+                _teamIconObj = Instantiate(teamIconPrefab, mainController.completedTeamsPanel.transform);
                 _teamIconObj.transform.SetSiblingIndex(0);
+                _teamIcon = _teamIconObj.GetComponent<TeamIcon>();
+                _teamIcon.fieldTeam = this;
                 _currentLocationIndicator.GetComponent<MeshRenderer>().enabled = false;
                 HideCurrentLocationFrameDisplay();
             }

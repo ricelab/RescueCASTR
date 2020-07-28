@@ -22,7 +22,7 @@ public class Clue
             {
                 actualTime = fieldTeam.ConvertSimulatedTimeToActualTime(simulatedTime);
             }
-            else
+            else // if (!instantiateBySimulatedTime)
             {
                 simulatedTime = fieldTeam.ConvertActualTimeToSimulatedTime(actualTime);
             }
