@@ -94,7 +94,7 @@ public class TeamIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         else
         {
             this.GetComponent<Image>().color =
-                        new Color(0.75f * fieldTeam.teamColor.r, 0.75f * fieldTeam.teamColor.g, 0.75f * fieldTeam.teamColor.b, fieldTeam.teamColor.a);
+                new Color(0.75f * fieldTeam.teamColor.r, 0.75f * fieldTeam.teamColor.g, 0.75f * fieldTeam.teamColor.b, fieldTeam.teamColor.a);
         }
 
         fieldTeam.ShowThisFieldTeamOnly(true);
@@ -106,7 +106,7 @@ public class TeamIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         //Texture2D texture = Utility.LoadImageFile(path);
         //footage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
 
-        _imageLoader.StartLoading(path, this);
+        _imageLoader.StartLoading(path, this, fieldTeam.mainController.footageThumbnailsCache);
     }
 
     public void ImageLoaded(Texture2D imageTexture, object optionalParameter)

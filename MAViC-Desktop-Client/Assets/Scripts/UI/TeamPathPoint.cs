@@ -53,6 +53,7 @@ public class TeamPathPoint : MonoBehaviour
             _mapFrameDisplayObj.transform.Find("Arrow").GetComponent<Image>().color = fieldTeam.teamColor;
             _mapFrameDisplayObj.transform.Find("Time").GetComponent<Text>().text = fieldTeam.ConvertActualTimeToSimulatedTime(actualTime).ToString("MM/dd/yyyy HH:mm:ss");
             _mapFrameDisplay = _mapFrameDisplayObj.GetComponent<MapFrameDisplay>();
+            _mapFrameDisplay.fieldTeam = fieldTeam;
             _mapFrameDisplay.DisplayImage(imagePath);
 
             Camera sceneCamera = fieldTeam.mainController.sceneCameraObj.GetComponent<Camera>();

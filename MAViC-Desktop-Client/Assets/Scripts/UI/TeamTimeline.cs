@@ -20,7 +20,7 @@ public class TeamTimeline : MonoBehaviour
     private GameObject _line;
 
     private GameObject _mapFrameDisplayObj;
-    private MapFrameDisplay _mapFrameDisplayLogic;
+    private MapFrameDisplay _mapFrameDisplay;
 
     private GraphicRaycaster _raycaster;
     private PointerEventData _pointerEventData;
@@ -181,11 +181,12 @@ public class TeamTimeline : MonoBehaviour
                     _mapFrameDisplayObj = Instantiate(fieldTeam.mapFrameDisplayPrefab, _wholeScreenUiObj.transform);
                     _mapFrameDisplayObj.transform.Find("Background").GetComponent<Image>().color = fieldTeam.teamColor;
                     _mapFrameDisplayObj.transform.Find("Arrow").GetComponent<Image>().color = fieldTeam.teamColor;
-                    _mapFrameDisplayLogic = _mapFrameDisplayObj.GetComponent<MapFrameDisplay>();
+                    _mapFrameDisplay = _mapFrameDisplayObj.GetComponent<MapFrameDisplay>();
+                    _mapFrameDisplay.fieldTeam = fieldTeam;
                     _mapFrameDisplayShowing = true;
                 }
 
-                _mapFrameDisplayLogic.DisplayImage(imagePath);
+                _mapFrameDisplay.DisplayImage(imagePath);
                 _mapFrameDisplayObj.transform.Find("Time").GetComponent<Text>().text = simulatedTimeHighlighted.ToString("MM/dd/yyyy HH:mm:ss");
 
                 Vector2 pos = new Vector2(

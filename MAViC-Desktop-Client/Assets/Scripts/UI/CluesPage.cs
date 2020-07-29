@@ -25,6 +25,6 @@ public class CluesPage : MonoBehaviour
         //clueBoxToAdd.transform.Find("Image").GetComponent<Image>().sprite =
         //    Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
 
-        clueBoxToAdd.LoadImage(sideUi.selectedFieldTeam.recordingDirectoryPath + "clues-photos/" + clue.photoFileName);
+        clueBoxToAdd.LoadImage(sideUi.mainController.resourcesUrl + sideUi.selectedFieldTeam.recordingDirectoryPath + "clues-photos/" + clue.photoFileName);
     }
 }

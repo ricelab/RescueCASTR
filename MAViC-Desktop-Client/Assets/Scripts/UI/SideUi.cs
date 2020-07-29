@@ -66,7 +66,7 @@ public class SideUi : ABackButtonClickHandler, // ABackButtonClickHandler inheri
 
         //scrollRect.content = fieldTeamDetailsPageObj.GetComponent<RectTransform>();
 
-        DisplayFieldTeamLiveImage(selectedFieldTeam.GetPhotoThumbnailPathFromSimulatedTime(mainController.currentSimulatedTime));
+        DisplayFieldTeamLiveImage(selectedFieldTeam.GetPhotoPathFromSimulatedTime(mainController.currentSimulatedTime));
 
         currentlyActivePage = CurrentlyActivePage.FieldTeamDetails;
     }
@@ -116,6 +116,9 @@ public class SideUi : ABackButtonClickHandler, // ABackButtonClickHandler inheri
 
         //scrollRect.content = mainMenuPageObj.GetComponent<RectTransform>();
         currentlyActivePage = CurrentlyActivePage.MainMenu;
+
+        Image liveFootageImage = liveFootageObj.GetComponent<Image>();
+        liveFootageImage.sprite = null;
     }
 
     public void DisplayFieldTeamLiveImage(string path)
@@ -124,7 +127,7 @@ public class SideUi : ABackButtonClickHandler, // ABackButtonClickHandler inheri
         //Texture2D texture = Utility.LoadImageFile(path);
         //liveFootageImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
 
-        _imageLoader.StartLoading(path, this);
+        _imageLoader.StartLoading(path, this, mainController.footageThumbnailsCache);
     }
 
     public void ImageLoaded(Texture2D imageTexture, object optionalParameter)

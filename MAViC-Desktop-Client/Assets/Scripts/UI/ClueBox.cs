@@ -11,18 +11,24 @@ public class ClueBox : MonoBehaviour, IImageLoadedHandler, IPointerEnterHandler,
     public Text clueText;
     public Text clueTimeText;
 
+    private bool _isStarted = false;
     private ImageLoader _imageLoader;
 
     public void Start()
     {
-        _imageLoader = this.gameObject.AddComponent<ImageLoader>();
+        if (!_isStarted)
+        {
+            _imageLoader = this.gameObject.AddComponent<ImageLoader>();
+            this.transform.Find("Background").GetComponent<Image>().color = new Color(0.51f, 0.65f, 0.75f, 1.0f);
 
-        this.transform.Find("Background").GetComponent<Image>().color = new Color(0.51f, 0.65f, 0.75f, 1.0f);
+            _isStarted = true;
+        }
     }
 
     public void LoadImage(string path)
     {
-        _imageLoader.StartLoading(path, this);
+        Start();
+        _imageLoader.StartLoading(path, this, clue.fieldTeam.mainController.cluesPhotosCache);
     }
 
     public void ImageLoaded(Texture2D imageTexture, object optionalParameter)

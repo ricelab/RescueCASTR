@@ -707,6 +707,7 @@ public class FieldTeam : MonoBehaviour
             _currentLocationFrameDisplayObj.transform.Find("Arrow").GetComponent<Image>().color = teamColor;
 
             _currentLocationFrameDisplay = _currentLocationFrameDisplayObj.GetComponent<CurrentLocationFrameDisplay>();
+            _currentLocationFrameDisplay.fieldTeam = this;
             _currentLocationFrameDisplay.SetTeamName(teamName);
 
             _currentLocationFrameDisplayIsShowing = true;
@@ -732,7 +733,7 @@ public class FieldTeam : MonoBehaviour
         // Display on side UI
         if (mainController.sideUi.selectedFieldTeam == this)
         {
-            mainController.sideUi.DisplayFieldTeamLiveImage(GetPhotoThumbnailPathFromSimulatedTime(mainController.currentSimulatedTime));
+            mainController.sideUi.DisplayFieldTeamLiveImage(GetPhotoPathFromSimulatedTime(mainController.currentSimulatedTime));
         }
     }
 

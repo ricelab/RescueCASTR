@@ -38,6 +38,10 @@ public class MainController : MonoBehaviour
         }
     }
 
+    public ImageLoaderCache footageThumbnailsCache;
+    public ImageLoaderCache footagePhotosCache;
+    public ImageLoaderCache cluesPhotosCache;
+
     private UDateTime _earliestSimulatedStartTime = null;
     private UDateTime _latestSimulatedEndTime = null;
 
@@ -53,6 +57,10 @@ public class MainController : MonoBehaviour
 
         _startTimeOfSimulation = currentSimulatedTime.dateTime;
         _actualStartTime = DateTime.Now;
+
+        footageThumbnailsCache = new ImageLoaderCache(100);
+        footagePhotosCache = new ImageLoaderCache(25);
+        cluesPhotosCache = new ImageLoaderCache(25);
 
         map = mapObj.GetComponent<Map>();
         sceneCamera = sceneCameraObj.GetComponent<Camera>();

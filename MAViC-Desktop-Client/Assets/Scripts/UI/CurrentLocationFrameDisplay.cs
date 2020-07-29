@@ -6,14 +6,22 @@ using UnityEngine.UI;
 
 public class CurrentLocationFrameDisplay : MonoBehaviour, IImageLoadedHandler
 {
+    public FieldTeam fieldTeam;
+
     public Image image;
     public Text teamNameText;
 
+    private bool _isStarted = false;
     private ImageLoader _imageLoader;
 
     public void Start()
     {
-        _imageLoader = this.gameObject.AddComponent<ImageLoader>();
+        if (!_isStarted)
+        {
+            _imageLoader = this.gameObject.AddComponent<ImageLoader>();
+
+            _isStarted = true;
+        }
     }
 
     public void SetTeamName(string teamName)
@@ -26,8 +34,8 @@ public class CurrentLocationFrameDisplay : MonoBehaviour, IImageLoadedHandler
         //Texture2D texture = Utility.LoadImageFile(path);
         //image.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
 
-        if (_imageLoader != null)
-            _imageLoader.StartLoading(path, this);
+        Start();
+        _imageLoader.StartLoading(path, this, fieldTeam.mainController.footageThumbnailsCache);
     }
 
     public void ImageLoaded(Texture2D imageTexture, object optionalParameter)
