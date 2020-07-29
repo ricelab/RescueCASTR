@@ -16,6 +16,7 @@
 /[Aa]ssets/[Tt]errains/
 /[Aa]ssets/[Ff]ield[Tt]eam[Rr]ecords/
 /[Aa]ssets/[Rr]esources/[Ff]ield[Tt]eam[Rr]ecords/
+/mavic-resources/
 
 # Never ignore Asset meta data
 !/[Aa]ssets/**/*.meta
