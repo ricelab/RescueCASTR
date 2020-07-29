@@ -1735,7 +1735,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.00014022381}
+  m_AnchoredPosition: {x: 0, y: -0.000006748409}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &322617437
@@ -1823,6 +1823,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4b19fd9484a57f4881f7befc19eb278, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  resourcesUrl: http://pages.cpsc.ucalgary.ca/~bdgjones/mavic-resources/
   currentSimulatedTime:
     _dateTime: 2020-07-13 8:20:00 AM
   currentlyDeployedTeamsPanel: {fileID: 899663793}
@@ -3350,8 +3351,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1534020812}
   m_HandleRect: {fileID: 1534020811}
   m_Direction: 0
-  m_Value: -8.625
-  m_Size: 0.999998
+  m_Value: -0.46774194
+  m_Size: 0.99999374
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3434,7 +3435,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.0027684644, y: -0.0000355317}
+  m_AnchoredPosition: {x: 0.003536012, y: -0.0000355317}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &582743354
@@ -3629,6 +3630,11 @@ PrefabInstance:
       propertyPath: simulatedStartTime._dateTime
       value: 2020-07-13 8:00:30 AM
       objectReference: {fileID: 0}
+    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
+        type: 3}
+      propertyPath: mainController
+      value: 
+      objectReference: {fileID: 328753224}
     - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4559,6 +4565,11 @@ PrefabInstance:
       value: Command, we found a button of a blue cartoon cat. Is this that Doraemon
         guy the kid likes?
       objectReference: {fileID: 0}
+    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
+        type: 3}
+      propertyPath: mainController
+      value: 
+      objectReference: {fileID: 328753224}
     - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -7581,7 +7592,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1166337282}
   m_HandleRect: {fileID: 1166337281}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -10396,7 +10407,7 @@ PrefabInstance:
     - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
         type: 3}
       propertyPath: clues.Array.data[4].actualTime._dateTime
-      value: 2020-07-11 5:53:39 PM
+      value: 2020-07-11 5:53:49 PM
       objectReference: {fileID: 0}
     - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
         type: 3}
@@ -10603,6 +10614,11 @@ PrefabInstance:
       propertyPath: simulatedStartTime._dateTime
       value: 2020-07-13 7:50:00 AM
       objectReference: {fileID: 0}
+    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
+        type: 3}
+      propertyPath: mainController
+      value: 
+      objectReference: {fileID: 328753224}
     - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
         type: 3}
       propertyPath: m_LocalPosition.x

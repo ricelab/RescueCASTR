@@ -163,6 +163,8 @@ public class FieldTeam : MonoBehaviour
     private GameObject _teamTimelineObj;
     private TeamTimeline _teamTimeline;
 
+    private string _recordingResourcesUrl;
+
     private string _gpsRecordingFilePath;
     private string _timelapsePhotoDirectoryPath;
     private string _timelapsePhotoThumbnailDirectoryPath;
@@ -659,10 +661,12 @@ public class FieldTeam : MonoBehaviour
             recordingDirectoryPath += "/";
         }
 
-        _gpsRecordingFilePath = recordingDirectoryPath + "gps-record";
-        _timelapsePhotoDirectoryPath = recordingDirectoryPath + "photos/";
-        _timelapsePhotoThumbnailDirectoryPath = recordingDirectoryPath + "photo-thumbnails/";
-        _photosFileNamesListPath = recordingDirectoryPath + "photos-filenames";
+        _recordingResourcesUrl = mainController.resourcesUrl + recordingDirectoryPath;
+
+        _gpsRecordingFilePath = /* _recordingResourcesUrl */ recordingDirectoryPath + "gps-record";
+        _timelapsePhotoDirectoryPath = _recordingResourcesUrl + "photos/";
+        _timelapsePhotoThumbnailDirectoryPath = _recordingResourcesUrl + "photo-thumbnails/";
+        _photosFileNamesListPath = /* _recordingResourcesUrl */ recordingDirectoryPath + "photos-filenames";
 
         List<Track> tracks = Track.ReadTracksFromFile(_gpsRecordingFilePath);
         _actualStartTime = tracks[0].Waypoints.First().Time;

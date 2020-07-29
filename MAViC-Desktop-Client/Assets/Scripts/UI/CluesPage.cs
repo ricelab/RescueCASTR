@@ -13,16 +13,18 @@ public class CluesPage : MonoBehaviour
 
     public void AddClueBox(Clue clue)
     {
-        GameObject clueBoxToAdd = Instantiate(clueBoxPrefab, cluesContainerContentPanel.transform);
+        GameObject clueBoxObjToAdd = Instantiate(clueBoxPrefab, cluesContainerContentPanel.transform);
+        ClueBox clueBoxToAdd = clueBoxObjToAdd.GetComponent<ClueBox>();
 
-        clueBoxToAdd.GetComponent<ClueBox>().clue = clue;
+        clueBoxToAdd.clue = clue;
 
-        clueBoxToAdd.transform.Find("ClueText").GetComponent<Text>().text = clue.textDescription;
+        clueBoxObjToAdd.transform.Find("ClueText").GetComponent<Text>().text = clue.textDescription;
+        clueBoxObjToAdd.transform.Find("ClueTimeText").GetComponent<Text>().text = clue.simulatedTime.dateTime.ToString("MM/dd/yyyy HH:mm:ss");
 
-        Texture2D texture = Utility.LoadImageFile(sideUi.selectedFieldTeam.recordingDirectoryPath + "clues-photos/" + clue.photoFileName); ;
-        clueBoxToAdd.transform.Find("Image").GetComponent<Image>().sprite =
-            Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+        //Texture2D texture = Utility.LoadImageFile(sideUi.selectedFieldTeam.recordingDirectoryPath + "clues-photos/" + clue.photoFileName); ;
+        //clueBoxToAdd.transform.Find("Image").GetComponent<Image>().sprite =
+        //    Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
 
-        clueBoxToAdd.transform.Find("ClueTimeText").GetComponent<Text>().text = clue.simulatedTime.dateTime.ToString("MM/dd/yyyy HH:mm:ss");
+        clueBoxToAdd.LoadImage(sideUi.selectedFieldTeam.recordingDirectoryPath + "clues-photos/" + clue.photoFileName);
     }
 }

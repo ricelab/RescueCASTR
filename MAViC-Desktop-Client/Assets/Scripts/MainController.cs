@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class MainController : MonoBehaviour
 {
+    public string resourcesUrl = "https://pages.cpsc.ucalgary.ca/~bdgjones/mavic-resources/";
     public UDateTime currentSimulatedTime;
     public GameObject currentlyDeployedTeamsPanel;
     public GameObject completedTeamsPanel;
@@ -45,6 +46,11 @@ public class MainController : MonoBehaviour
 
     public void Start()
     {
+        if (!resourcesUrl.EndsWith("/"))
+        {
+            resourcesUrl += "/";
+        }
+
         _startTimeOfSimulation = currentSimulatedTime.dateTime;
         _actualStartTime = DateTime.Now;
 
