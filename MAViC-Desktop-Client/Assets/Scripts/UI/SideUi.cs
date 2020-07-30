@@ -43,6 +43,8 @@ public class SideUi : ABackButtonClickHandler, // ABackButtonClickHandler inheri
 
     public CurrentlyActivePage currentlyActivePage = CurrentlyActivePage.MainMenu;
 
+    public FullscreenView fullscreenView;
+
 
     private ImageLoader _imageLoader;
 
@@ -66,7 +68,10 @@ public class SideUi : ABackButtonClickHandler, // ABackButtonClickHandler inheri
 
         //scrollRect.content = fieldTeamDetailsPageObj.GetComponent<RectTransform>();
 
-        DisplayFieldTeamLiveImage(selectedFieldTeam.GetPhotoPathFromSimulatedTime(mainController.currentSimulatedTime));
+        DisplayFieldTeamLiveImage(
+            selectedFieldTeam.GetPhotoPathFromSimulatedTime(mainController.currentSimulatedTime),
+            selectedFieldTeam.GetPhotoThumbnailPathFromSimulatedTime(mainController.currentSimulatedTime)
+            );
 
         currentlyActivePage = CurrentlyActivePage.FieldTeamDetails;
     }
@@ -121,13 +126,18 @@ public class SideUi : ABackButtonClickHandler, // ABackButtonClickHandler inheri
         liveFootageImage.sprite = null;
     }
 
-    public void DisplayFieldTeamLiveImage(string path)
+    public void DisplayFieldTeamLiveImage(string fullImagePath, string thumbnailPath)
     {
         //Image liveFootageImage = liveFootageObj.GetComponent<Image>();
         //Texture2D texture = Utility.LoadImageFile(path);
         //liveFootageImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
 
-        _imageLoader.StartLoading(path, this, mainController.footageThumbnailsCache);
+        _imageLoader.StartLoading(thumbnailPath, this, mainController.footageThumbnailsCache);
+
+        if (fullscreenView != null)
+        {
+            fullscreenView.DisplayFullscreenImage(fullImagePath, thumbnailPath);
+        }
     }
 
     public void ImageLoaded(Texture2D imageTexture, object optionalParameter)

@@ -733,7 +733,10 @@ public class FieldTeam : MonoBehaviour
         // Display on side UI
         if (mainController.sideUi.selectedFieldTeam == this)
         {
-            mainController.sideUi.DisplayFieldTeamLiveImage(GetPhotoPathFromSimulatedTime(mainController.currentSimulatedTime));
+            mainController.sideUi.DisplayFieldTeamLiveImage(
+                GetPhotoPathFromSimulatedTime(mainController.currentSimulatedTime),
+                GetPhotoThumbnailPathFromSimulatedTime(mainController.currentSimulatedTime)
+                );
         }
     }
 
