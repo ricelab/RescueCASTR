@@ -68,3 +68,7 @@ MonoBehaviour:
   revealedMessages: []
   revealedClues: []
   showFootageThumbnail: 0
+  fullscreenView: {fileID: 0}
+  fullScreenViewObj: {fileID: 0}
+  fullScreenViewPrefab: {fileID: 3671459963851557861, guid: 5254fbe74393a49bcb357b2246d8f7f9,
+    type: 3}

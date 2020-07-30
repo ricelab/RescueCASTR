@@ -40,7 +40,8 @@ public class TeamPathPoint : MonoBehaviour
     void OnMouseEnter()
     {
         if (fieldTeam.ConvertActualTimeToSimulatedTime(actualTime) <= fieldTeam.mainController.currentSimulatedTime &&
-            fieldTeam.fieldTeamAppearStatus == FieldTeam.FieldTeamAppearStatus.Showing)
+            fieldTeam.fieldTeamAppearStatus == FieldTeam.FieldTeamAppearStatus.Showing &&
+            fieldTeam.mainController.fullscreenView == null)
         {
             //this.HighlightPathPoint();
 
@@ -79,6 +80,24 @@ public class TeamPathPoint : MonoBehaviour
             GameObject.Destroy(_mapFrameDisplayObj);
 
             fieldTeam.UnhighlightTimeline();
+        }
+    }
+
+    public void OnMouseDown()
+    {
+        if (fieldTeam.mainController.fullscreenView == null)
+        {
+            fieldTeam.mainController.fullscreenViewObj =
+                GameObject.Instantiate(fieldTeam.mainController.fullscreenViewPrefab, fieldTeam.mainController.wholeScreenUiObj.transform);
+
+            fieldTeam.mainController.fullscreenView = fieldTeam.mainController.fullscreenViewObj.GetComponent<FullscreenView>();
+            fieldTeam.mainController.fullscreenView.mainController = fieldTeam.mainController;
+            fieldTeam.mainController.fullscreenViewShowingLiveFootage = false;
+
+            fieldTeam.mainController.fullscreenView.DisplayFullscreenImage(
+                fieldTeam.GetPhotoPathFromActualTime(actualTime),
+                fieldTeam.GetPhotoThumbnailPathFromActualTime(actualTime)
+                );
         }
     }
 

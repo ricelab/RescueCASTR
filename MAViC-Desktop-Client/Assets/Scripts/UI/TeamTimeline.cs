@@ -134,7 +134,7 @@ public class TeamTimeline : MonoBehaviour
             _hoveringOverLine = false;
             foreach (RaycastResult res in results)
             {
-                if (res.gameObject == _line) // cursor is hovering over line
+                if (res.gameObject == _line && fieldTeam.mainController.fullscreenView == null) // cursor is hovering over line
                 {
                     _hoveringOverLine = true;
                     result = res;
@@ -222,6 +222,22 @@ public class TeamTimeline : MonoBehaviour
 
                 fieldTeam.UnhighlightPath();
                 fieldTeam.HighlightPathAtSimulatedTime(simulatedTimeHighlighted);
+
+                // Check for click
+                if (Input.GetMouseButtonDown(0))
+                {
+                    fieldTeam.mainController.fullscreenViewObj =
+                        GameObject.Instantiate(fieldTeam.mainController.fullscreenViewPrefab, fieldTeam.mainController.wholeScreenUiObj.transform);
+
+                    fieldTeam.mainController.fullscreenView = fieldTeam.mainController.fullscreenViewObj.GetComponent<FullscreenView>();
+                    fieldTeam.mainController.fullscreenView.mainController = fieldTeam.mainController;
+                    fieldTeam.mainController.fullscreenViewShowingLiveFootage = false;
+
+                    fieldTeam.mainController.fullscreenView.DisplayFullscreenImage(
+                        fieldTeam.GetPhotoPathFromSimulatedTime(simulatedTimeHighlighted),
+                        fieldTeam.GetPhotoThumbnailPathFromSimulatedTime(simulatedTimeHighlighted)
+                        );
+                }
             }
             else if (_hoveringOverLineOnLastFrame)
             {

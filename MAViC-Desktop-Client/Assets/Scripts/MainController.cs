@@ -42,6 +42,11 @@ public class MainController : MonoBehaviour
     public ImageLoaderCache footagePhotosCache;
     public ImageLoaderCache cluesPhotosCache;
 
+    public FullscreenView fullscreenView;
+    public GameObject fullscreenViewObj;
+    public GameObject fullscreenViewPrefab;
+    public bool fullscreenViewShowingLiveFootage = false;
+
     private UDateTime _earliestSimulatedStartTime = null;
     private UDateTime _latestSimulatedEndTime = null;
 

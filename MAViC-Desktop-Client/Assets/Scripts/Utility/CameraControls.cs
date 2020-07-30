@@ -109,112 +109,116 @@ public class CameraControls : MonoBehaviour
             toggleButtonTextObj.GetComponent<Text>().text = "2D";
         }
 
-        _referencePosition = new Vector2(
-            Input.mousePosition.x / _wholeScreenUiObj.GetComponent<Canvas>().pixelRect.size.x * _wholeScreenUiObj.GetComponent<CanvasScaler>().referenceResolution.x,
-            Input.mousePosition.y / _wholeScreenUiObj.GetComponent<Canvas>().pixelRect.size.y * _wholeScreenUiObj.GetComponent<CanvasScaler>().referenceResolution.y
-        );
 
-        _mouseRatioX = _referencePosition.x / _wholeScreenUiCanvasRect.sizeDelta.x;
-        _mouseRatioY = _referencePosition.y / _wholeScreenUiCanvasRect.sizeDelta.y;
-        
-        // Zoom
-        if (_mouseRatioX < 0.75 && _mouseRatioY > 0.2)
+        if (mainController.fullscreenView == null)
         {
-            if (Input.GetMouseButtonDown(1))
+            _referencePosition = new Vector2(
+                Input.mousePosition.x / _wholeScreenUiObj.GetComponent<Canvas>().pixelRect.size.x * _wholeScreenUiObj.GetComponent<CanvasScaler>().referenceResolution.x,
+                Input.mousePosition.y / _wholeScreenUiObj.GetComponent<Canvas>().pixelRect.size.y * _wholeScreenUiObj.GetComponent<CanvasScaler>().referenceResolution.y
+            );
+
+            _mouseRatioX = _referencePosition.x / _wholeScreenUiCanvasRect.sizeDelta.x;
+            _mouseRatioY = _referencePosition.y / _wholeScreenUiCanvasRect.sizeDelta.y;
+
+            // Zoom
+            if (_mouseRatioX < 0.75 && _mouseRatioY > 0.2)
             {
-                _rightMouseButtonStartedInScene = true;
+                if (Input.GetMouseButtonDown(1))
+                {
+                    _rightMouseButtonStartedInScene = true;
+                }
+                if (Input.GetMouseButtonDown(0))
+                {
+                    _leftMouseButtonStartedInScene = true;
+                }
+
+                // Can adjust zoom based on scroll wheel
+                if (cameraViewingMode == CameraViewingMode._3D)
+                {
+                    transform.Translate(Vector3.forward * Input.GetAxis("Mouse ScrollWheel") * zoomSpeed);
+                }
+                else // if (cameraViewingMode == CameraViewingMode._2D)
+                {
+                    _camera.orthographicSize -= Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
+                }
             }
-            if (Input.GetMouseButtonDown(0))
+
+
+            // Rotate
+            if (cameraViewingMode == CameraViewingMode._3D && Input.GetMouseButton(1) && _rightMouseButtonStartedInScene)
             {
-                _leftMouseButtonStartedInScene = true;
+                transform.Rotate(new Vector3(Input.GetAxis("Mouse Y") * rotateSpeed, -Input.GetAxis("Mouse X") * rotateSpeed, 0));
+                _rotateX = transform.rotation.eulerAngles.x;
+                _rotateY = transform.rotation.eulerAngles.y;
+                transform.rotation = Quaternion.Euler(_rotateX, _rotateY, 0);
             }
 
-            // Can adjust zoom based on scroll wheel
-            if (cameraViewingMode == CameraViewingMode._3D)
+            // Drag
+            if (Input.GetMouseButton(0) && _leftMouseButtonStartedInScene)
             {
-                transform.Translate(Vector3.forward * Input.GetAxis("Mouse ScrollWheel") * zoomSpeed);
+                if (cameraViewingMode == CameraViewingMode._3D)
+                {
+                    transform.Translate(new Vector3(
+                        -Input.GetAxis("Mouse X") * dragSpeed * 1.0f / 50.0f * (transform.position.y - minimumY + 10.0f),
+                        -Input.GetAxis("Mouse Y") * dragSpeed * 1.0f / 50.0f * (transform.position.y - minimumY + 10.0f),
+                        0));
+                }
+                else // if (cameraViewingMode == CameraViewingMode._2D)
+                {
+                    transform.Translate(new Vector3(
+                        -Input.GetAxis("Mouse X") * dragSpeed * 1.0f / 50.0f * _camera.orthographicSize,
+                        -Input.GetAxis("Mouse Y") * dragSpeed * 1.0f / 50.0f * _camera.orthographicSize,
+                        0));
+                }
             }
-            else // if (cameraViewingMode == CameraViewingMode._2D)
+
+
+            if (Input.GetMouseButtonUp(1))
             {
-                _camera.orthographicSize -= Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
+                _rightMouseButtonStartedInScene = false;
             }
-        }
-
-
-        // Rotate
-        if (cameraViewingMode == CameraViewingMode._3D && Input.GetMouseButton(1) && _rightMouseButtonStartedInScene)
-        {
-            transform.Rotate(new Vector3(Input.GetAxis("Mouse Y") * rotateSpeed, -Input.GetAxis("Mouse X") * rotateSpeed, 0));
-            _rotateX = transform.rotation.eulerAngles.x;
-            _rotateY = transform.rotation.eulerAngles.y;
-            transform.rotation = Quaternion.Euler(_rotateX, _rotateY, 0);
-        }
-        
-        // Drag
-        if (Input.GetMouseButton(0) && _leftMouseButtonStartedInScene)
-        {
-            if (cameraViewingMode == CameraViewingMode._3D)
+            if (Input.GetMouseButtonUp(0))
             {
-                transform.Translate(new Vector3(
-                    -Input.GetAxis("Mouse X") * dragSpeed * 1.0f / 50.0f * (transform.position.y - minimumY + 10.0f),
-                    -Input.GetAxis("Mouse Y") * dragSpeed * 1.0f / 50.0f * (transform.position.y - minimumY + 10.0f),
-                    0));
+                _leftMouseButtonStartedInScene = false;
             }
-            else // if (cameraViewingMode == CameraViewingMode._2D)
+
+            // Keep camera position within constraints
+
+            if (transform.position.x < mimimumX)
             {
-                transform.Translate(new Vector3(
-                    -Input.GetAxis("Mouse X") * dragSpeed * 1.0f / 50.0f * _camera.orthographicSize,
-                    -Input.GetAxis("Mouse Y") * dragSpeed * 1.0f / 50.0f * _camera.orthographicSize,
-                    0));
+                transform.position = new Vector3(mimimumX, transform.position.y, transform.position.z);
             }
-        }
+            else if (transform.position.x > maximumX)
+            {
+                transform.position = new Vector3(maximumX, transform.position.y, transform.position.z);
+            }
 
+            if (transform.position.y < minimumY)
+            {
+                transform.position = new Vector3(transform.position.x, minimumY, transform.position.z);
+            }
+            else if (transform.position.y > maximumY)
+            {
+                transform.position = new Vector3(transform.position.x, maximumY, transform.position.z);
+            }
 
-        if (Input.GetMouseButtonUp(1))
-        {
-            _rightMouseButtonStartedInScene = false;
-        }
-        if (Input.GetMouseButtonUp(0))
-        {
-            _leftMouseButtonStartedInScene = false;
-        }
+            if (transform.position.z < minimumZ)
+            {
+                transform.position = new Vector3(transform.position.x, transform.position.y, minimumZ);
+            }
+            else if (transform.position.z > maximumZ)
+            {
+                transform.position = new Vector3(transform.position.x, transform.position.y, maximumZ);
+            }
 
-        // Keep camera position within constraints
-
-        if (transform.position.x < mimimumX)
-        {
-            transform.position = new Vector3(mimimumX, transform.position.y, transform.position.z);
-        }
-        else if (transform.position.x > maximumX)
-        {
-            transform.position = new Vector3(maximumX, transform.position.y, transform.position.z);
-        }
-
-        if (transform.position.y < minimumY)
-        {
-            transform.position = new Vector3(transform.position.x, minimumY, transform.position.z);
-        }
-        else if (transform.position.y > maximumY)
-        {
-            transform.position = new Vector3(transform.position.x, maximumY, transform.position.z);
-        }
-
-        if (transform.position.z < minimumZ)
-        {
-            transform.position = new Vector3(transform.position.x, transform.position.y, minimumZ);
-        }
-        else if (transform.position.z > maximumZ)
-        {
-            transform.position = new Vector3(transform.position.x, transform.position.y, maximumZ);
-        }
-
-        if (_camera.orthographicSize > maximumOrthographicSize)
-        {
-            _camera.orthographicSize = maximumOrthographicSize;
-        }
-        else if (_camera.orthographicSize < minimumOrthographicSize)
-        {
-            _camera.orthographicSize = minimumOrthographicSize;
+            if (_camera.orthographicSize > maximumOrthographicSize)
+            {
+                _camera.orthographicSize = maximumOrthographicSize;
+            }
+            else if (_camera.orthographicSize < minimumOrthographicSize)
+            {
+                _camera.orthographicSize = minimumOrthographicSize;
+            }
         }
     }
 

@@ -43,8 +43,6 @@ public class SideUi : ABackButtonClickHandler, // ABackButtonClickHandler inheri
 
     public CurrentlyActivePage currentlyActivePage = CurrentlyActivePage.MainMenu;
 
-    public FullscreenView fullscreenView;
-
 
     private ImageLoader _imageLoader;
 
@@ -134,9 +132,9 @@ public class SideUi : ABackButtonClickHandler, // ABackButtonClickHandler inheri
 
         _imageLoader.StartLoading(thumbnailPath, this, mainController.footageThumbnailsCache);
 
-        if (fullscreenView != null)
+        if (mainController.fullscreenView != null && mainController.fullscreenViewShowingLiveFootage)
         {
-            fullscreenView.DisplayFullscreenImage(fullImagePath, thumbnailPath);
+            mainController.fullscreenView.DisplayFullscreenImage(fullImagePath, thumbnailPath);
         }
     }
 

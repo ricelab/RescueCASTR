@@ -6,19 +6,18 @@ using UnityEngine.EventSystems;
 public class SideUiLiveFootage : MonoBehaviour, IPointerClickHandler
 {
     public SideUi sideUi;
-    public GameObject fullscreenViewPrefab;
-
-    private GameObject _fullscreenViewObj;
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (_fullscreenViewObj == null)
+        if (sideUi.mainController.fullscreenViewObj == null)
         {
-            _fullscreenViewObj = GameObject.Instantiate(fullscreenViewPrefab, sideUi.mainController.wholeScreenUiObj.transform);
+            sideUi.mainController.fullscreenViewObj = GameObject.Instantiate(sideUi.mainController.fullscreenViewPrefab, sideUi.mainController.wholeScreenUiObj.transform);
 
-            sideUi.fullscreenView = _fullscreenViewObj.GetComponent<FullscreenView>();
-            sideUi.fullscreenView.mainController = sideUi.mainController;
-            sideUi.fullscreenView.DisplayFullscreenImage(
+            sideUi.mainController.fullscreenView = sideUi.mainController.fullscreenViewObj.GetComponent<FullscreenView>();
+            sideUi.mainController.fullscreenView.mainController = sideUi.mainController;
+            sideUi.mainController.fullscreenViewShowingLiveFootage = true;
+
+            sideUi.mainController.fullscreenView.DisplayFullscreenImage(
                 sideUi.selectedFieldTeam.GetPhotoPathFromSimulatedTime(sideUi.mainController.currentSimulatedTime),
                 sideUi.selectedFieldTeam.GetPhotoThumbnailPathFromSimulatedTime(sideUi.mainController.currentSimulatedTime)
                 );

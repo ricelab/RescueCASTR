@@ -210,8 +210,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sideUi: {fileID: 1990919694}
-  fullscreenViewPrefab: {fileID: 3671459963851557861, guid: 5254fbe74393a49bcb357b2246d8f7f9,
-    type: 3}
 --- !u!1 &23082982
 GameObject:
   m_ObjectHideFlags: 0
@@ -1858,6 +1856,11 @@ MonoBehaviour:
   sideUiObj: {fileID: 1990919689}
   sideUi: {fileID: 1990919694}
   currentTimeTextObj: {fileID: 23082982}
+  fullscreenView: {fileID: 0}
+  fullscreenViewObj: {fileID: 0}
+  fullscreenViewPrefab: {fileID: 3671459963851557861, guid: 5254fbe74393a49bcb357b2246d8f7f9,
+    type: 3}
+  fullscreenViewShowingLiveFootage: 0
 --- !u!1 &348195969
 GameObject:
   m_ObjectHideFlags: 0
@@ -9478,7 +9481,6 @@ MonoBehaviour:
   cluesPage: {fileID: 202403224}
   selectedFieldTeam: {fileID: 0}
   currentlyActivePage: 0
-  fullscreenView: {fileID: 0}
 --- !u!1 &2013119669
 GameObject:
   m_ObjectHideFlags: 0
