@@ -1749,7 +1749,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0013655474}
+  m_AnchoredPosition: {x: 0, y: 0.00010060644}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &322617437
@@ -1840,6 +1840,28 @@ MonoBehaviour:
   resourcesUrl: http://pages.cpsc.ucalgary.ca/~bdgjones/mavic-resources/
   currentSimulatedTime:
     _dateTime: 2020-07-13 8:20:00 AM
+  pointLastSeen:
+    Latitude: 49.25584
+    Longitude: -123.218551
+    Altitude: 87
+    Accuracy: 0
+    AltitudeAccuracy: 0
+    Heading: 0
+    Speed: 0
+  lastKnownPosition:
+    Latitude: 49.254648
+    Longitude: -123.214635
+    Altitude: 95
+    Accuracy: 0
+    AltitudeAccuracy: 0
+    Heading: 0
+    Speed: 0
+  plsMarkerObj: {fileID: 0}
+  lkpMarkerObj: {fileID: 0}
+  plsMarkerPrefab: {fileID: 572146415000559036, guid: d5ee6b5f814424e2e85a22e6d0d441bb,
+    type: 3}
+  lkpMarkerPrefab: {fileID: 572146415000559036, guid: df9c43437d74a4f3b86067b74425d2f7,
+    type: 3}
   currentlyDeployedTeamsPanel: {fileID: 899663793}
   completedTeamsPanel: {fileID: 1567310394}
   timelineContentPanel: {fileID: 322617435}
@@ -3370,8 +3392,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1534020812}
   m_HandleRect: {fileID: 1534020811}
   m_Direction: 0
-  m_Value: -1.5135136
-  m_Size: 0.9999851
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -7611,7 +7633,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1166337282}
   m_HandleRect: {fileID: 1166337281}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
