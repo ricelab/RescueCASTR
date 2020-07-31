@@ -101,14 +101,14 @@ public class MainController : MonoBehaviour
         fieldTeam.FieldTeamInstantiate();
     }
 
-    public void ShowAllFieldTeams(bool showFootageThumbnails = false)
+    public void ShowAllFieldTeams(bool showExtraDetails = false)
     {
         foreach (Transform t in this.transform)
         {
             FieldTeam ft = t.gameObject.GetComponent<FieldTeam>();
             if (ft != null && ft.isActiveAndEnabled)
             {
-                ft.showFootageThumbnail = showFootageThumbnails;
+                ft.showExtraDetails = showExtraDetails;
                 ft.fieldTeamAppearStatus = FieldTeam.FieldTeamAppearStatus.Showing;
             }
         }

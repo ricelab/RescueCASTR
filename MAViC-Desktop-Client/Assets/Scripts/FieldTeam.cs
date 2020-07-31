@@ -137,7 +137,7 @@ public class FieldTeam : MonoBehaviour
     public Location currentLocation => _revealedMapLocations.Last();
     public Vector3 currentScenePosition => _revealedMapPositions.Last();
 
-    public bool showFootageThumbnail = false;
+    public bool showExtraDetails = false;
 
     #endregion
 
@@ -166,6 +166,7 @@ public class FieldTeam : MonoBehaviour
     private string _recordingResourcesUrl;
 
     private string _gpsRecordingFilePath;
+    private string _assignedRouteFilePath;
     private string _timelapsePhotoDirectoryPath;
     private string _timelapsePhotoThumbnailDirectoryPath;
     private string _photosFileNamesListPath;
@@ -184,8 +185,13 @@ public class FieldTeam : MonoBehaviour
     private List<Vector3> _mapPositions;
     private List<Vector3> _revealedMapPositions;
 
+    private List<Location> _assignedRouteMapLocations;
+    private List<Vector3> _assignedRouteMapPositions;
+
     private List<GameObject> _teamPathPointObjs;
     private GameObject _teamPathLineObj;
+
+    private GameObject _teamAssignedRouteLineObj;
 
     private List<GameObject> _clueMapIconObjs;
     private List<GameObject> _messageMapIconObjs;
@@ -343,6 +349,50 @@ public class FieldTeam : MonoBehaviour
             }
         }
 
+        // Setup assigned route path on map
+        List<Track> assignedRouteTracks = Track.ReadTracksFromFile(_assignedRouteFilePath);
+        if (assignedRouteTracks.Count > 0)
+        {
+            /* Load waypoints from GPS recording */
+
+            // Only looking at the first track of the file (should only have one track)
+            Track track = assignedRouteTracks[0];
+
+            _assignedRouteMapLocations = new List<Location>(track.Waypoints.Count);
+            _assignedRouteMapPositions = new List<Vector3>(track.Waypoints.Count);
+
+            foreach (Waypoint waypoint in track.Waypoints)
+            {
+                Location location = new Location();
+                location.Latitude = waypoint.Latitude;
+                location.Longitude = waypoint.Longitude;
+                location.Altitude = (double.IsNaN(waypoint.Elevation) ? 0 : waypoint.Elevation)  + 100;
+                location.Accuracy = 0;
+                location.AltitudeAccuracy = 0;
+                location.Heading = 0;
+                location.Speed = 0;
+
+                _assignedRouteMapLocations.Add(location);
+                _assignedRouteMapPositions.Add(_map.ConvertLocationToMapPosition(location));
+            }
+
+            // Instantiate line
+            _teamAssignedRouteLineObj = new GameObject();
+            _teamAssignedRouteLineObj.transform.parent = _mapObj.transform;
+            _teamAssignedRouteLineObj.transform.SetSiblingIndex(0);
+            LineRenderer lineRenderer = _teamAssignedRouteLineObj.AddComponent<LineRenderer>();
+            lineRenderer.material = new Material(Shader.Find("Unlit/DottedLineShader" /* "Legacy Shaders/Particles/Alpha Blended" */));
+            lineRenderer.positionCount = track.Waypoints.Count;
+            lineRenderer.SetPositions(_assignedRouteMapPositions.ToArray());
+            lineRenderer.startColor = new Color(0.5f * teamColor.r, 0.5f * teamColor.g, 0.5f * teamColor.b, 0.75f * teamColor.a);
+            lineRenderer.endColor = new Color(teamColor.r, teamColor.g, teamColor.b, 0.75f * teamColor.a);
+            lineRenderer.numCornerVertices = 10;
+            lineRenderer.numCapVertices = 2;
+            _teamAssignedRouteLineObj.SetActive(false);
+            //DottedLineRenderer dottedLineRenderer = _teamAssignedRouteLineObj.AddComponent<DottedLineRenderer>();
+            //dottedLineRenderer.scaleInUpdate = true;
+        }
+
         // Setup revealed messages
         revealedMessages = new List<Message>();
         _messageMapIconObjs = new List<GameObject>();
@@ -387,6 +437,17 @@ public class FieldTeam : MonoBehaviour
         if (_fieldTeamIsInstantiated)
         {
             LineRenderer lineRenderer = _teamPathLineObj.GetComponent<LineRenderer>();
+            LineRenderer assignedPathLineRenderer = _teamAssignedRouteLineObj.GetComponent<LineRenderer>();
+
+            // Show assigned path if needed
+            if (showExtraDetails)
+            {
+                _teamAssignedRouteLineObj.SetActive(true);
+            }
+            else
+            {
+                _teamAssignedRouteLineObj.SetActive(false);
+            }
 
             // Update path colour if team's colour changed
             if (teamColor != _lastTeamColor)
@@ -395,12 +456,23 @@ public class FieldTeam : MonoBehaviour
 
                 lineRenderer.startColor = new Color(0.5f * teamColor.r, 0.5f * teamColor.g, 0.5f * teamColor.b, teamColor.a);
                 lineRenderer.endColor = teamColor;
+
+                assignedPathLineRenderer.startColor = new Color(0.5f * teamColor.r, 0.5f * teamColor.g, 0.5f * teamColor.b, 0.75f * teamColor.a);
+                assignedPathLineRenderer.endColor = new Color(teamColor.r, teamColor.g, teamColor.b, 0.75f * teamColor.a); ;
             }
 
             // Update size of path
             if (mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._2D)
             {
                 lineRenderer.startWidth = lineRenderer.endWidth = 1.0f / 50.0f * mainController.sceneCamera.orthographicSize;
+                assignedPathLineRenderer.startWidth = assignedPathLineRenderer.endWidth = 1.0f / 50.0f * mainController.sceneCamera.orthographicSize;
+
+                assignedPathLineRenderer.material.SetFloat("_RepeatCount",
+                    mainController.sceneCameraControls.maximumOrthographicSize / mainController.sceneCamera.orthographicSize *
+                    Vector2.Distance(
+                        assignedPathLineRenderer.GetPosition(0),
+                        assignedPathLineRenderer.GetPosition(assignedPathLineRenderer.positionCount - 1)) / assignedPathLineRenderer.widthMultiplier
+                    );
             }
             else // if (mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._3D)
             {
@@ -409,6 +481,14 @@ public class FieldTeam : MonoBehaviour
                     width = 0.1f;
 
                 lineRenderer.startWidth = lineRenderer.endWidth = width;
+                assignedPathLineRenderer.startWidth = assignedPathLineRenderer.endWidth = width;
+
+                assignedPathLineRenderer.material.SetFloat("_RepeatCount",
+                    mainController.sceneCameraControls.maximumY / 5.0f / (mainController.sceneCameraObj.transform.position.y - mainController.sceneCameraControls.minimumY) *
+                    Vector2.Distance(
+                        assignedPathLineRenderer.GetPosition(0),
+                        assignedPathLineRenderer.GetPosition(assignedPathLineRenderer.positionCount - 1)) / assignedPathLineRenderer.widthMultiplier
+                    );
             }
 
             // Update size of current location indicator
@@ -620,7 +700,7 @@ public class FieldTeam : MonoBehaviour
                 ft.fieldTeamAppearStatus = FieldTeamAppearStatus.Dimmed;
             }
         }
-        this.showFootageThumbnail = showFootageThumbnail;
+        this.showExtraDetails = showFootageThumbnail;
         fieldTeamAppearStatus = FieldTeamAppearStatus.Showing;
     }
 
@@ -663,7 +743,8 @@ public class FieldTeam : MonoBehaviour
 
         _recordingResourcesUrl = mainController.resourcesUrl + recordingDirectoryPath;
 
-        _gpsRecordingFilePath = /* _recordingResourcesUrl */ recordingDirectoryPath + "gps-record";
+        _gpsRecordingFilePath = /* _recordingResourcesUrl */ recordingDirectoryPath + "gps-record.gpx";
+        _assignedRouteFilePath = /* _recordingResourcesUrl */ recordingDirectoryPath + "assigned-route.gpx";
         _timelapsePhotoDirectoryPath = _recordingResourcesUrl + "photos/";
         _timelapsePhotoThumbnailDirectoryPath = _recordingResourcesUrl + "photo-thumbnails/";
         _photosFileNamesListPath = /* _recordingResourcesUrl */ recordingDirectoryPath + "photos-filenames";
@@ -714,7 +795,7 @@ public class FieldTeam : MonoBehaviour
         }
 
         // Show or hide footage thumbnail
-        if (showFootageThumbnail)
+        if (showExtraDetails)
             _currentLocationFrameDisplay.ShowThumbnail();
         else
             _currentLocationFrameDisplay.HideThumbnail();
