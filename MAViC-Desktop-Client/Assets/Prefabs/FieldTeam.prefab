@@ -58,6 +58,10 @@ MonoBehaviour:
     type: 3}
   clueMapIconPrefab: {fileID: 1020587267390854333, guid: 2ceaec636ad9048108da6920cab27173,
     type: 3}
+  messageTimelineIconPrefab: {fileID: 8534580958469602381, guid: 69c692d6552f14bd6ae52475ef0598a1,
+    type: 3}
+  clueTimelineIconPrefab: {fileID: 1020587267390854333, guid: d83fbdb0a0e3f447bbbf4d3b27e6fcaa,
+    type: 3}
   teamName: 
   teamColor: {r: 1, g: 1, b: 1, a: 1}
   recordingDirectoryPath: 
@@ -67,8 +71,5 @@ MonoBehaviour:
   clues: []
   revealedMessages: []
   revealedClues: []
-  showFootageThumbnail: 0
-  fullscreenView: {fileID: 0}
-  fullScreenViewObj: {fileID: 0}
-  fullScreenViewPrefab: {fileID: 3671459963851557861, guid: 5254fbe74393a49bcb357b2246d8f7f9,
-    type: 3}
+  teamTimeline: {fileID: 0}
+  showExtraDetails: 0

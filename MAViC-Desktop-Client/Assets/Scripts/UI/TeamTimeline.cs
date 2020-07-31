@@ -279,6 +279,25 @@ public class TeamTimeline : MonoBehaviour
         MoveNeedleToTime(timeHighlighted);
     }
 
+    public Vector2 TimelinePositionToUIPosition(DateTime time)
+    {
+        float placeToHighlight = (float)(time.Ticks - fieldTeam.simulatedStartTime.dateTime.Ticks) / (float)(_endTimeOfTimeline.Ticks - fieldTeam.simulatedStartTime.dateTime.Ticks);
+        if (placeToHighlight < 0.0f)
+            placeToHighlight = 0.0f;
+        else if (placeToHighlight > 1.0f)
+            placeToHighlight = 1.0f;
+
+        Camera timelineCamera = fieldTeam.mainController.timelineCameraObj.GetComponent<Camera>();
+        RectTransform canvasRect = _timelineUiObj.GetComponent<RectTransform>();
+        Vector2 viewportPos = timelineCamera.WorldToViewportPoint(_line.transform.position);
+        Vector2 worldObjTimelineViewPos = new Vector2(
+            viewportPos.x * canvasRect.sizeDelta.x,
+            viewportPos.y * canvasRect.sizeDelta.y + 5.0f
+        );
+
+        return new Vector2(_beginPos + placeToHighlight * (_endPos - _beginPos) - 0.5f * canvasRect.sizeDelta.x, worldObjTimelineViewPos.y - 0.5f * canvasRect.sizeDelta.y);
+    }
+
     public void UnhighlightTimeline()
     {
         GameObject.Destroy(_timelineHighlight);

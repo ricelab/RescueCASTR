@@ -102,6 +102,9 @@ public class FieldTeam : MonoBehaviour
     public GameObject messageMapIconPrefab;
     public GameObject clueMapIconPrefab;
 
+    public GameObject messageTimelineIconPrefab;
+    public GameObject clueTimelineIconPrefab;
+
     public string teamName;
     public Color teamColor;
     public string recordingDirectoryPath;
@@ -137,6 +140,8 @@ public class FieldTeam : MonoBehaviour
     public Location currentLocation => _revealedMapLocations.Last();
     public Vector3 currentScenePosition => _revealedMapPositions.Last();
 
+    public TeamTimeline teamTimeline;
+
     public bool showExtraDetails = false;
 
     #endregion
@@ -161,7 +166,6 @@ public class FieldTeam : MonoBehaviour
     private TeamIcon _teamIcon;
 
     private GameObject _teamTimelineObj;
-    private TeamTimeline _teamTimeline;
 
     private string _recordingResourcesUrl;
 
@@ -195,6 +199,9 @@ public class FieldTeam : MonoBehaviour
 
     private List<GameObject> _clueMapIconObjs;
     private List<GameObject> _messageMapIconObjs;
+
+    private List<GameObject> _clueTimelineIconObjs;
+    private List<GameObject> _messageTimelineIconObjs;
 
     private int _latestAvailableWaypointIndex = 0;
 
@@ -242,8 +249,8 @@ public class FieldTeam : MonoBehaviour
 
         _teamTimelineObj = Instantiate(teamTimelinePrefab, mainController.timelineContentPanel.transform);
         _teamTimelineObj.transform.SetSiblingIndex(0);
-        _teamTimeline = _teamTimelineObj.GetComponent<TeamTimeline>();
-        _teamTimeline.fieldTeam = this;
+        teamTimeline = _teamTimelineObj.GetComponent<TeamTimeline>();
+        teamTimeline.fieldTeam = this;
 
 
         List<Track> tracks = Track.ReadTracksFromFile(_gpsRecordingFilePath);
@@ -396,6 +403,7 @@ public class FieldTeam : MonoBehaviour
         // Setup revealed messages
         revealedMessages = new List<Message>();
         _messageMapIconObjs = new List<GameObject>();
+        _messageTimelineIconObjs = new List<GameObject>();
         if (messages != null && messages.Length > 0)
         {
             foreach (Message message in messages)
@@ -414,6 +422,7 @@ public class FieldTeam : MonoBehaviour
         // Setup revealed clues
         revealedClues = new List<Clue>();
         _clueMapIconObjs = new List<GameObject>();
+        _clueTimelineIconObjs = new List<GameObject>();
         if (clues != null && clues.Length > 0)
         {
             foreach (Clue clue in clues)
@@ -560,11 +569,17 @@ public class FieldTeam : MonoBehaviour
                         revealedMessages.Add(messages[i]);
                         _latestAvailableMessageIndex++;
 
-                        // Add message icon to scene UI
+                        // Add message icon to map
                         GameObject messageMapIconObj = GameObject.Instantiate(messageMapIconPrefab, mainController.sceneUiObj.transform);
                         messageMapIconObj.transform.SetSiblingIndex(0);
                         messageMapIconObj.GetComponent<MessageMapIcon>().message = messages[i];
                         _messageMapIconObjs.Add(messageMapIconObj);
+
+                        // Add message icon to timeline
+                        GameObject messageTimelineIconObj = GameObject.Instantiate(messageTimelineIconPrefab, mainController.timelineUiObj.transform);
+                        //messageTimelineIconObj.transform.SetSiblingIndex(0);
+                        messageTimelineIconObj.GetComponent<MessageTimelineIcon>().message = messages[i];
+                        //_messageTimelineIconObjs.Add(messageTimelineIconObj);
                     }
                     else
                     {
@@ -584,11 +599,17 @@ public class FieldTeam : MonoBehaviour
                         revealedClues.Add(clues[i]);
                         _latestAvailableClueIndex++;
 
-                        // Add clue icon to scene UI
+                        // Add clue icon to map
                         GameObject clueMapIconObj = GameObject.Instantiate(clueMapIconPrefab, mainController.sceneUiObj.transform);
                         clueMapIconObj.transform.SetSiblingIndex(0);
                         clueMapIconObj.GetComponent<ClueMapIcon>().clue = clues[i];
                         _clueMapIconObjs.Add(clueMapIconObj);
+
+                        // Add clue icon to timeline
+                        GameObject clueTimelineIconObj = GameObject.Instantiate(clueTimelineIconPrefab, mainController.timelineUiObj.transform);
+                        //clueTimelineIconObj.transform.SetSiblingIndex(0);
+                        clueTimelineIconObj.GetComponent<ClueTimelineIcon>().clue = clues[i];
+                        _clueTimelineIconObjs.Add(clueTimelineIconObj);
                     }
                     else
                     {
@@ -643,7 +664,7 @@ public class FieldTeam : MonoBehaviour
 
     public void HighlightSimulatedTimeOnTimeline(DateTime simulatedTime)
     {
-        _teamTimeline.HighlightTimeOnTimeline(simulatedTime);
+        teamTimeline.HighlightTimeOnTimeline(simulatedTime);
     }
 
     public void HighlightActualTimeOnTimeline(DateTime actualTime)
@@ -653,7 +674,7 @@ public class FieldTeam : MonoBehaviour
 
     public void UnhighlightTimeline()
     {
-        _teamTimeline.UnhighlightTimeline();
+        teamTimeline.UnhighlightTimeline();
     }
 
     public string GetPhotoPathFromSimulatedTime(DateTime simulatedTime)
