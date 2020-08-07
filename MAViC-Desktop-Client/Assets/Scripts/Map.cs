@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
+﻿//using System;
+//using System.Collections;
+//using System.Collections.Generic;
+//using System.IO;
 using UnityEngine;
 
 public class Map : MonoBehaviour
@@ -11,9 +11,11 @@ public class Map : MonoBehaviour
 
     public Location[] referenceLocations;
     public Vector3[] referenceMapPositions;
-    
-    // Start is called before the first frame update
-    void Start()
+
+    // Camera position constraints
+    public CameraDefaultsAndConstraints cameraDefaultsAndConstraints;
+
+    public void Start()
     {
         //networkEvents.AddHandler("ConnectionRequest", AddNewMobileClient);
     }

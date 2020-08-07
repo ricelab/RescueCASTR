@@ -171,6 +171,8 @@ public class FieldTeam : MonoBehaviour
 
     private string _gpsRecordingFilePath;
     private string _assignedRouteFilePath;
+    private string _messagesFilePath;
+    private string _cluesFilePath;
     private string _timelapsePhotoDirectoryPath;
     private string _timelapsePhotoThumbnailDirectoryPath;
     private string _photosFileNamesListPath;
@@ -224,14 +226,14 @@ public class FieldTeam : MonoBehaviour
     {
         if (!_fieldTeamIsStarted)
         {
+            mainController = this.gameObject.transform.parent.GetComponent<MainController>();
+            _mapObj = mainController.mapObj;
+            _map = mainController.map;
+
             if (!_initialFileReadDone)
             {
                 PerformInitialFileRead();
             }
-
-            mainController = this.gameObject.transform.parent.GetComponent<MainController>();
-            _mapObj = mainController.mapObj;
-            _map = mainController.map;
 
             _fieldTeamIsStarted = true;
         }
@@ -400,6 +402,27 @@ public class FieldTeam : MonoBehaviour
             //dottedLineRenderer.scaleInUpdate = true;
         }
 
+        // Setup messages
+        TextAsset messagesJsonFile = Resources.Load<TextAsset>(_messagesFilePath);
+        MessageJson[] messageJsonArray = JsonHelper.FromJson<MessageJson>(JsonHelper.fixJson(messagesJsonFile.text));
+        messages = new Message[messageJsonArray.Length];
+        int c = 0;
+        foreach (MessageJson messageJson in messageJsonArray)
+        {
+            messages[c] = new Message();
+
+            if (messageJson.instantiateBySimulatedTime)
+                messages[c].simulatedTime = Convert.ToDateTime(messageJson.time);
+            else
+                messages[c].actualTime = Convert.ToDateTime(messageJson.time);
+
+            messages[c].instantiateBySimulatedTime = messageJson.instantiateBySimulatedTime;
+            messages[c].messageDirection = messageJson.direction;
+            messages[c].messageContent = messageJson.content;
+
+            c++;
+        }
+
         // Setup revealed messages
         revealedMessages = new List<Message>();
         _messageMapIconObjs = new List<GameObject>();
@@ -417,6 +440,27 @@ public class FieldTeam : MonoBehaviour
                 // Start the Message if it hasn't been started
                 message.Start();
             }
+        }
+
+        // Setup clues
+        TextAsset cluesJsonFile = Resources.Load<TextAsset>(_cluesFilePath);
+        ClueJson[] clueJsonArray = JsonHelper.FromJson<ClueJson>(JsonHelper.fixJson(cluesJsonFile.text));
+        clues = new Clue[clueJsonArray.Length];
+        c = 0;
+        foreach (ClueJson clueJson in clueJsonArray)
+        {
+            clues[c] = new Clue();
+
+            if (clueJson.instantiateBySimulatedTime)
+                clues[c].simulatedTime = Convert.ToDateTime(clueJson.time);
+            else
+                clues[c].actualTime = Convert.ToDateTime(clueJson.time);
+
+            clues[c].instantiateBySimulatedTime = clueJson.instantiateBySimulatedTime;
+            clues[c].photoFileName = clueJson.photoFileName;
+            clues[c].textDescription = clueJson.textDescription;
+
+            c++;
         }
 
         // Setup revealed clues
@@ -477,7 +521,7 @@ public class FieldTeam : MonoBehaviour
                 assignedPathLineRenderer.startWidth = assignedPathLineRenderer.endWidth = 1.0f / 50.0f * mainController.sceneCamera.orthographicSize;
 
                 assignedPathLineRenderer.material.SetFloat("_RepeatCount",
-                    mainController.sceneCameraControls.maximumOrthographicSize / mainController.sceneCamera.orthographicSize *
+                    mainController.map.cameraDefaultsAndConstraints.maximumOrthographicSize / mainController.sceneCamera.orthographicSize *
                     Vector2.Distance(
                         assignedPathLineRenderer.GetPosition(0),
                         assignedPathLineRenderer.GetPosition(assignedPathLineRenderer.positionCount - 1)) / assignedPathLineRenderer.widthMultiplier
@@ -485,7 +529,7 @@ public class FieldTeam : MonoBehaviour
             }
             else // if (mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._3D)
             {
-                float width = 1.0f / 50.0f * (mainController.sceneCameraObj.transform.position.y - mainController.sceneCameraControls.minimumY);
+                float width = 1.0f / 50.0f * (mainController.sceneCameraObj.transform.position.y - mainController.map.cameraDefaultsAndConstraints.minimumY);
                 if (width < 0.1f)
                     width = 0.1f;
 
@@ -493,7 +537,8 @@ public class FieldTeam : MonoBehaviour
                 assignedPathLineRenderer.startWidth = assignedPathLineRenderer.endWidth = width;
 
                 assignedPathLineRenderer.material.SetFloat("_RepeatCount",
-                    mainController.sceneCameraControls.maximumY / 5.0f / (mainController.sceneCameraObj.transform.position.y - mainController.sceneCameraControls.minimumY) *
+                    mainController.map.cameraDefaultsAndConstraints.maximumY / 5.0f /
+                        (mainController.sceneCameraObj.transform.position.y - mainController.map.cameraDefaultsAndConstraints.minimumY) *
                     Vector2.Distance(
                         assignedPathLineRenderer.GetPosition(0),
                         assignedPathLineRenderer.GetPosition(assignedPathLineRenderer.positionCount - 1)) / assignedPathLineRenderer.widthMultiplier
@@ -509,7 +554,7 @@ public class FieldTeam : MonoBehaviour
             else // if (mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._3D)
             {
                 scaleFactor = scaleFactor / 50.0f *
-                    (mainController.sceneCameraObj.transform.position.y - mainController.sceneCameraControls.minimumY);
+                    (mainController.sceneCameraObj.transform.position.y - mainController.map.cameraDefaultsAndConstraints.minimumY);
             }
             _currentLocationIndicator.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
 
@@ -766,6 +811,8 @@ public class FieldTeam : MonoBehaviour
 
         _gpsRecordingFilePath = /* _recordingResourcesUrl */ recordingDirectoryPath + "gps-record.gpx";
         _assignedRouteFilePath = /* _recordingResourcesUrl */ recordingDirectoryPath + "assigned-route.gpx";
+        _messagesFilePath = /* _recordingResourcesUrl */ recordingDirectoryPath + "messages";
+        _cluesFilePath = /* _recordingResourcesUrl */ recordingDirectoryPath + "clues";
         _timelapsePhotoDirectoryPath = _recordingResourcesUrl + "photos/";
         _timelapsePhotoThumbnailDirectoryPath = _recordingResourcesUrl + "photo-thumbnails/";
         _photosFileNamesListPath = /* _recordingResourcesUrl */ recordingDirectoryPath + "photos-filenames";

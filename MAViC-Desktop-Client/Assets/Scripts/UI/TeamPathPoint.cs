@@ -27,7 +27,7 @@ public class TeamPathPoint : MonoBehaviour
         else // if (fieldTeam.mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._3D)
         {
             scaleFactor = scaleFactor / 50.0f *
-                (fieldTeam.mainController.sceneCameraObj.transform.position.y - fieldTeam.mainController.sceneCameraControls.minimumY);
+                (fieldTeam.mainController.sceneCameraObj.transform.position.y - fieldTeam.mainController.map.cameraDefaultsAndConstraints.minimumY);
         }
 
         this.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);

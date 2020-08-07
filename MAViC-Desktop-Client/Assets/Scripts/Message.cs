@@ -1,6 +1,15 @@
 ﻿using System;
 
 [Serializable]
+public class MessageJson
+{
+    public string time;
+    public bool instantiateBySimulatedTime;
+    public Message.MessageDirection direction;
+    public string content;
+}
+
+[Serializable]
 public class Message
 {
     public enum MessageDirection

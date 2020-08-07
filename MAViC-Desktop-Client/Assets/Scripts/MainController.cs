@@ -1,12 +1,41 @@
 ﻿using System;
+using System.Web;
 using UnityEngine;
 using UnityEngine.UI;
+
+[Serializable]
+public class ScenarioJson
+{
+    public string currentSimulatedTime;
+    public Location pointLastSeen;
+    public Location lastKnownPosition;
+    public FieldTeamJson[] fieldTeams;
+}
+
+[Serializable]
+public class FieldTeamJson
+{
+    public string name;
+    public string color;
+    public string path;
+    public string simulatedStartTime;
+}
 
 public class MainController : MonoBehaviour
 {
     public string resourcesUrl = "http://pages.cpsc.ucalgary.ca/~bdgjones/mavic-resources/";
 
+    public string scenariosPath = "Scenarios/";
+
+    public int scenarioId;
+    public int mapId;
+
+    public GameObject[] mapObjList;
+    public Map[] mapList;
+
     public UDateTime currentSimulatedTime;
+
+    public GameObject fieldTeamPrefab;
 
     public Location pointLastSeen;
     public Location lastKnownPosition;
@@ -75,6 +104,27 @@ public class MainController : MonoBehaviour
             resourcesUrl += "/";
         }
 
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        {
+            Debug.Log("The full URL is: " + Application.absoluteURL);
+
+            // Set scenario and map based on URL parameters
+
+            Uri uri = new Uri(Application.absoluteURL);
+
+            string scenarioArg = HttpUtility.ParseQueryString(uri.Query).Get("scenario");
+            string mapArg = HttpUtility.ParseQueryString(uri.Query).Get("map");
+
+            if (scenarioArg == null || !int.TryParse(scenarioArg, out scenarioId))
+            {
+                scenarioId = 0;
+            }
+            if (mapArg == null || !int.TryParse(mapArg, out mapId))
+            {
+                mapId = 0;
+            }
+        }
+
         _startTimeOfSimulation = currentSimulatedTime.dateTime;
         _actualStartTime = DateTime.Now;
 
@@ -82,14 +132,42 @@ public class MainController : MonoBehaviour
         footagePhotosCache = new ImageLoaderCache(25);
         cluesPhotosCache = new ImageLoaderCache(25);
 
+        mapObj = mapObjList[mapId];
+        foreach(GameObject mo in mapObjList)
+        {
+            mo.SetActive(false);
+        }
+        mapObj.SetActive(true);
+
         map = mapObj.GetComponent<Map>();
         sceneCamera = sceneCameraObj.GetComponent<Camera>();
         sceneCameraControls = sceneCameraObj.GetComponent<CameraControls>();
         timelineCamera = timelineCameraObj.GetComponent<Camera>();
-        
-        FieldTeam[] fieldTeams = this.GetComponentsInChildren<FieldTeam>();
-        foreach (FieldTeam fieldTeam in fieldTeams)
+
+        // Load scenario JSON
+        TextAsset scenarioJsonFile = Resources.Load<TextAsset>(scenariosPath + scenarioId + "/scenario");
+        ScenarioJson scenarioJson = JsonUtility.FromJson<ScenarioJson>(scenarioJsonFile.text);
+
+        // Set current simulated time
+        currentSimulatedTime = Convert.ToDateTime(scenarioJson.currentSimulatedTime);
+
+        // Set Point Last Seen
+        pointLastSeen = scenarioJson.pointLastSeen;
+
+        // Set Last Known Position
+        lastKnownPosition = scenarioJson.lastKnownPosition;
+
+        // Setup field teams
+        foreach(FieldTeamJson fieldTeamJson in scenarioJson.fieldTeams)
         {
+            GameObject fieldTeamObj = GameObject.Instantiate(fieldTeamPrefab, this.transform);
+            FieldTeam fieldTeam = fieldTeamObj.GetComponent<FieldTeam>();
+            fieldTeam.teamName = fieldTeamJson.name;
+            ColorUtility.TryParseHtmlString(fieldTeamJson.color, out fieldTeam.teamColor);
+            fieldTeam.recordingDirectoryPath = scenariosPath + scenarioId + "/TeamRecords/" + fieldTeamJson.path;
+            fieldTeam.simulatedStartTime = Convert.ToDateTime(fieldTeamJson.simulatedStartTime);
+            fieldTeam.mainController = this;
+
             AddFieldTeam(fieldTeam);
         }
 

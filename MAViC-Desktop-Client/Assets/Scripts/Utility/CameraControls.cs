@@ -1,5 +1,19 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
+
+[Serializable]
+public class CameraDefaultsAndConstraints
+{
+    public float mimimumX;
+    public float maximumX;
+    public float minimumY;
+    public float maximumY;
+    public float minimumZ;
+    public float maximumZ;
+    public float minimumOrthographicSize;
+    public float maximumOrthographicSize;
+}
 
 public class CameraControls : MonoBehaviour
 {
@@ -10,6 +24,8 @@ public class CameraControls : MonoBehaviour
     };
 
     private Camera _camera;
+
+    public MainController mainController;
 
     // Viewing mode
     public CameraViewingMode cameraViewingMode = CameraViewingMode._3D;
@@ -26,16 +42,6 @@ public class CameraControls : MonoBehaviour
     // Zooming
     public float zoomSpeed = 120.0f;
 
-    // Camera position constraints
-    public float mimimumX = -650.0f;
-    public float maximumX = 700.0f;
-    public float minimumY = -110.0f;
-    public float maximumY = 500.0f;
-    public float minimumZ = -650.0f;
-    public float maximumZ = 550.0f;
-    public float minimumOrthographicSize = 10.0f;
-    public float maximumOrthographicSize = 100.0f;
-
     private float _mouseRatioX;
     private float _mouseRatioY;
 
@@ -51,7 +57,6 @@ public class CameraControls : MonoBehaviour
     public GameObject toggleButtonTextObj;
 
     // For maintaining consistent control between varying screen sizes
-    public MainController mainController;
     private GameObject _wholeScreenUiObj;
     private RectTransform _wholeScreenUiCanvasRect;
     private Vector2 _referencePosition;
@@ -159,8 +164,8 @@ public class CameraControls : MonoBehaviour
                 if (cameraViewingMode == CameraViewingMode._3D)
                 {
                     transform.Translate(new Vector3(
-                        -Input.GetAxis("Mouse X") * dragSpeed * 1.0f / 50.0f * (transform.position.y - minimumY + 10.0f),
-                        -Input.GetAxis("Mouse Y") * dragSpeed * 1.0f / 50.0f * (transform.position.y - minimumY + 10.0f),
+                        -Input.GetAxis("Mouse X") * dragSpeed * 1.0f / 50.0f * (transform.position.y - mainController.map.cameraDefaultsAndConstraints.minimumY + 10.0f),
+                        -Input.GetAxis("Mouse Y") * dragSpeed * 1.0f / 50.0f * (transform.position.y - mainController.map.cameraDefaultsAndConstraints.minimumY + 10.0f),
                         0));
                 }
                 else // if (cameraViewingMode == CameraViewingMode._2D)
@@ -184,40 +189,40 @@ public class CameraControls : MonoBehaviour
 
             // Keep camera position within constraints
 
-            if (transform.position.x < mimimumX)
+            if (transform.position.x < mainController.map.cameraDefaultsAndConstraints.mimimumX)
             {
-                transform.position = new Vector3(mimimumX, transform.position.y, transform.position.z);
+                transform.position = new Vector3(mainController.map.cameraDefaultsAndConstraints.mimimumX, transform.position.y, transform.position.z);
             }
-            else if (transform.position.x > maximumX)
+            else if (transform.position.x > mainController.map.cameraDefaultsAndConstraints.maximumX)
             {
-                transform.position = new Vector3(maximumX, transform.position.y, transform.position.z);
-            }
-
-            if (transform.position.y < minimumY)
-            {
-                transform.position = new Vector3(transform.position.x, minimumY, transform.position.z);
-            }
-            else if (transform.position.y > maximumY)
-            {
-                transform.position = new Vector3(transform.position.x, maximumY, transform.position.z);
+                transform.position = new Vector3(mainController.map.cameraDefaultsAndConstraints.maximumX, transform.position.y, transform.position.z);
             }
 
-            if (transform.position.z < minimumZ)
+            if (transform.position.y < mainController.map.cameraDefaultsAndConstraints.minimumY)
             {
-                transform.position = new Vector3(transform.position.x, transform.position.y, minimumZ);
+                transform.position = new Vector3(transform.position.x, mainController.map.cameraDefaultsAndConstraints.minimumY, transform.position.z);
             }
-            else if (transform.position.z > maximumZ)
+            else if (transform.position.y > mainController.map.cameraDefaultsAndConstraints.maximumY)
             {
-                transform.position = new Vector3(transform.position.x, transform.position.y, maximumZ);
+                transform.position = new Vector3(transform.position.x, mainController.map.cameraDefaultsAndConstraints.maximumY, transform.position.z);
             }
 
-            if (_camera.orthographicSize > maximumOrthographicSize)
+            if (transform.position.z < mainController.map.cameraDefaultsAndConstraints.minimumZ)
             {
-                _camera.orthographicSize = maximumOrthographicSize;
+                transform.position = new Vector3(transform.position.x, transform.position.y, mainController.map.cameraDefaultsAndConstraints.minimumZ);
             }
-            else if (_camera.orthographicSize < minimumOrthographicSize)
+            else if (transform.position.z > mainController.map.cameraDefaultsAndConstraints.maximumZ)
             {
-                _camera.orthographicSize = minimumOrthographicSize;
+                transform.position = new Vector3(transform.position.x, transform.position.y, mainController.map.cameraDefaultsAndConstraints.maximumZ);
+            }
+
+            if (_camera.orthographicSize > mainController.map.cameraDefaultsAndConstraints.maximumOrthographicSize)
+            {
+                _camera.orthographicSize = mainController.map.cameraDefaultsAndConstraints.maximumOrthographicSize;
+            }
+            else if (_camera.orthographicSize < mainController.map.cameraDefaultsAndConstraints.minimumOrthographicSize)
+            {
+                _camera.orthographicSize = mainController.map.cameraDefaultsAndConstraints.minimumOrthographicSize;
             }
         }
     }

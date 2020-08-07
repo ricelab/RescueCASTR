@@ -2,6 +2,15 @@
 using UnityEngine.UI;
 
 [Serializable]
+public class ClueJson
+{
+    public string time;
+    public bool instantiateBySimulatedTime;
+    public string photoFileName;
+    public string textDescription;
+}
+
+[Serializable]
 public class Clue
 {
     public FieldTeam fieldTeam;

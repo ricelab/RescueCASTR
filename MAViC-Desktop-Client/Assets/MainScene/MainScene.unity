@@ -1122,7 +1122,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &246473531
 GameObject:
@@ -1749,7 +1749,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.0004278697}
+  m_AnchoredPosition: {x: 0, y: -0.00000758417}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &322617437
@@ -1818,10 +1818,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 2071958832}
-  - {fileID: 729756909}
-  - {fileID: 599102818}
+  m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1838,8 +1835,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   resourcesUrl: http://pages.cpsc.ucalgary.ca/~bdgjones/mavic-resources/
+  scenariosPath: Scenarios/
+  scenarioId: 0
+  mapId: 0
+  mapObjList:
+  - {fileID: 550443983}
+  - {fileID: 504476035}
+  mapList:
+  - {fileID: 550443985}
+  - {fileID: 504476036}
   currentSimulatedTime:
     _dateTime: 2020-07-13 8:20:00 AM
+  fieldTeamPrefab: {fileID: 3163116931047670762, guid: dd462e63fc0226347b55b9ef66cd9b88,
+    type: 3}
   pointLastSeen:
     Latitude: 49.25584
     Longitude: -123.218551
@@ -2213,6 +2221,100 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 378573591}
   m_CullTransparentMesh: 0
+--- !u!1 &395861890
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 395861891}
+  - component: {fileID: 395861894}
+  - component: {fileID: 395861893}
+  - component: {fileID: 395861892}
+  m_Layer: 0
+  m_Name: Pacific-Spirit-Park-Labeled
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &395861891
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 395861890}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -108.1, z: 0}
+  m_LocalScale: {x: 19.96, y: 20, z: 14.44}
+  m_Children: []
+  m_Father: {fileID: 504476037}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!64 &395861892
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 395861890}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &395861893
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 395861890}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 4a35f225abc8a495cb6ef70ea36de6b1, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!33 &395861894
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 395861890}
+  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &404757414
 GameObject:
   m_ObjectHideFlags: 0
@@ -2521,6 +2623,73 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 449118412}
   m_CullTransparentMesh: 0
+--- !u!1001 &479810846
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 504476037}
+    m_Modifications:
+    - target: {fileID: 100004, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
+      propertyPath: m_Name
+      value: golden-ears-new
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400004, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400004, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400004, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400004, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400004, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400004, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400004, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400004, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400004, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400004, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400004, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
+--- !u!4 &479810847 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400004, guid: 2335925bfd612e54cb1ecfc9718af813,
+    type: 3}
+  m_PrefabInstance: {fileID: 479810846}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &480616470
 GameObject:
   m_ObjectHideFlags: 0
@@ -2941,6 +3110,80 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 503540618}
   m_CullTransparentMesh: 0
+--- !u!1 &504476035
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 504476037}
+  - component: {fileID: 504476036}
+  m_Layer: 0
+  m_Name: Map-ManningPark
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &504476036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 504476035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 768a410fea1342146bd348827c1e457e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  referenceLocations:
+  - Latitude: 49.243145
+    Longitude: -123.228509
+    Altitude: 55
+    Accuracy: 0
+    AltitudeAccuracy: 0
+    Heading: 0
+    Speed: 0
+  - Latitude: 49.257162
+    Longitude: -123.202347
+    Altitude: 80
+    Accuracy: 0
+    AltitudeAccuracy: 0
+    Heading: 0
+    Speed: 0
+  referenceMapPositions:
+  - {x: 65.05, y: -108.081, z: 68.77}
+  - {x: -57.98, y: -108.081, z: -31.51}
+  cameraDefaultsAndConstraints:
+    mimimumX: 0
+    maximumX: 0
+    minimumY: 0
+    maximumY: 0
+    minimumZ: 0
+    maximumZ: 0
+    minimumOrthographicSize: 0
+    maximumOrthographicSize: 0
+--- !u!4 &504476037
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 504476035}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 479810847}
+  - {fileID: 1989442426}
+  - {fileID: 395861891}
+  - {fileID: 1340598445}
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &531908562
 GameObject:
   m_ObjectHideFlags: 0
@@ -3258,12 +3501,12 @@ GameObject:
   - component: {fileID: 550443984}
   - component: {fileID: 550443985}
   m_Layer: 0
-  m_Name: Map
+  m_Name: Map-PacificSpirit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &550443984
 Transform:
   m_ObjectHideFlags: 0
@@ -3311,6 +3554,15 @@ MonoBehaviour:
   referenceMapPositions:
   - {x: 65.05, y: -108.081, z: 68.77}
   - {x: -57.98, y: -108.081, z: -31.51}
+  cameraDefaultsAndConstraints:
+    mimimumX: -150
+    maximumX: 85
+    minimumY: -105
+    maximumY: 500
+    minimumZ: -150
+    maximumZ: 100
+    minimumOrthographicSize: 5
+    maximumOrthographicSize: 75
 --- !u!1 &559848653
 GameObject:
   m_ObjectHideFlags: 0
@@ -3392,8 +3644,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1534020812}
   m_HandleRect: {fileID: 1534020811}
   m_Direction: 0
-  m_Value: 15.761029
-  m_Size: 0.9999863
+  m_Value: 4.1875
+  m_Size: 0.9999968
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3476,7 +3728,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.07056825, y: -0.0000355317}
+  m_AnchoredPosition: {x: -0.0029263273, y: -0.0000355317}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &582743354
@@ -3518,227 +3770,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
---- !u!1001 &599102817
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 328753223}
-    m_Modifications:
-    - target: {fileID: 3163116931047670762, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_Name
-      value: TeamC
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670762, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: gpsRecordingFilename
-      value: TeamGoldenEars
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: teamColor.r
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: teamColor.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: teamColor.b
-      value: 0.120704174
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: teamName
-      value: Team C
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: recordingDirectoryPath
-      value: FieldTeamRecords/TeamC
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: ratioComplete
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: startTime._dateTime
-      value: 2020-07-13 8:00:30 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[0].simulatedTime._dateTime
-      value: 0001-01-01 12:00:00 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[0].actualTime._dateTime
-      value: 2020-07-11 7:08:47 PM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[1].simulatedTime._dateTime
-      value: 0001-01-01 12:00:00 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[1].actualTime._dateTime
-      value: 2020-07-11 7:10:39 PM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[2].simulatedTime._dateTime
-      value: 0001-01-01 12:00:00 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[2].actualTime._dateTime
-      value: 2020-07-11 7:26:45 PM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[3].simulatedTime._dateTime
-      value: 0001-01-01 12:00:00 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[3].actualTime._dateTime
-      value: 2020-07-11 7:28:10 PM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[0].textDescription
-      value: Tied yellow bag of dog poo
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[3].textDescription
-      value: Piece from what looks like a broken toilet
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[1].textDescription
-      value: 'Lost dog tag; Name: Daigoro; Phone No.: 604-726-6947, 778-889-6442;
-        ID: 982000402996924'
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[2].textDescription
-      value: Blue piece of fabric, probably from light rain jacket
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[0].photoFileName
-      value: 2020-07-11_12-08-47.jpg
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[1].photoFileName
-      value: 2020-07-11_12-10-39.jpg
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[2].photoFileName
-      value: 2020-07-11_12-26-45.jpg
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[3].photoFileName
-      value: 2020-07-11_12-28-10.jpg
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: simulatedStartTime._dateTime
-      value: 2020-07-13 8:00:30 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: mainController
-      value: 
-      objectReference: {fileID: 328753224}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: dd462e63fc0226347b55b9ef66cd9b88, type: 3}
---- !u!4 &599102818 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-    type: 3}
-  m_PrefabInstance: {fileID: 599102817}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &614311777
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4017,7 +4048,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &690534541
 PrefabInstance:
@@ -4413,267 +4444,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 728105047}
   m_CullTransparentMesh: 0
---- !u!1001 &729756908
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 328753223}
-    m_Modifications:
-    - target: {fileID: 3163116931047670762, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_Name
-      value: TeamB
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670762, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.size
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: messages.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: gpsRecordingFilename
-      value: TeamGoldenEars
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: teamColor.r
-      value: 0.2588235
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: teamColor.g
-      value: 0.6370497
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: teamColor.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: teamName
-      value: Team B
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: recordingDirectoryPath
-      value: FieldTeamRecords/TeamB
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: ratioComplete
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: startTime._dateTime
-      value: 2020-07-13 7:52:20 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[0].simulatedTime._dateTime
-      value: 0001-01-01 12:00:00 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[0].actualTime._dateTime
-      value: 2020-07-11 6:29:12 PM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[1].simulatedTime._dateTime
-      value: 0001-01-01 12:00:00 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[1].actualTime._dateTime
-      value: 2020-07-11 6:30:50 PM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[2].simulatedTime._dateTime
-      value: 0001-01-01 12:00:00 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[2].actualTime._dateTime
-      value: 2020-07-11 6:37:50 PM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[3].simulatedTime._dateTime
-      value: 0001-01-01 12:00:00 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[3].actualTime._dateTime
-      value: 2020-07-11 6:39:15 PM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[4].simulatedTime._dateTime
-      value: 0001-01-01 12:00:00 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[4].actualTime._dateTime
-      value: 2020-07-11 6:47:26 PM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[0].textDescription
-      value: Blue bag of dog poop
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[1].textDescription
-      value: Lost button of cute blue cartoon cat
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[2].textDescription
-      value: Dog poo bag left behind, yellow
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[3].textDescription
-      value: Piece of red fabric
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[4].textDescription
-      value: Left behind tire tread, probably from bike tire
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[0].photoFileName
-      value: 2020-07-11_11-29-12.jpg
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[1].photoFileName
-      value: 2020-07-11_11-30-50.jpg
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[2].photoFileName
-      value: 2020-07-11_11-37-50.jpg
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[3].photoFileName
-      value: 2020-07-11_11-39-15.jpg
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[4].photoFileName
-      value: 2020-07-11_11-47-26.jpg
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: simulatedStartTime._dateTime
-      value: 2020-07-13 7:52:20 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: messages.Array.data[0].simulatedTime._dateTime
-      value: 0001-01-01 12:00:00 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: messages.Array.data[0].actualTime._dateTime
-      value: 2020-07-11 6:31:20 PM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: messages.Array.data[0].messageContent
-      value: Command, we found a button of a blue cartoon cat. Is this that Doraemon
-        guy the kid likes?
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: mainController
-      value: 
-      objectReference: {fileID: 328753224}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: dd462e63fc0226347b55b9ef66cd9b88, type: 3}
---- !u!4 &729756909 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-    type: 3}
-  m_PrefabInstance: {fileID: 729756908}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &743005785
 GameObject:
   m_ObjectHideFlags: 0
@@ -6700,20 +6470,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a5943d4167361d4d9e98984b69fe0d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainController: {fileID: 328753224}
   cameraViewingMode: 0
   rotateSpeed: -2
   dragSpeed: 6
   zoomSpeed: 20
-  mimimumX: -150
-  maximumX: 85
-  minimumY: -105
-  maximumY: 500
-  minimumZ: -150
-  maximumZ: 100
-  minimumOrthographicSize: 5
-  maximumOrthographicSize: 75
   toggleButtonTextObj: {fileID: 884728578}
-  mainController: {fileID: 328753224}
 --- !u!1 &1223651836
 GameObject:
   m_ObjectHideFlags: 0
@@ -6848,6 +6610,96 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 456769032519797380, guid: 2a1775a45e8564f81876b401f570fee2,
     type: 3}
   m_PrefabInstance: {fileID: 456769031481926508}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1340598444
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 504476037}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: b43e6f6422ee249fbb357d3dfb792947,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b43e6f6422ee249fbb357d3dfb792947,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 78.4
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b43e6f6422ee249fbb357d3dfb792947,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b43e6f6422ee249fbb357d3dfb792947,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b43e6f6422ee249fbb357d3dfb792947,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b43e6f6422ee249fbb357d3dfb792947,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b43e6f6422ee249fbb357d3dfb792947,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b43e6f6422ee249fbb357d3dfb792947,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b43e6f6422ee249fbb357d3dfb792947,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b43e6f6422ee249fbb357d3dfb792947,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b43e6f6422ee249fbb357d3dfb792947,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b43e6f6422ee249fbb357d3dfb792947,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b43e6f6422ee249fbb357d3dfb792947,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b43e6f6422ee249fbb357d3dfb792947,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b43e6f6422ee249fbb357d3dfb792947,
+        type: 3}
+      propertyPath: m_Name
+      value: manning-park
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b43e6f6422ee249fbb357d3dfb792947, type: 3}
+--- !u!4 &1340598445 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b43e6f6422ee249fbb357d3dfb792947,
+    type: 3}
+  m_PrefabInstance: {fileID: 1340598444}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1350723308
 GameObject:
@@ -7633,7 +7485,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1166337282}
   m_HandleRect: {fileID: 1166337281}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -9372,6 +9224,100 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1911903253}
   m_CullTransparentMesh: 0
+--- !u!1 &1989442425
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1989442426}
+  - component: {fileID: 1989442429}
+  - component: {fileID: 1989442428}
+  - component: {fileID: 1989442427}
+  m_Layer: 0
+  m_Name: Pacific-Spirit-Park
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1989442426
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1989442425}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -108.1, z: 0}
+  m_LocalScale: {x: 23.2, y: 20, z: 14.32}
+  m_Children: []
+  m_Father: {fileID: 504476037}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!64 &1989442427
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1989442425}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &1989442428
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1989442425}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: be69466b136c349b3981e9a6369df42f, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!33 &1989442429
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1989442425}
+  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &1990919689
 GameObject:
   m_ObjectHideFlags: 0
@@ -9784,12 +9730,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4923149382452278026, guid: 3f02fd98c2fe54b47a02191e025b7e2f,
     type: 3}
   m_PrefabInstance: {fileID: 4923149384502284363}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &2071958832 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-    type: 3}
-  m_PrefabInstance: {fileID: 3163116933048522437}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &2089071394
 GameObject:
@@ -10328,395 +10268,6 @@ PrefabInstance:
       objectReference: {fileID: 1990919694}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: daf3d421ba82d4672a14a324037b9a2f, type: 3}
---- !u!1001 &3163116933048522437
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 328753223}
-    m_Modifications:
-    - target: {fileID: 3163116931047670762, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_Name
-      value: TeamA
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670762, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.size
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: messages.Array.size
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: gpsRecordingFilename
-      value: TeamGoldenEars
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: teamColor.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: teamColor.g
-      value: 0.2690405
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: teamColor.b
-      value: 0.2588235
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: teamName
-      value: Team A
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: recordingDirectoryPath
-      value: FieldTeamRecords/TeamA
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: ratioComplete
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: startTime._dateTime
-      value: 2020-07-13 7:50:00 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[0].simulatedTime._dateTime
-      value: 0001-01-01 12:00:00 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[0].actualTime._dateTime
-      value: 2020-07-11 5:38:01 PM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[1].simulatedTime._dateTime
-      value: 0001-01-01 12:00:00 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[1].actualTime._dateTime
-      value: 2020-07-11 5:46:04 PM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[2].simulatedTime._dateTime
-      value: 0001-01-01 12:00:00 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[2].actualTime._dateTime
-      value: 2020-07-11 5:48:25 PM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[3].simulatedTime._dateTime
-      value: 0001-01-01 12:00:00 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[3].actualTime._dateTime
-      value: 2020-07-11 5:53:39 PM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[4].simulatedTime._dateTime
-      value: 0001-01-01 12:00:00 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[4].actualTime._dateTime
-      value: 2020-07-11 5:53:49 PM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[5].simulatedTime._dateTime
-      value: 0001-01-01 12:00:00 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[5].actualTime._dateTime
-      value: 2020-07-11 5:56:39 PM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[6].simulatedTime._dateTime
-      value: 0001-01-01 12:00:00 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[6].actualTime._dateTime
-      value: 2020-07-11 6:03:22 PM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[7].simulatedTime._dateTime
-      value: 0001-01-01 12:00:00 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[7].actualTime._dateTime
-      value: 2020-07-11 6:07:09 PM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[0].fieldTeam
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[0].textDescription
-      value: Worn out tennis ball
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[1].fieldTeam
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[1].textDescription
-      value: Napkin on ground
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[2].fieldTeam
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[2].textDescription
-      value: Pink fabric and white shoe laces
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[3].textDescription
-      value: Dog poop in pink poo bag
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[5].textDescription
-      value: Yellow bag of dog poop
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[6].textDescription
-      value: Dog poo, yellow bag
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[7].textDescription
-      value: Yellow bag of dog poo
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[8].simulatedTime._dateTime
-      value: 0001-01-01 12:00:00 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[8].actualTime._dateTime
-      value: 0001-01-01 12:00:00 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[8].textDescription
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[4].textDescription
-      value: Dog poop in yellow bag
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[0].photoFileName
-      value: 2020-07-11_10-38-01.jpg
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[1].photoFileName
-      value: 2020-07-11_10-46-04.jpg
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[2].photoFileName
-      value: 2020-07-11_10-48-25.jpg
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[3].photoFileName
-      value: 2020-07-11_10-53-39.jpg
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[4].photoFileName
-      value: 2020-07-11_10-53-49.jpg
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[5].photoFileName
-      value: 2020-07-11_10-56-39.jpg
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[6].photoFileName
-      value: 2020-07-11_11-03-22.jpg
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[7].photoFileName
-      value: 2020-07-11_11-07-09.jpg
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: messages.Array.data[0].simulatedTime._dateTime
-      value: 0001-01-01 12:00:00 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: messages.Array.data[0].actualTime._dateTime
-      value: 0001-01-01 12:00:00 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: messages.Array.data[0].messageContent
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: messages.Array.data[0].instantiateBySimulatedTime
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[0].instantiateBySimulatedTime
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[1].instantiateBySimulatedTime
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[2].instantiateBySimulatedTime
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[3].instantiateBySimulatedTime
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[4].instantiateBySimulatedTime
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[5].instantiateBySimulatedTime
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[6].instantiateBySimulatedTime
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: clues.Array.data[7].instantiateBySimulatedTime
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: simulatedStartTime._dateTime
-      value: 2020-07-13 7:50:00 AM
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670772, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: mainController
-      value: 
-      objectReference: {fileID: 328753224}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3163116931047670773, guid: dd462e63fc0226347b55b9ef66cd9b88,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: dd462e63fc0226347b55b9ef66cd9b88, type: 3}
 --- !u!1001 &4923149384502284363
 PrefabInstance:
   m_ObjectHideFlags: 0
