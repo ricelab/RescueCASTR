@@ -125,9 +125,6 @@ public class MainController : MonoBehaviour
             }
         }
 
-        _startTimeOfSimulation = currentSimulatedTime.dateTime;
-        _actualStartTime = DateTime.Now;
-
         footageThumbnailsCache = new ImageLoaderCache(100);
         footagePhotosCache = new ImageLoaderCache(25);
         cluesPhotosCache = new ImageLoaderCache(25);
@@ -176,6 +173,9 @@ public class MainController : MonoBehaviour
         plsMarkerObj.transform.SetSiblingIndex(0);
         lkpMarkerObj = GameObject.Instantiate(lkpMarkerPrefab, sceneUiObj.transform);
         lkpMarkerObj.transform.SetSiblingIndex(0);
+
+        _startTimeOfSimulation = currentSimulatedTime.dateTime;
+        _actualStartTime = DateTime.Now;
     }
 
     public void Update()

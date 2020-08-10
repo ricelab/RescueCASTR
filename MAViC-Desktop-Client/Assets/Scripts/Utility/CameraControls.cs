@@ -5,6 +5,9 @@ using UnityEngine.UI;
 [Serializable]
 public class CameraDefaultsAndConstraints
 {
+    public float rotateSpeed;
+    public float dragSpeed;
+    public float zoomSpeed;
     public float mimimumX;
     public float maximumX;
     public float minimumY;
@@ -32,15 +35,8 @@ public class CameraControls : MonoBehaviour
     private CameraViewingMode _oldCameraViewingMode;
 
     // Rotation
-    public float rotateSpeed = -3.0f;
     private float _rotateX;
     private float _rotateY;
-
-    // Dragging
-    public float dragSpeed = 12.0f;
-
-    // Zooming
-    public float zoomSpeed = 120.0f;
 
     private float _mouseRatioX;
     private float _mouseRatioY;
@@ -61,9 +57,13 @@ public class CameraControls : MonoBehaviour
     private RectTransform _wholeScreenUiCanvasRect;
     private Vector2 _referencePosition;
 
+    private CameraDefaultsAndConstraints _cameraDefaultsAndConstraints;
+
     public void Start()
     {
         _camera = GetComponent<Camera>();
+
+        _cameraDefaultsAndConstraints = mainController.map.cameraDefaultsAndConstraints;
 
         if (cameraViewingMode == CameraViewingMode._2D)
             _oldCameraViewingMode = CameraViewingMode._3D;
@@ -75,10 +75,14 @@ public class CameraControls : MonoBehaviour
 
         if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
-            rotateSpeed /= 2.0f;
-            dragSpeed /= 2.0f;
-            zoomSpeed /= 2.0f;
+            _cameraDefaultsAndConstraints.rotateSpeed /= 2.0f;
+            _cameraDefaultsAndConstraints.dragSpeed /= 2.0f;
+            _cameraDefaultsAndConstraints.zoomSpeed /= 2.0f;
         }
+
+        // Set starting orthographic size, based on min and max orthographic sizes
+        _camera.orthographicSize = _cameraDefaultsAndConstraints.maximumOrthographicSize -
+            0.5f * (_cameraDefaultsAndConstraints.maximumOrthographicSize - _cameraDefaultsAndConstraints.minimumOrthographicSize);
     }
 
     public void Update()
@@ -140,11 +144,11 @@ public class CameraControls : MonoBehaviour
                 // Can adjust zoom based on scroll wheel
                 if (cameraViewingMode == CameraViewingMode._3D)
                 {
-                    transform.Translate(Vector3.forward * Input.GetAxis("Mouse ScrollWheel") * zoomSpeed);
+                    transform.Translate(Vector3.forward * Input.GetAxis("Mouse ScrollWheel") * _cameraDefaultsAndConstraints.zoomSpeed);
                 }
                 else // if (cameraViewingMode == CameraViewingMode._2D)
                 {
-                    _camera.orthographicSize -= Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
+                    _camera.orthographicSize -= Input.GetAxis("Mouse ScrollWheel") * _cameraDefaultsAndConstraints.zoomSpeed;
                 }
             }
 
@@ -152,7 +156,7 @@ public class CameraControls : MonoBehaviour
             // Rotate
             if (cameraViewingMode == CameraViewingMode._3D && Input.GetMouseButton(1) && _rightMouseButtonStartedInScene)
             {
-                transform.Rotate(new Vector3(Input.GetAxis("Mouse Y") * rotateSpeed, -Input.GetAxis("Mouse X") * rotateSpeed, 0));
+                transform.Rotate(new Vector3(Input.GetAxis("Mouse Y") * _cameraDefaultsAndConstraints.rotateSpeed, -Input.GetAxis("Mouse X") * _cameraDefaultsAndConstraints.rotateSpeed, 0));
                 _rotateX = transform.rotation.eulerAngles.x;
                 _rotateY = transform.rotation.eulerAngles.y;
                 transform.rotation = Quaternion.Euler(_rotateX, _rotateY, 0);
@@ -164,15 +168,15 @@ public class CameraControls : MonoBehaviour
                 if (cameraViewingMode == CameraViewingMode._3D)
                 {
                     transform.Translate(new Vector3(
-                        -Input.GetAxis("Mouse X") * dragSpeed * 1.0f / 50.0f * (transform.position.y - mainController.map.cameraDefaultsAndConstraints.minimumY + 10.0f),
-                        -Input.GetAxis("Mouse Y") * dragSpeed * 1.0f / 50.0f * (transform.position.y - mainController.map.cameraDefaultsAndConstraints.minimumY + 10.0f),
+                        -Input.GetAxis("Mouse X") * _cameraDefaultsAndConstraints.dragSpeed * 1.0f / 50.0f * (transform.position.y - _cameraDefaultsAndConstraints.minimumY + 10.0f),
+                        -Input.GetAxis("Mouse Y") * _cameraDefaultsAndConstraints.dragSpeed * 1.0f / 50.0f * (transform.position.y - _cameraDefaultsAndConstraints.minimumY + 10.0f),
                         0));
                 }
                 else // if (cameraViewingMode == CameraViewingMode._2D)
                 {
                     transform.Translate(new Vector3(
-                        -Input.GetAxis("Mouse X") * dragSpeed * 1.0f / 50.0f * _camera.orthographicSize,
-                        -Input.GetAxis("Mouse Y") * dragSpeed * 1.0f / 50.0f * _camera.orthographicSize,
+                        -Input.GetAxis("Mouse X") * _cameraDefaultsAndConstraints.dragSpeed * 1.0f / 50.0f * _camera.orthographicSize,
+                        -Input.GetAxis("Mouse Y") * _cameraDefaultsAndConstraints.dragSpeed * 1.0f / 50.0f * _camera.orthographicSize,
                         0));
                 }
             }
@@ -189,40 +193,40 @@ public class CameraControls : MonoBehaviour
 
             // Keep camera position within constraints
 
-            if (transform.position.x < mainController.map.cameraDefaultsAndConstraints.mimimumX)
+            if (transform.position.x < _cameraDefaultsAndConstraints.mimimumX)
             {
-                transform.position = new Vector3(mainController.map.cameraDefaultsAndConstraints.mimimumX, transform.position.y, transform.position.z);
+                transform.position = new Vector3(_cameraDefaultsAndConstraints.mimimumX, transform.position.y, transform.position.z);
             }
-            else if (transform.position.x > mainController.map.cameraDefaultsAndConstraints.maximumX)
+            else if (transform.position.x > _cameraDefaultsAndConstraints.maximumX)
             {
-                transform.position = new Vector3(mainController.map.cameraDefaultsAndConstraints.maximumX, transform.position.y, transform.position.z);
-            }
-
-            if (transform.position.y < mainController.map.cameraDefaultsAndConstraints.minimumY)
-            {
-                transform.position = new Vector3(transform.position.x, mainController.map.cameraDefaultsAndConstraints.minimumY, transform.position.z);
-            }
-            else if (transform.position.y > mainController.map.cameraDefaultsAndConstraints.maximumY)
-            {
-                transform.position = new Vector3(transform.position.x, mainController.map.cameraDefaultsAndConstraints.maximumY, transform.position.z);
+                transform.position = new Vector3(_cameraDefaultsAndConstraints.maximumX, transform.position.y, transform.position.z);
             }
 
-            if (transform.position.z < mainController.map.cameraDefaultsAndConstraints.minimumZ)
+            if (transform.position.y < _cameraDefaultsAndConstraints.minimumY)
             {
-                transform.position = new Vector3(transform.position.x, transform.position.y, mainController.map.cameraDefaultsAndConstraints.minimumZ);
+                transform.position = new Vector3(transform.position.x, _cameraDefaultsAndConstraints.minimumY, transform.position.z);
             }
-            else if (transform.position.z > mainController.map.cameraDefaultsAndConstraints.maximumZ)
+            else if (transform.position.y > _cameraDefaultsAndConstraints.maximumY)
             {
-                transform.position = new Vector3(transform.position.x, transform.position.y, mainController.map.cameraDefaultsAndConstraints.maximumZ);
+                transform.position = new Vector3(transform.position.x, _cameraDefaultsAndConstraints.maximumY, transform.position.z);
             }
 
-            if (_camera.orthographicSize > mainController.map.cameraDefaultsAndConstraints.maximumOrthographicSize)
+            if (transform.position.z < _cameraDefaultsAndConstraints.minimumZ)
             {
-                _camera.orthographicSize = mainController.map.cameraDefaultsAndConstraints.maximumOrthographicSize;
+                transform.position = new Vector3(transform.position.x, transform.position.y, _cameraDefaultsAndConstraints.minimumZ);
             }
-            else if (_camera.orthographicSize < mainController.map.cameraDefaultsAndConstraints.minimumOrthographicSize)
+            else if (transform.position.z > _cameraDefaultsAndConstraints.maximumZ)
             {
-                _camera.orthographicSize = mainController.map.cameraDefaultsAndConstraints.minimumOrthographicSize;
+                transform.position = new Vector3(transform.position.x, transform.position.y, _cameraDefaultsAndConstraints.maximumZ);
+            }
+
+            if (_camera.orthographicSize > _cameraDefaultsAndConstraints.maximumOrthographicSize)
+            {
+                _camera.orthographicSize = _cameraDefaultsAndConstraints.maximumOrthographicSize;
+            }
+            else if (_camera.orthographicSize < _cameraDefaultsAndConstraints.minimumOrthographicSize)
+            {
+                _camera.orthographicSize = _cameraDefaultsAndConstraints.minimumOrthographicSize;
             }
         }
     }

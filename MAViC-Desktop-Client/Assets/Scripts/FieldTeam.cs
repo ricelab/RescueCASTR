@@ -390,11 +390,10 @@ public class FieldTeam : MonoBehaviour
             _teamAssignedRouteLineObj.transform.parent = _mapObj.transform;
             _teamAssignedRouteLineObj.transform.SetSiblingIndex(0);
             LineRenderer lineRenderer = _teamAssignedRouteLineObj.AddComponent<LineRenderer>();
-            lineRenderer.material = new Material(Shader.Find("Unlit/DottedLineShader" /* "Legacy Shaders/Particles/Alpha Blended" */));
+            lineRenderer.material = new Material(Shader.Find(/* "Unlit/DottedLineShader" */ "Legacy Shaders/Particles/Alpha Blended"));
             lineRenderer.positionCount = track.Waypoints.Count;
             lineRenderer.SetPositions(_assignedRouteMapPositions.ToArray());
-            lineRenderer.startColor = new Color(0.5f * teamColor.r, 0.5f * teamColor.g, 0.5f * teamColor.b, 0.75f * teamColor.a);
-            lineRenderer.endColor = new Color(teamColor.r, teamColor.g, teamColor.b, 0.75f * teamColor.a);
+            lineRenderer.startColor = lineRenderer.endColor = new Color(1.0f, 1.0f /* 0.85f */, 1.0f /* 0.0f */, 0.75f);
             lineRenderer.numCornerVertices = 10;
             lineRenderer.numCapVertices = 2;
             _teamAssignedRouteLineObj.SetActive(false);
@@ -509,9 +508,6 @@ public class FieldTeam : MonoBehaviour
 
                 lineRenderer.startColor = new Color(0.5f * teamColor.r, 0.5f * teamColor.g, 0.5f * teamColor.b, teamColor.a);
                 lineRenderer.endColor = teamColor;
-
-                assignedPathLineRenderer.startColor = new Color(0.5f * teamColor.r, 0.5f * teamColor.g, 0.5f * teamColor.b, 0.75f * teamColor.a);
-                assignedPathLineRenderer.endColor = new Color(teamColor.r, teamColor.g, teamColor.b, 0.75f * teamColor.a); ;
             }
 
             // Update size of path
@@ -813,8 +809,8 @@ public class FieldTeam : MonoBehaviour
         _assignedRouteFilePath = /* _recordingResourcesUrl */ recordingDirectoryPath + "assigned-route.gpx";
         _messagesFilePath = /* _recordingResourcesUrl */ recordingDirectoryPath + "messages";
         _cluesFilePath = /* _recordingResourcesUrl */ recordingDirectoryPath + "clues";
-        _timelapsePhotoDirectoryPath = _recordingResourcesUrl + "photos/";
-        _timelapsePhotoThumbnailDirectoryPath = _recordingResourcesUrl + "photo-thumbnails/";
+        _timelapsePhotoDirectoryPath = /* _recordingResourcesUrl */ mainController.resourcesUrl + "photos/";
+        _timelapsePhotoThumbnailDirectoryPath = /* _recordingResourcesUrl */ mainController.resourcesUrl + "photo-thumbnails/";
         _photosFileNamesListPath = /* _recordingResourcesUrl */ recordingDirectoryPath + "photos-filenames";
 
         List<Track> tracks = Track.ReadTracksFromFile(_gpsRecordingFilePath);
