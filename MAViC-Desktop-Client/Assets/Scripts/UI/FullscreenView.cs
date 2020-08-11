@@ -10,7 +10,7 @@ public class FullscreenView : MonoBehaviour, IImageLoadedHandler
     public Image image;
 
     private ImageLoader _fullImageLoader;
-    private ImageLoader _thumbnailImageLoader;
+    //private ImageLoader _thumbnailImageLoader;
     private bool _fullImageIsLoaded = false;
     private bool _isStarted = false;
 
@@ -19,7 +19,7 @@ public class FullscreenView : MonoBehaviour, IImageLoadedHandler
         if (!_isStarted)
         {
             _fullImageLoader = this.gameObject.AddComponent<ImageLoader>();
-            _thumbnailImageLoader = this.gameObject.AddComponent<ImageLoader>();
+            //_thumbnailImageLoader = this.gameObject.AddComponent<ImageLoader>();
 
             _isStarted = true;
         }
@@ -32,7 +32,12 @@ public class FullscreenView : MonoBehaviour, IImageLoadedHandler
         _fullImageIsLoaded = false;
         if (thumbnailPath != null)
         {
-            _thumbnailImageLoader.StartLoading(thumbnailPath, this, mainController.footageThumbnailsCache, false /* !isFullImage */);
+            if (!_fullImageIsLoaded /* full image is not yet loaded */)
+            {
+                Texture2D texture = Utility.LoadImageFile(thumbnailPath);
+                image.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+            }
+            //_thumbnailImageLoader.StartLoading(thumbnailPath, this, mainController.footageThumbnailsCache, false /* !isFullImage */);
         }
         _fullImageLoader.StartLoading(fullImagePath, this, mainController.footagePhotosCache, true /* isFullImage */);
     }

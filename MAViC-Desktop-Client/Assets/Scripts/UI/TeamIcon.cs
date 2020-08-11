@@ -12,11 +12,11 @@ public class TeamIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private Color _lastTeamColor;
     private string _lastTeamName;
 
-    private ImageLoader _imageLoader;
+    //private ImageLoader _imageLoader;
 
     public void Start()
     {
-        _imageLoader = this.gameObject.AddComponent<ImageLoader>();
+        //_imageLoader = this.gameObject.AddComponent<ImageLoader>();
     }
 
     public void Update()
@@ -103,10 +103,10 @@ public class TeamIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void DisplayImage(string path)
     {
-        //Texture2D texture = Utility.LoadImageFile(path);
-        //footage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+        Texture2D texture = Utility.LoadImageFile(path);
+        footage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
 
-        _imageLoader.StartLoading(path, this, fieldTeam.mainController.footageThumbnailsCache);
+        //_imageLoader.StartLoading(path, this, fieldTeam.mainController.footageThumbnailsCache);
     }
 
     public void ImageLoaded(Texture2D imageTexture, object optionalParameter)

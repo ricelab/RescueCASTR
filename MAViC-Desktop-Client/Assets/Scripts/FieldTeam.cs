@@ -620,7 +620,7 @@ public class FieldTeam : MonoBehaviour
                         GameObject messageTimelineIconObj = GameObject.Instantiate(messageTimelineIconPrefab, mainController.timelineUiObj.transform);
                         //messageTimelineIconObj.transform.SetSiblingIndex(0);
                         messageTimelineIconObj.GetComponent<MessageTimelineIcon>().message = messages[i];
-                        //_messageTimelineIconObjs.Add(messageTimelineIconObj);
+                        _messageTimelineIconObjs.Add(messageTimelineIconObj);
                     }
                     else
                     {
@@ -810,7 +810,7 @@ public class FieldTeam : MonoBehaviour
         _messagesFilePath = /* _recordingResourcesUrl */ recordingDirectoryPath + "messages";
         _cluesFilePath = /* _recordingResourcesUrl */ recordingDirectoryPath + "clues";
         _timelapsePhotoDirectoryPath = /* _recordingResourcesUrl */ mainController.resourcesUrl + "photos/";
-        _timelapsePhotoThumbnailDirectoryPath = /* _recordingResourcesUrl */ mainController.resourcesUrl + "photo-thumbnails/";
+        _timelapsePhotoThumbnailDirectoryPath = /* _recordingResourcesUrl */ /* mainController.resourcesUrl */ /* recordingDirectoryPath + */ "photo-thumbnails/";
         _photosFileNamesListPath = /* _recordingResourcesUrl */ recordingDirectoryPath + "photos-filenames";
 
         List<Track> tracks = Track.ReadTracksFromFile(_gpsRecordingFilePath);

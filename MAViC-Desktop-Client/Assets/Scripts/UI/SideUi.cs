@@ -44,12 +44,12 @@ public class SideUi : ABackButtonClickHandler, // ABackButtonClickHandler inheri
     public CurrentlyActivePage currentlyActivePage = CurrentlyActivePage.MainMenu;
 
 
-    private ImageLoader _imageLoader;
+    //private ImageLoader _imageLoader;
 
 
     public void Start()
     {
-        _imageLoader = this.gameObject.AddComponent<ImageLoader>();
+        //_imageLoader = this.gameObject.AddComponent<ImageLoader>();
     }
 
     public void ShowTeamDetails(FieldTeam ft)
@@ -126,11 +126,11 @@ public class SideUi : ABackButtonClickHandler, // ABackButtonClickHandler inheri
 
     public void DisplayFieldTeamLiveImage(string fullImagePath, string thumbnailPath)
     {
-        //Image liveFootageImage = liveFootageObj.GetComponent<Image>();
-        //Texture2D texture = Utility.LoadImageFile(path);
-        //liveFootageImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+        Image liveFootageImage = liveFootageObj.GetComponent<Image>();
+        Texture2D texture = Utility.LoadImageFile(thumbnailPath);
+        liveFootageImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
 
-        _imageLoader.StartLoading(thumbnailPath, this, mainController.footageThumbnailsCache);
+        //_imageLoader.StartLoading(thumbnailPath, this, mainController.footageThumbnailsCache);
 
         if (mainController.fullscreenView != null && mainController.fullscreenViewShowingLiveFootage)
         {
