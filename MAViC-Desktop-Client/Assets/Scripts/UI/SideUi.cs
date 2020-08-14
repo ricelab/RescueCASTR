@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class SideUi : ABackButtonClickHandler, // ABackButtonClickHandler inherits MonoBehaviour, and is defined in BackButton.cs
@@ -44,12 +41,14 @@ public class SideUi : ABackButtonClickHandler, // ABackButtonClickHandler inheri
     public CurrentlyActivePage currentlyActivePage = CurrentlyActivePage.MainMenu;
 
 
-    //private ImageLoader _imageLoader;
+    private ImageLoader _imageLoader;
+
+    private string _lastDisplayedThumbnailImagePath;
 
 
     public void Start()
     {
-        //_imageLoader = this.gameObject.AddComponent<ImageLoader>();
+        _imageLoader = this.gameObject.AddComponent<ImageLoader>();
     }
 
     public void ShowTeamDetails(FieldTeam ft)
@@ -67,8 +66,9 @@ public class SideUi : ABackButtonClickHandler, // ABackButtonClickHandler inheri
         //scrollRect.content = fieldTeamDetailsPageObj.GetComponent<RectTransform>();
 
         DisplayFieldTeamLiveImage(
-            selectedFieldTeam.GetPhotoPathFromSimulatedTime(mainController.currentSimulatedTime),
-            selectedFieldTeam.GetPhotoThumbnailPathFromSimulatedTime(mainController.currentSimulatedTime)
+            selectedFieldTeam.GetPhotoPathFromSimulatedTime(selectedFieldTeam.simulatedTimeLastOnline),
+            selectedFieldTeam.GetPhotoThumbnailPathFromSimulatedTime(selectedFieldTeam.simulatedTimeLastOnline),
+            selectedFieldTeam.GetGrayscalePhotoThumbnailPathFromSimulatedTime(selectedFieldTeam.simulatedTimeLastOnline)
             );
 
         currentlyActivePage = CurrentlyActivePage.FieldTeamDetails;
@@ -122,19 +122,34 @@ public class SideUi : ABackButtonClickHandler, // ABackButtonClickHandler inheri
 
         Image liveFootageImage = liveFootageObj.GetComponent<Image>();
         liveFootageImage.sprite = null;
+
+        _lastDisplayedThumbnailImagePath = null;
     }
 
-    public void DisplayFieldTeamLiveImage(string fullImagePath, string thumbnailPath)
+    public void DisplayFieldTeamLiveImage(string fullImagePath, string thumbnailPath, string grayscaleThumbnailPath)
     {
-        Image liveFootageImage = liveFootageObj.GetComponent<Image>();
-        Texture2D texture = Utility.LoadImageFile(thumbnailPath);
-        liveFootageImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
-
-        //_imageLoader.StartLoading(thumbnailPath, this, mainController.footageThumbnailsCache);
-
-        if (mainController.fullscreenView != null && mainController.fullscreenViewShowingLiveFootage)
+        if (_lastDisplayedThumbnailImagePath == null || _lastDisplayedThumbnailImagePath != thumbnailPath)
         {
-            mainController.fullscreenView.DisplayFullscreenImage(fullImagePath, thumbnailPath);
+            Image liveFootageImage = liveFootageObj.GetComponent<Image>();
+
+            if (selectedFieldTeam.isInRadioDeadZone)
+            {
+                _imageLoader.StartLoading(grayscaleThumbnailPath, this, mainController.footageThumbnailsCache);
+            }
+            else
+            {
+                Texture2D texture = Utility.LoadImageFile(thumbnailPath);
+                liveFootageImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+
+                //_imageLoader.StartLoading(thumbnailPath, this, mainController.footageThumbnailsCache);
+            }
+
+            if (mainController.fullscreenView != null && mainController.fullscreenViewShowingLiveFootage)
+            {
+                mainController.fullscreenView.DisplayFullscreenImage(fullImagePath, thumbnailPath);
+            }
+
+            _lastDisplayedThumbnailImagePath = thumbnailPath;
         }
     }
 

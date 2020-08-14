@@ -23,20 +23,20 @@ public class Map : MonoBehaviour
     public Vector3 ConvertLocationToMapPosition(Location location)
     {
         float x = (float)(
-            (location.Longitude - referenceLocations[0].Longitude) *
-            (referenceMapPositions[0].x - referenceMapPositions[1].x) / (referenceLocations[0].Longitude - referenceLocations[1].Longitude) +
+            (location.longitude - referenceLocations[0].longitude) *
+            (referenceMapPositions[0].x - referenceMapPositions[1].x) / (referenceLocations[0].longitude - referenceLocations[1].longitude) +
             referenceMapPositions[0].x
         );
 
         float y = (float)(
-            (location.Altitude - referenceLocations[0].Altitude) *
-            (referenceMapPositions[0].y - referenceMapPositions[1].y) / (referenceLocations[0].Altitude - referenceLocations[1].Altitude) +
+            (location.altitude - referenceLocations[0].altitude) *
+            (referenceMapPositions[0].y - referenceMapPositions[1].y) / (referenceLocations[0].altitude - referenceLocations[1].altitude) +
             referenceMapPositions[0].y
         );
 
         float z = (float)(
-            (location.Latitude - referenceLocations[0].Latitude) *
-            (referenceMapPositions[0].z - referenceMapPositions[1].z) / (referenceLocations[0].Latitude - referenceLocations[1].Latitude) +
+            (location.latitude - referenceLocations[0].latitude) *
+            (referenceMapPositions[0].z - referenceMapPositions[1].z) / (referenceLocations[0].latitude - referenceLocations[1].latitude) +
             referenceMapPositions[0].z
         );
 

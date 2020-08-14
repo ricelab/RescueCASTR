@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class MapFrameDisplay : MonoBehaviour, IImageLoadedHandler
@@ -13,6 +9,8 @@ public class MapFrameDisplay : MonoBehaviour, IImageLoadedHandler
 
     private bool _isStarted = false;
     //private ImageLoader _imageLoader;
+
+    private string _lastDisplayedImagePath;
 
     public void Start()
     {
@@ -26,11 +24,16 @@ public class MapFrameDisplay : MonoBehaviour, IImageLoadedHandler
 
     public void DisplayImage(string path)
     {
-        Texture2D texture = Utility.LoadImageFile(path);
-        image.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+        if (_lastDisplayedImagePath == null || _lastDisplayedImagePath != path)
+        {
+            Texture2D texture = Utility.LoadImageFile(path);
+            image.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
 
-        //Start();
-        //_imageLoader.StartLoading(path, this, fieldTeam.mainController.footageThumbnailsCache);
+            //Start();
+            //_imageLoader.StartLoading(path, this, fieldTeam.mainController.footageThumbnailsCache);
+
+            _lastDisplayedImagePath = path;
+        }
     }
 
     public void ImageLoaded(Texture2D imageTexture, object optionalParameter)

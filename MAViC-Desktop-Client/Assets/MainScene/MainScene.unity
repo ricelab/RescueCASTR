@@ -568,7 +568,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2032959487}
   m_HandleRect: {fileID: 2032959486}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1749,7 +1749,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.00000758417}
+  m_AnchoredPosition: {x: 0, y: -0.00057952007}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &322617437
@@ -1836,8 +1836,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resourcesUrl: http://pages.cpsc.ucalgary.ca/~bdgjones/mavic-resources/
   scenariosPath: Scenarios/
-  scenarioId: 2
-  mapId: 0
+  scenarioId: 1
+  mapId: 1
   mapObjList:
   - {fileID: 504476035}
   - {fileID: 550443983}
@@ -1849,21 +1849,21 @@ MonoBehaviour:
   fieldTeamPrefab: {fileID: 3163116931047670762, guid: dd462e63fc0226347b55b9ef66cd9b88,
     type: 3}
   pointLastSeen:
-    Latitude: 49.25584
-    Longitude: -123.218551
-    Altitude: 87
-    Accuracy: 0
-    AltitudeAccuracy: 0
-    Heading: 0
-    Speed: 0
+    latitude: 0
+    longitude: 0
+    altitude: 0
+    accuracy: 0
+    altitudeAccuracy: 0
+    heading: 0
+    speed: 0
   lastKnownPosition:
-    Latitude: 49.254648
-    Longitude: -123.214635
-    Altitude: 95
-    Accuracy: 0
-    AltitudeAccuracy: 0
-    Heading: 0
-    Speed: 0
+    latitude: 0
+    longitude: 0
+    altitude: 0
+    accuracy: 0
+    altitudeAccuracy: 0
+    heading: 0
+    speed: 0
   plsMarkerObj: {fileID: 0}
   lkpMarkerObj: {fileID: 0}
   plsMarkerPrefab: {fileID: 572146415000559036, guid: d5ee6b5f814424e2e85a22e6d0d441bb,
@@ -2979,20 +2979,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   referenceLocations:
-  - Latitude: 49.086225
-    Longitude: -120.954609
-    Altitude: 1739
-    Accuracy: 0
-    AltitudeAccuracy: 0
-    Heading: 0
-    Speed: 0
-  - Latitude: 49.045599
-    Longitude: -120.851883
-    Altitude: 1256
-    Accuracy: 0
-    AltitudeAccuracy: 0
-    Heading: 0
-    Speed: 0
+  - latitude: 49.086225
+    longitude: -120.954609
+    altitude: 1739
+    accuracy: 0
+    altitudeAccuracy: 0
+    heading: 0
+    speed: 0
+  - latitude: 49.045599
+    longitude: -120.851883
+    altitude: 1256
+    accuracy: 0
+    altitudeAccuracy: 0
+    heading: 0
+    speed: 0
   referenceMapPositions:
   - {x: 1281.6, y: -532.8, z: -389.5}
   - {x: -827.8, y: -652.4, z: 882.9}
@@ -3376,20 +3376,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   referenceLocations:
-  - Latitude: 49.243145
-    Longitude: -123.228509
-    Altitude: 55
-    Accuracy: 0
-    AltitudeAccuracy: 0
-    Heading: 0
-    Speed: 0
-  - Latitude: 49.257162
-    Longitude: -123.202347
-    Altitude: 80
-    Accuracy: 0
-    AltitudeAccuracy: 0
-    Heading: 0
-    Speed: 0
+  - latitude: 49.243145
+    longitude: -123.228509
+    altitude: 55
+    accuracy: 0
+    altitudeAccuracy: 0
+    heading: 0
+    speed: 0
+  - latitude: 49.257162
+    longitude: -123.202347
+    altitude: 80
+    accuracy: 0
+    altitudeAccuracy: 0
+    heading: 0
+    speed: 0
   referenceMapPositions:
   - {x: 65.05, y: -108.081, z: 68.77}
   - {x: -57.98, y: -108.081, z: -31.51}
@@ -3486,8 +3486,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1534020812}
   m_HandleRect: {fileID: 1534020811}
   m_Direction: 0
-  m_Value: 1
-  m_Size: 1
+  m_Value: 0.0952381
+  m_Size: 0.99999154
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3570,7 +3570,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.0014842674, y: -0.0000355317}
+  m_AnchoredPosition: {x: 0.000863038, y: -0.0000355317}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &582743354
@@ -5048,8 +5048,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 151.5, y: 0}
-  m_SizeDelta: {x: 303, y: 0}
+  m_AnchoredPosition: {x: 151.49998, y: 0}
+  m_SizeDelta: {x: 302.99997, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &899663795
 MonoBehaviour:
@@ -7495,8 +7495,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 151.5, y: 0}
-  m_SizeDelta: {x: 303, y: 0}
+  m_AnchoredPosition: {x: 151.49998, y: 0}
+  m_SizeDelta: {x: 302.99997, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1567310396
 MonoBehaviour:

@@ -12,15 +12,6 @@ public class ScenarioJson
     public FieldTeamJson[] fieldTeams;
 }
 
-[Serializable]
-public class FieldTeamJson
-{
-    public string name;
-    public string color;
-    public string path;
-    public string simulatedStartTime;
-}
-
 public class MainController : MonoBehaviour
 {
     public string resourcesUrl = "http://pages.cpsc.ucalgary.ca/~bdgjones/mavic-resources/";

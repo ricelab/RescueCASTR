@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Experimental.Rendering;
 using UnityEngine.UI;
 
 public class TeamTimeline : MonoBehaviour
@@ -14,10 +11,11 @@ public class TeamTimeline : MonoBehaviour
     public GameObject timelineHighlightPrefab;
     public GameObject timelineNeedlePrefab;
 
+    public GameObject line;
+    public GameObject offlineLine;
+
     private Color _lastTeamColor;
     private string _lastTeamName;
-
-    private GameObject _line;
 
     private GameObject _mapFrameDisplayObj;
     private MapFrameDisplay _mapFrameDisplay;
@@ -45,15 +43,21 @@ public class TeamTimeline : MonoBehaviour
     private float _n = 0.0f;
     private float _pivotX = 0.0f;
 
+    private float _offlineLineScaleX = 0.0f;
+    private float _offlineLineN = 0.0f;
+    private float _offlineLinePivotX = 0.0f;
+
     private bool _hoveringOverLine = false;
     private bool _hoveringOverLineOnLastFrame = false;
 
     private DateTime _endTimeOfTimeline;
 
-    void Start()
-    {
-        _line = this.transform.Find("Line").gameObject;
+    private DateTime _endTimeOfOfflineTimeline;
 
+    private Image _offlineLineImg;
+
+    public void Start()
+    {
         // For cursor hovering/clicking on timeline
         _raycaster = this.GetComponentInParent<GraphicRaycaster>();
         _eventSystem = GetComponent<EventSystem>();
@@ -62,9 +66,11 @@ public class TeamTimeline : MonoBehaviour
         _wholeScreenUiCanvasRect = _wholeScreenUiObj.GetComponent<RectTransform>();
         _timelineUiObj = fieldTeam.mainController.timelineUiObj;
         _timelineUiCanvasRect = _timelineUiObj.GetComponent<RectTransform>();
+
+        _offlineLineImg = offlineLine.GetComponent<Image>();
     }
 
-    void Update()
+    public void Update()
     {
         if (fieldTeam)
         {
@@ -73,8 +79,11 @@ public class TeamTimeline : MonoBehaviour
             if (fieldTeam.teamColor != _lastTeamColor)
             {
                 _lastTeamColor = fieldTeam.teamColor;
-                Image img = _line.GetComponent<Image>();
+
+                Image img = line.GetComponent<Image>();
                 img.color = fieldTeam.teamColor;
+
+                _offlineLineImg.color = fieldTeam.teamColor;
             }
 
 
@@ -91,11 +100,11 @@ public class TeamTimeline : MonoBehaviour
             /* Draw/update timeline markings */
 
             if (fieldTeam.mainController.currentSimulatedTime.dateTime < fieldTeam.simulatedEndTime.dateTime)
-                _endTimeOfTimeline = fieldTeam.mainController.currentSimulatedTime.dateTime;
+                _endTimeOfTimeline = fieldTeam.simulatedTimeLastOnline.dateTime;
             else
                 _endTimeOfTimeline = fieldTeam.simulatedEndTime.dateTime;
 
-            RectTransform lineTransform = _line.GetComponent<RectTransform>();
+            RectTransform lineTransform = line.GetComponent<RectTransform>();
 
             _scaleX =
                 (float)(_endTimeOfTimeline.Ticks - fieldTeam.simulatedStartTime.dateTime.Ticks) /
@@ -104,6 +113,7 @@ public class TeamTimeline : MonoBehaviour
             _n =
                 (float)(fieldTeam.simulatedStartTime.dateTime.Ticks - fieldTeam.mainController.earliestSimulatedStartTime.dateTime.Ticks) /
                 (float)(fieldTeam.mainController.currentSimulatedTime.dateTime.Ticks - fieldTeam.mainController.earliestSimulatedStartTime.dateTime.Ticks);
+
             if (_scaleX == 1.0f)
                 _pivotX = 0.0f;
             else
@@ -111,9 +121,52 @@ public class TeamTimeline : MonoBehaviour
 
             lineTransform.pivot = new Vector2(_pivotX, lineTransform.pivot.y);
             lineTransform.localScale = new Vector3(_scaleX, lineTransform.localScale.y, lineTransform.localScale.z);
+            lineTransform.SetLeft(0.0f);
+            lineTransform.SetRight(0.0f);
 
             _beginPos = _n * (_timelineUiCanvasRect.sizeDelta.x - 25.0f) + 5.0f;
             _endPos = (_n + _scaleX) * (_timelineUiCanvasRect.sizeDelta.x - 25.0f) + 5.0f;
+
+
+            /* Draw/update offline timeline markings */
+
+            if (fieldTeam.isInRadioDeadZone)
+            {
+                offlineLine.SetActive(true);
+
+                if (fieldTeam.mainController.currentSimulatedTime.dateTime < fieldTeam.simulatedEndTime.dateTime)
+                    _endTimeOfOfflineTimeline = fieldTeam.mainController.currentSimulatedTime;
+                else
+                    _endTimeOfOfflineTimeline = fieldTeam.simulatedEndTime.dateTime;
+
+                RectTransform offlineLineTransform = offlineLine.GetComponent<RectTransform>();
+
+                _offlineLineScaleX =
+                    (float)(_endTimeOfOfflineTimeline.Ticks - fieldTeam.simulatedTimeLastOnline.dateTime.Ticks) /
+                    (float)(fieldTeam.mainController.currentSimulatedTime.dateTime.Ticks - fieldTeam.mainController.earliestSimulatedStartTime.dateTime.Ticks);
+
+                _offlineLineN =
+                    (float)(fieldTeam.simulatedTimeLastOnline.dateTime.Ticks - fieldTeam.mainController.earliestSimulatedStartTime.dateTime.Ticks) /
+                    (float)(fieldTeam.mainController.currentSimulatedTime.dateTime.Ticks - fieldTeam.mainController.earliestSimulatedStartTime.dateTime.Ticks);
+
+                if (_offlineLineScaleX == 1.0f)
+                    _offlineLinePivotX = 0.0f;
+                else
+                    _offlineLinePivotX = _offlineLineN + _offlineLineN / (1.0f - _offlineLineScaleX) * _offlineLineScaleX;
+
+                offlineLineTransform.pivot = new Vector2(_offlineLinePivotX, offlineLineTransform.pivot.y);
+                offlineLineTransform.localScale = new Vector3(_offlineLineScaleX, offlineLineTransform.localScale.y, offlineLineTransform.localScale.z);
+                offlineLineTransform.SetLeft(0.0f);
+                offlineLineTransform.SetRight(0.0f);
+
+                Material mat = Instantiate(_offlineLineImg.material);
+                mat.SetFloat("_RepeatCount", 500.0f * _offlineLineScaleX);
+                _offlineLineImg.material = mat;
+            }
+            else
+            {
+                offlineLine.SetActive(false);
+            }
 
 
             /* Display team footage thumbnail preview if cursor hovering over timeline */
@@ -134,7 +187,7 @@ public class TeamTimeline : MonoBehaviour
             _hoveringOverLine = false;
             foreach (RaycastResult res in results)
             {
-                if (res.gameObject == _line && fieldTeam.mainController.fullscreenView == null) // cursor is hovering over line
+                if (res.gameObject == line && fieldTeam.mainController.fullscreenView == null) // cursor is hovering over line
                 {
                     _hoveringOverLine = true;
                     result = res;
@@ -266,7 +319,7 @@ public class TeamTimeline : MonoBehaviour
 
         Camera timelineCamera = fieldTeam.mainController.timelineCameraObj.GetComponent<Camera>();
         RectTransform canvasRect = _timelineUiObj.GetComponent<RectTransform>();
-        Vector2 viewportPos = timelineCamera.WorldToViewportPoint(_line.transform.position);
+        Vector2 viewportPos = timelineCamera.WorldToViewportPoint(line.transform.position);
         Vector2 worldObjTimelineViewPos = new Vector2(
             viewportPos.x * canvasRect.sizeDelta.x,
             viewportPos.y * canvasRect.sizeDelta.y + 5.0f
@@ -289,7 +342,7 @@ public class TeamTimeline : MonoBehaviour
 
         Camera timelineCamera = fieldTeam.mainController.timelineCameraObj.GetComponent<Camera>();
         RectTransform canvasRect = _timelineUiObj.GetComponent<RectTransform>();
-        Vector2 viewportPos = timelineCamera.WorldToViewportPoint(_line.transform.position);
+        Vector2 viewportPos = timelineCamera.WorldToViewportPoint(line.transform.position);
         Vector2 worldObjTimelineViewPos = new Vector2(
             viewportPos.x * canvasRect.sizeDelta.x,
             viewportPos.y * canvasRect.sizeDelta.y + 5.0f
@@ -321,7 +374,7 @@ public class TeamTimeline : MonoBehaviour
 
         Camera timelineCamera = fieldTeam.mainController.timelineCameraObj.GetComponent<Camera>();
         RectTransform canvasRect = _timelineUiObj.GetComponent<RectTransform>();
-        Vector2 viewportPos = timelineCamera.WorldToViewportPoint(_line.transform.position);
+        Vector2 viewportPos = timelineCamera.WorldToViewportPoint(line.transform.position);
         Vector2 worldObjScreenPos = new Vector2(
             viewportPos.x * canvasRect.sizeDelta.x,
             _timelineNeedle.GetComponent<RectTransform>().rect.height / 2.0f

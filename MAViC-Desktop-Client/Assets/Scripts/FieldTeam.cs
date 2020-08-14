@@ -6,6 +6,16 @@ using System;
 using System.Linq;
 using UnityEngine.UI;
 
+[Serializable]
+public class FieldTeamJson
+{
+    public string name;
+    public string color;
+    public string path;
+    public string simulatedStartTime;
+    public RadioDeadZoneJson[] radioDeadZones;
+}
+
 public class FieldTeam : MonoBehaviour
 {
     #region Public Properties
@@ -137,6 +147,61 @@ public class FieldTeam : MonoBehaviour
     public List<Message> revealedMessages;
     public List<Clue> revealedClues;
 
+    public RadioDeadZone[] radioDeadZones;
+
+    public bool isInRadioDeadZone
+    {
+        get
+        {
+            if (!isComplete && radioDeadZones != null)
+            {
+                foreach (RadioDeadZone radioDeadZone in radioDeadZones)
+                {
+                    if (mainController.currentSimulatedTime.dateTime >= radioDeadZone.simulatedStartTime.dateTime &&
+                        mainController.currentSimulatedTime.dateTime <= radioDeadZone.simulatedEndTime.dateTime)
+                    {
+                        _lastSimulatedTimeBeforeOffline = radioDeadZone.simulatedStartTime;
+                        _lastActualTimeBeforeOffline = radioDeadZone.actualStartTime;
+
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+    }
+
+    public UDateTime simulatedTimeLastOnline
+    {
+        get
+        {
+            if (isInRadioDeadZone)
+            {
+                return _lastSimulatedTimeBeforeOffline;
+            }
+            else
+            {
+                return isComplete ? simulatedEndTime : mainController.currentSimulatedTime;
+            }
+        }
+    }
+
+    public UDateTime actualTimeLastOnline
+    {
+        get
+        {
+            if (isInRadioDeadZone)
+            {
+                return _lastActualTimeBeforeOffline;
+            }
+            else
+            {
+                return isComplete ? _actualEndTime : (UDateTime)ConvertSimulatedTimeToActualTime(mainController.currentSimulatedTime);
+            }
+        }
+    }
+
     public Location currentLocation => _revealedMapLocations.Last();
     public Vector3 currentScenePosition => _revealedMapPositions.Last();
 
@@ -171,10 +236,12 @@ public class FieldTeam : MonoBehaviour
 
     private string _gpsRecordingFilePath;
     private string _assignedRouteFilePath;
+    private string _radioDeadZonesFilePath;
     private string _messagesFilePath;
     private string _cluesFilePath;
     private string _timelapsePhotoDirectoryPath;
     private string _timelapsePhotoThumbnailDirectoryPath;
+    private string _timelapsePhotoThumbnailGrayscaleDirectoryPath;
     private string _photosFileNamesListPath;
 
     private GameObject _mapObj;
@@ -198,12 +265,16 @@ public class FieldTeam : MonoBehaviour
     private GameObject _teamPathLineObj;
 
     private GameObject _teamAssignedRouteLineObj;
+    private float _teamAssignedRouteLineTotalDistance;
 
     private List<GameObject> _clueMapIconObjs;
     private List<GameObject> _messageMapIconObjs;
 
     private List<GameObject> _clueTimelineIconObjs;
     private List<GameObject> _messageTimelineIconObjs;
+
+    private UDateTime _lastSimulatedTimeBeforeOffline;
+    private UDateTime _lastActualTimeBeforeOffline;
 
     private int _latestAvailableWaypointIndex = 0;
 
@@ -278,6 +349,34 @@ public class FieldTeam : MonoBehaviour
             }
 
 
+            /* Load/setup radio dead zones */
+
+            TextAsset radioDeadZonesJsonFile = Resources.Load<TextAsset>(_radioDeadZonesFilePath);
+            RadioDeadZoneJson[] radioDeadZoneJsonArray = JsonHelper.FromJson<RadioDeadZoneJson>(JsonHelper.fixJson(radioDeadZonesJsonFile.text));
+            radioDeadZones = new RadioDeadZone[radioDeadZoneJsonArray.Length];
+            for (int n = 0; n < radioDeadZones.Length; n++)
+            {
+                radioDeadZones[n] = new RadioDeadZone();
+
+                if (radioDeadZoneJsonArray[n].instantiateBySimulatedTime)
+                {
+                    radioDeadZones[n].simulatedStartTime = Convert.ToDateTime(radioDeadZoneJsonArray[n].startTime);
+                    radioDeadZones[n].simulatedEndTime = Convert.ToDateTime(radioDeadZoneJsonArray[n].endTime);
+
+                    radioDeadZones[n].actualStartTime = ConvertSimulatedTimeToActualTime(radioDeadZones[n].simulatedStartTime);
+                    radioDeadZones[n].actualEndTime = ConvertSimulatedTimeToActualTime(radioDeadZones[n].simulatedEndTime);
+                }
+                else
+                {
+                    radioDeadZones[n].actualStartTime = Convert.ToDateTime(radioDeadZoneJsonArray[n].startTime);
+                    radioDeadZones[n].actualEndTime = Convert.ToDateTime(radioDeadZoneJsonArray[n].endTime);
+
+                    radioDeadZones[n].simulatedStartTime = ConvertActualTimeToSimulatedTime(radioDeadZones[n].actualStartTime);
+                    radioDeadZones[n].simulatedEndTime = ConvertActualTimeToSimulatedTime(radioDeadZones[n].actualEndTime);
+                }
+            }
+
+
             /* Load waypoints from GPS recording */
 
             // Only looking at the first track of the file (should only have one track)
@@ -293,13 +392,13 @@ public class FieldTeam : MonoBehaviour
             foreach (Waypoint waypoint in track.Waypoints)
             {
                 Location location = new Location();
-                location.Latitude = waypoint.Latitude;
-                location.Longitude = waypoint.Longitude;
-                location.Altitude = waypoint.Elevation + 100;
-                location.Accuracy = 0;
-                location.AltitudeAccuracy = 0;
-                location.Heading = 0;
-                location.Speed = 0;
+                location.latitude = waypoint.Latitude;
+                location.longitude = waypoint.Longitude;
+                location.altitude = waypoint.Elevation + 100;
+                location.accuracy = 0;
+                location.altitudeAccuracy = 0;
+                location.heading = 0;
+                location.speed = 0;
 
                 _teamPathPointObjs.Add(GameObject.CreatePrimitive(PrimitiveType.Sphere));
                 _teamPathPointObjs.Last().transform.parent = _mapObj.transform;
@@ -312,7 +411,7 @@ public class FieldTeam : MonoBehaviour
                 teamPathPoint.pointNumber = i;
                 teamPathPoint.fieldTeam = this;
 
-                if (ConvertActualTimeToSimulatedTime(teamPathPoint.actualTime) < mainController.currentSimulatedTime)
+                if (ConvertActualTimeToSimulatedTime(teamPathPoint.actualTime) < simulatedTimeLastOnline)
                 {
                     _latestAvailableWaypointIndex = i;
                 }
@@ -373,24 +472,24 @@ public class FieldTeam : MonoBehaviour
             foreach (Waypoint waypoint in track.Waypoints)
             {
                 Location location = new Location();
-                location.Latitude = waypoint.Latitude;
-                location.Longitude = waypoint.Longitude;
-                location.Altitude = (double.IsNaN(waypoint.Elevation) ? 0 : waypoint.Elevation)  + 100;
-                location.Accuracy = 0;
-                location.AltitudeAccuracy = 0;
-                location.Heading = 0;
-                location.Speed = 0;
+                location.latitude = waypoint.Latitude;
+                location.longitude = waypoint.Longitude;
+                location.altitude = (double.IsNaN(waypoint.Elevation) ? 0 : waypoint.Elevation)  + 100;
+                location.accuracy = 0;
+                location.altitudeAccuracy = 0;
+                location.heading = 0;
+                location.speed = 0;
 
                 _assignedRouteMapLocations.Add(location);
                 _assignedRouteMapPositions.Add(_map.ConvertLocationToMapPosition(location));
             }
 
-            // Instantiate line
+            // Instantiate assigned route line
             _teamAssignedRouteLineObj = new GameObject();
             _teamAssignedRouteLineObj.transform.parent = _mapObj.transform;
             _teamAssignedRouteLineObj.transform.SetSiblingIndex(0);
             LineRenderer lineRenderer = _teamAssignedRouteLineObj.AddComponent<LineRenderer>();
-            lineRenderer.material = new Material(Shader.Find(/* "Unlit/DottedLineShader" */ "Legacy Shaders/Particles/Alpha Blended"));
+            lineRenderer.material = new Material(Shader.Find("Unlit/DottedLine" /* "Legacy Shaders/Particles/Alpha Blended" */));
             lineRenderer.positionCount = track.Waypoints.Count;
             lineRenderer.SetPositions(_assignedRouteMapPositions.ToArray());
             lineRenderer.startColor = lineRenderer.endColor = new Color(1.0f, 1.0f /* 0.85f */, 1.0f /* 0.0f */, 0.75f);
@@ -399,6 +498,17 @@ public class FieldTeam : MonoBehaviour
             _teamAssignedRouteLineObj.SetActive(false);
             //DottedLineRenderer dottedLineRenderer = _teamAssignedRouteLineObj.AddComponent<DottedLineRenderer>();
             //dottedLineRenderer.scaleInUpdate = true;
+
+            // Get assigned route line total distance
+            int c0 = 0;
+            int c1 = 1;
+            _teamAssignedRouteLineTotalDistance = 0.0f;
+            while (c1 < lineRenderer.positionCount)
+            {
+                _teamAssignedRouteLineTotalDistance += Vector3.Distance(lineRenderer.GetPosition(c0), lineRenderer.GetPosition(c1));
+                c0++;
+                c1++;
+            }
         }
 
         // Setup messages
@@ -489,7 +599,7 @@ public class FieldTeam : MonoBehaviour
         if (_fieldTeamIsInstantiated)
         {
             LineRenderer lineRenderer = _teamPathLineObj.GetComponent<LineRenderer>();
-            LineRenderer assignedPathLineRenderer = _teamAssignedRouteLineObj.GetComponent<LineRenderer>();
+            LineRenderer assignedRouteLineRenderer = _teamAssignedRouteLineObj.GetComponent<LineRenderer>();
 
             // Show assigned path if needed
             if (showExtraDetails)
@@ -514,13 +624,11 @@ public class FieldTeam : MonoBehaviour
             if (mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._2D)
             {
                 lineRenderer.startWidth = lineRenderer.endWidth = 1.0f / 50.0f * mainController.sceneCamera.orthographicSize;
-                assignedPathLineRenderer.startWidth = assignedPathLineRenderer.endWidth = 1.0f / 50.0f * mainController.sceneCamera.orthographicSize;
+                assignedRouteLineRenderer.startWidth = assignedRouteLineRenderer.endWidth = 1.0f / 50.0f * mainController.sceneCamera.orthographicSize;
 
-                assignedPathLineRenderer.material.SetFloat("_RepeatCount",
+                assignedRouteLineRenderer.material.SetFloat("_RepeatCount",
                     mainController.map.cameraDefaultsAndConstraints.maximumOrthographicSize / mainController.sceneCamera.orthographicSize *
-                    Vector2.Distance(
-                        assignedPathLineRenderer.GetPosition(0),
-                        assignedPathLineRenderer.GetPosition(assignedPathLineRenderer.positionCount - 1)) / assignedPathLineRenderer.widthMultiplier
+                    0.5f * _teamAssignedRouteLineTotalDistance / assignedRouteLineRenderer.widthMultiplier
                     );
             }
             else // if (mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._3D)
@@ -530,14 +638,12 @@ public class FieldTeam : MonoBehaviour
                     width = 0.1f;
 
                 lineRenderer.startWidth = lineRenderer.endWidth = width;
-                assignedPathLineRenderer.startWidth = assignedPathLineRenderer.endWidth = width;
+                assignedRouteLineRenderer.startWidth = assignedRouteLineRenderer.endWidth = width;
 
-                assignedPathLineRenderer.material.SetFloat("_RepeatCount",
+                assignedRouteLineRenderer.material.SetFloat("_RepeatCount",
                     mainController.map.cameraDefaultsAndConstraints.maximumY / 5.0f /
                         (mainController.sceneCameraObj.transform.position.y - mainController.map.cameraDefaultsAndConstraints.minimumY) *
-                    Vector2.Distance(
-                        assignedPathLineRenderer.GetPosition(0),
-                        assignedPathLineRenderer.GetPosition(assignedPathLineRenderer.positionCount - 1)) / assignedPathLineRenderer.widthMultiplier
+                    0.5f * _teamAssignedRouteLineTotalDistance / assignedRouteLineRenderer.widthMultiplier
                     );
             }
 
@@ -560,7 +666,7 @@ public class FieldTeam : MonoBehaviour
             {
                 TeamPathPoint teamPathPoint = _teamPathPointObjs[i].GetComponent<TeamPathPoint>();
 
-                if (ConvertActualTimeToSimulatedTime(teamPathPoint.actualTime) < mainController.currentSimulatedTime)
+                if (ConvertActualTimeToSimulatedTime(teamPathPoint.actualTime) < simulatedTimeLastOnline)
                 {
                     updateLatestPoint = true;
                     _revealedMapPositions.Add(_mapPositions[i]);
@@ -605,7 +711,7 @@ public class FieldTeam : MonoBehaviour
                 for (int i = _latestAvailableMessageIndex + 1; i < messages.Length; i++)
                 {
                     // Assuming messages are sorted by date/time in ascending order (TODO: need to assure this later)
-                    if (messages[i].simulatedTime.dateTime < mainController.currentSimulatedTime.dateTime)
+                    if (messages[i].simulatedTime.dateTime < simulatedTimeLastOnline.dateTime)
                     {
                         revealedMessages.Add(messages[i]);
                         _latestAvailableMessageIndex++;
@@ -635,7 +741,7 @@ public class FieldTeam : MonoBehaviour
                 for (int i = _latestAvailableClueIndex + 1; i < clues.Length; i++)
                 {
                     // Assuming clues are sorted by date/time in ascending order (TODO: need to assure this later)
-                    if (clues[i].simulatedTime.dateTime < mainController.currentSimulatedTime.dateTime)
+                    if (clues[i].simulatedTime.dateTime < simulatedTimeLastOnline.dateTime)
                     {
                         revealedClues.Add(clues[i]);
                         _latestAvailableClueIndex++;
@@ -728,6 +834,11 @@ public class FieldTeam : MonoBehaviour
         return GetPhotoThumbnailPathFromActualTime(ConvertSimulatedTimeToActualTime(simulatedTime));
     }
 
+    public string GetGrayscalePhotoThumbnailPathFromSimulatedTime(DateTime simulatedTime)
+    {
+        return GetGrayscalePhotoThumbnailPathFromActualTime(ConvertSimulatedTimeToActualTime(simulatedTime));
+    }
+
     public string GetPhotoPathFromActualTime(DateTime actualTime)
     {
         int i = BinarySearchForClosestValue(_photoTimes.ToArray(), actualTime);
@@ -738,6 +849,12 @@ public class FieldTeam : MonoBehaviour
     {
         int i = BinarySearchForClosestValue(_photoTimes.ToArray(), actualTime);
         return _timelapsePhotoThumbnailDirectoryPath + _photoFileNames[i];
+    }
+
+    public string GetGrayscalePhotoThumbnailPathFromActualTime(DateTime actualTime)
+    {
+        int i = BinarySearchForClosestValue(_photoTimes.ToArray(), actualTime);
+        return _timelapsePhotoThumbnailGrayscaleDirectoryPath + _photoFileNames[i];
     }
 
     public DateTime ConvertSimulatedTimeToActualTime(DateTime simulatedTime)
@@ -807,10 +924,12 @@ public class FieldTeam : MonoBehaviour
 
         _gpsRecordingFilePath = /* _recordingResourcesUrl */ recordingDirectoryPath + "gps-record.gpx";
         _assignedRouteFilePath = /* _recordingResourcesUrl */ recordingDirectoryPath + "assigned-route.gpx";
+        _radioDeadZonesFilePath = recordingDirectoryPath + "radio-dead-zones";
         _messagesFilePath = /* _recordingResourcesUrl */ recordingDirectoryPath + "messages";
         _cluesFilePath = /* _recordingResourcesUrl */ recordingDirectoryPath + "clues";
         _timelapsePhotoDirectoryPath = /* _recordingResourcesUrl */ mainController.resourcesUrl + "photos/";
         _timelapsePhotoThumbnailDirectoryPath = /* _recordingResourcesUrl */ /* mainController.resourcesUrl */ /* recordingDirectoryPath + */ "photo-thumbnails/";
+        _timelapsePhotoThumbnailGrayscaleDirectoryPath = /* _recordingResourcesUrl */ mainController.resourcesUrl + "photo-thumbnails-grayscale/";
         _photosFileNamesListPath = /* _recordingResourcesUrl */ recordingDirectoryPath + "photos-filenames";
 
         List<Track> tracks = Track.ReadTracksFromFile(_gpsRecordingFilePath);
@@ -873,14 +992,15 @@ public class FieldTeam : MonoBehaviour
         );
         _currentLocationFrameDisplayObj.GetComponent<RectTransform>().anchoredPosition = worldObjScreenPos;
 
-        _currentLocationFrameDisplay.DisplayImage(GetPhotoThumbnailPathFromSimulatedTime(mainController.currentSimulatedTime));
+        _currentLocationFrameDisplay.DisplayImage(GetPhotoThumbnailPathFromSimulatedTime(simulatedTimeLastOnline));
 
         // Display on side UI
         if (mainController.sideUi.selectedFieldTeam == this)
         {
             mainController.sideUi.DisplayFieldTeamLiveImage(
-                GetPhotoPathFromSimulatedTime(mainController.currentSimulatedTime),
-                GetPhotoThumbnailPathFromSimulatedTime(mainController.currentSimulatedTime)
+                GetPhotoPathFromSimulatedTime(simulatedTimeLastOnline),
+                GetPhotoThumbnailPathFromSimulatedTime(simulatedTimeLastOnline),
+                GetGrayscalePhotoThumbnailPathFromSimulatedTime(simulatedTimeLastOnline)
                 );
         }
     }

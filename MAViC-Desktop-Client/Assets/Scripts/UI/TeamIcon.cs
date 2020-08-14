@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -12,11 +10,13 @@ public class TeamIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private Color _lastTeamColor;
     private string _lastTeamName;
 
-    //private ImageLoader _imageLoader;
+    private string _lastImagePathDisplayed;
+
+    private ImageLoader _imageLoader;
 
     public void Start()
     {
-        //_imageLoader = this.gameObject.AddComponent<ImageLoader>();
+        _imageLoader = this.gameObject.AddComponent<ImageLoader>();
     }
 
     public void Update()
@@ -50,7 +50,7 @@ public class TeamIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             // Update footage thumbnail (if applicable)
             if (!fieldTeam.isComplete)
             {
-                DisplayImage(fieldTeam.GetPhotoThumbnailPathFromSimulatedTime(fieldTeam.mainController.currentSimulatedTime));
+                DisplayImage(fieldTeam.simulatedTimeLastOnline);
             }
         }
     }
@@ -101,12 +101,30 @@ public class TeamIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         fieldTeam.mainController.sideUi.ShowTeamDetails(fieldTeam);
     }
 
-    public void DisplayImage(string path)
+    public void DisplayImage(UDateTime simulatedTime)
     {
-        Texture2D texture = Utility.LoadImageFile(path);
-        footage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+        string path;
+        if (fieldTeam.isInRadioDeadZone)
+        {
+            path = fieldTeam.GetGrayscalePhotoThumbnailPathFromSimulatedTime(simulatedTime);
+            if (_lastImagePathDisplayed == null || _lastImagePathDisplayed != path)
+            {
+                _imageLoader.StartLoading(path, this, fieldTeam.mainController.footageThumbnailsCache);
 
-        //_imageLoader.StartLoading(path, this, fieldTeam.mainController.footageThumbnailsCache);
+                _lastImagePathDisplayed = path;
+            }
+        }
+        else
+        {
+            path = fieldTeam.GetPhotoThumbnailPathFromSimulatedTime(simulatedTime);
+            if (_lastImagePathDisplayed == null || _lastImagePathDisplayed != path)
+            {
+                Texture2D texture = Utility.LoadImageFile(path);
+                footage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+
+                _lastImagePathDisplayed = path;
+            }
+        }
     }
 
     public void ImageLoaded(Texture2D imageTexture, object optionalParameter)
