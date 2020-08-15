@@ -36,7 +36,7 @@ public class TeamPathPoint : MonoBehaviour
 
     void OnMouseEnter()
     {
-        if (fieldTeam.ConvertActualTimeToSimulatedTime(actualTime) <= fieldTeam.mainController.currentSimulatedTime &&
+        if (fieldTeam.ConvertActualTimeToSimulatedTime(actualTime) <= fieldTeam.simulatedTimeLastOnline &&
             fieldTeam.fieldTeamAppearStatus == FieldTeam.FieldTeamAppearStatus.Showing &&
             fieldTeam.mainController.fullscreenView == null)
         {
@@ -82,7 +82,9 @@ public class TeamPathPoint : MonoBehaviour
 
     public void OnMouseDown()
     {
-        if (fieldTeam.mainController.fullscreenView == null)
+        if (fieldTeam.ConvertActualTimeToSimulatedTime(actualTime) <= fieldTeam.simulatedTimeLastOnline &&
+            fieldTeam.fieldTeamAppearStatus == FieldTeam.FieldTeamAppearStatus.Showing &&
+            fieldTeam.mainController.fullscreenView == null)
         {
             fieldTeam.mainController.fullscreenViewObj =
                 GameObject.Instantiate(fieldTeam.mainController.fullscreenViewPrefab, fieldTeam.mainController.wholeScreenUiObj.transform);

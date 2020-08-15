@@ -205,6 +205,36 @@ public class FieldTeam : MonoBehaviour
     public Location currentLocation => _revealedMapLocations.Last();
     public Vector3 currentScenePosition => _revealedMapPositions.Last();
 
+    public Location predictedCurrentLocation
+    {
+        get
+        {
+            if (isInRadioDeadZone && _revealedPredictedRouteMapPositions != null)
+            {
+                return _revealedPredictedRouteMapLocations.Last();
+            }
+            else
+            {
+                return currentLocation;
+            }
+        }
+    }
+
+    public Vector3 predictedCurrentScenePosition
+    {
+        get
+        {
+            if (isInRadioDeadZone && _revealedPredictedRouteMapPositions != null)
+            {
+                return _revealedPredictedRouteMapPositions.Last();
+            }
+            else
+            {
+                return currentScenePosition;
+            }
+        }
+    }
+
     public TeamTimeline teamTimeline;
 
     public bool showExtraDetails = false;
@@ -260,12 +290,32 @@ public class FieldTeam : MonoBehaviour
 
     private List<Location> _assignedRouteMapLocations;
     private List<Vector3> _assignedRouteMapPositions;
+    private List<Waypoint> _assignedRouteWaypoints;
+
+    private List<Location> _predictedRouteMapLocations;
+    private List<Location> _revealedPredictedRouteMapLocations;
+
+    private List<Vector3> _predictedRouteMapPositions;
+    private List<Vector3> _revealedPredictedRouteMapPositions;
+
+    private List<Waypoint> _predictedRouteWaypoints;
+    private List<Waypoint> _revealedPredictedRouteWaypoints;
+
+    private float _revealedPredictedRouteCumulativeDistance;
+
+    /// <summary>
+    /// Average speed, in m/s.
+    /// </summary>
+    private float _averageSpeed;
 
     private List<GameObject> _teamPathPointObjs;
     private GameObject _teamPathLineObj;
 
     private GameObject _teamAssignedRouteLineObj;
     private float _teamAssignedRouteLineTotalDistance;
+
+    private GameObject _teamPredictedRouteLineObj;
+    private float _teamPredictedRouteLineTotalDistance;
 
     private List<GameObject> _clueMapIconObjs;
     private List<GameObject> _messageMapIconObjs;
@@ -277,6 +327,8 @@ public class FieldTeam : MonoBehaviour
     private UDateTime _lastActualTimeBeforeOffline;
 
     private int _latestAvailableWaypointIndex = 0;
+
+    private int _latestAvailablePredictedRouteWaypointIndex = 0;
 
     private int _latestAvailableMessageIndex = -1;
     private int _latestAvailableClueIndex = -1;
@@ -388,6 +440,8 @@ public class FieldTeam : MonoBehaviour
             _teamPathPointObjs = new List<GameObject>(track.Waypoints.Count);
             _gpsWaypointTimes = new DateTime[track.Waypoints.Count];
 
+            _averageSpeed = (float)track.Statistics.AverageSpeed * 5.0f / 38.0f;
+
             i = 0;
             foreach (Waypoint waypoint in track.Waypoints)
             {
@@ -468,6 +522,8 @@ public class FieldTeam : MonoBehaviour
 
             _assignedRouteMapLocations = new List<Location>(track.Waypoints.Count);
             _assignedRouteMapPositions = new List<Vector3>(track.Waypoints.Count);
+
+            _assignedRouteWaypoints = track.Waypoints;
 
             foreach (Waypoint waypoint in track.Waypoints)
             {
@@ -660,6 +716,77 @@ public class FieldTeam : MonoBehaviour
             }
             _currentLocationIndicator.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
 
+            // If entering a radio dead zone
+            if (isInRadioDeadZone && _predictedRouteMapPositions == null)
+            {
+                // Find position on assigned route closest to team's last known position
+                int closestPositionIndex = 0;
+                float closestDistance = float.MaxValue;
+                for (int i = 0; i < _assignedRouteMapPositions.Count; i++)
+                {
+                    float distanceToPosition = Vector3.Distance(_assignedRouteMapPositions.ElementAt(i), currentScenePosition);
+                    if (distanceToPosition < closestDistance)
+                    {
+                        closestDistance = distanceToPosition;
+                        closestPositionIndex = i;
+                    }
+                }
+
+                // Create predicted route path
+
+                _predictedRouteMapPositions = new List<Vector3>(_assignedRouteMapPositions.Count - closestPositionIndex + 1);
+                _predictedRouteMapLocations = new List<Location>(_assignedRouteMapPositions.Count - closestPositionIndex + 1);
+                _predictedRouteWaypoints = new List<Waypoint>(_assignedRouteMapPositions.Count - closestPositionIndex + 1);
+
+                _predictedRouteMapPositions.Add(currentScenePosition);
+                _predictedRouteMapLocations.Add(currentLocation);
+
+                _predictedRouteWaypoints.Add(new Waypoint());
+                _predictedRouteWaypoints[0].Latitude = currentLocation.latitude;
+                _predictedRouteWaypoints[0].Longitude = currentLocation.longitude;
+                _predictedRouteWaypoints[0].Elevation = currentLocation.altitude;
+                _predictedRouteWaypoints[0].Speed = currentLocation.speed;
+
+                for (int i = 0; i < /* _predictedRouteMapPositions.Count */ (_assignedRouteMapPositions.Count - closestPositionIndex + 1) - 1; i++)
+                {
+                    _predictedRouteMapPositions.Add(_assignedRouteMapPositions[closestPositionIndex + i]);
+                    _predictedRouteMapLocations.Add(_assignedRouteMapLocations[closestPositionIndex + i]);
+                    _predictedRouteWaypoints.Add(_assignedRouteWaypoints[closestPositionIndex + i]);
+                }
+
+                _latestAvailablePredictedRouteWaypointIndex = 0;
+                _revealedPredictedRouteCumulativeDistance = 0.0f;
+
+                _revealedPredictedRouteMapPositions = new List<Vector3>();
+                _revealedPredictedRouteMapLocations = new List<Location>();
+                _revealedPredictedRouteWaypoints = new List<Waypoint>();
+
+                _revealedPredictedRouteMapPositions.Add(_predictedRouteMapPositions[0]);
+                _revealedPredictedRouteMapLocations.Add(_predictedRouteMapLocations[0]);
+                _revealedPredictedRouteWaypoints.Add(_predictedRouteWaypoints[0]);
+
+                // Instantiate predicted route line
+                _teamPredictedRouteLineObj = new GameObject();
+                _teamPredictedRouteLineObj.transform.parent = _mapObj.transform;
+                _teamPredictedRouteLineObj.transform.SetSiblingIndex(0);
+                LineRenderer predictedRouteLineRenderer = _teamPredictedRouteLineObj.AddComponent<LineRenderer>();
+                predictedRouteLineRenderer.material = new Material(Shader.Find("Unlit/DottedLine" /* "Legacy Shaders/Particles/Alpha Blended" */));
+                predictedRouteLineRenderer.positionCount = _revealedPredictedRouteMapPositions.Count;
+                predictedRouteLineRenderer.SetPositions(_revealedPredictedRouteMapPositions.ToArray());
+                predictedRouteLineRenderer.startColor = predictedRouteLineRenderer.endColor = teamColor;
+                predictedRouteLineRenderer.numCornerVertices = 10;
+                predictedRouteLineRenderer.numCapVertices = 2;
+            }
+
+            // If leaving a radio dead zone
+            else if (!isInRadioDeadZone && _predictedRouteMapPositions != null)
+            {
+                _predictedRouteMapPositions = null;
+                _predictedRouteMapLocations = null;
+                _predictedRouteWaypoints = null;
+                GameObject.Destroy(_teamPredictedRouteLineObj);
+            }
+
             // Add more points to revealed waypoints (if any)
             bool updateLatestPoint = false;
             for (int i = _latestAvailableWaypointIndex + 1; i < _teamPathPointObjs.Count; i++)
@@ -687,6 +814,88 @@ public class FieldTeam : MonoBehaviour
             }
 
             UpdateRatioComplete();
+
+            // If the team is in a radio dead zone
+            if (isInRadioDeadZone)
+            {
+                LineRenderer predictedRouteLineRenderer = _teamPredictedRouteLineObj.GetComponent<LineRenderer>();
+
+                float secondsPastSinceOffline = (float)(new TimeSpan(mainController.currentSimulatedTime.dateTime.Ticks - simulatedTimeLastOnline.dateTime.Ticks)).TotalSeconds;
+                float predictedDistanceCoveredSinceOffline = _averageSpeed * secondsPastSinceOffline;
+
+                // Reveal more points from predicted route (if needed)
+                bool updateLatestPredictedPoint = false;
+                for (int i = _latestAvailablePredictedRouteWaypointIndex; i < _predictedRouteWaypoints.Count - 1; i++)
+                {
+                    double altChangeBetweenPoints;
+
+                    float distanceBetweenPoints = (float)Waypoint.ComputeDistance(
+                        _predictedRouteWaypoints[i],
+                        _predictedRouteWaypoints[i + 1],
+                        out altChangeBetweenPoints);
+
+                    float altitudeChangeBetweenPoints = (float)altChangeBetweenPoints;
+
+                    if (_revealedPredictedRouteCumulativeDistance + distanceBetweenPoints <= predictedDistanceCoveredSinceOffline)
+                    {
+                        updateLatestPredictedPoint = true;
+
+                        _revealedPredictedRouteMapPositions.Add(_predictedRouteMapPositions[i + 1]);
+                        _revealedPredictedRouteMapLocations.Add(_predictedRouteMapLocations[i + 1]);
+                        _revealedPredictedRouteWaypoints.Add(_predictedRouteWaypoints[i + 1]);
+
+                        _revealedPredictedRouteCumulativeDistance += distanceBetweenPoints;
+                        _latestAvailablePredictedRouteWaypointIndex = i + 1;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                if (updateLatestPredictedPoint)
+                {
+                    predictedRouteLineRenderer.positionCount = _revealedPredictedRouteMapPositions.Count;
+                    predictedRouteLineRenderer.SetPositions(_revealedPredictedRouteMapPositions.ToArray());
+
+                    _currentLocationIndicator.transform.position = predictedCurrentScenePosition;
+
+                    // Update predicted route line total distance (TODO: Make more efficient later)
+                    int c0 = 0;
+                    int c1 = 1;
+                    _teamPredictedRouteLineTotalDistance = 0.0f;
+                    while (c1 < predictedRouteLineRenderer.positionCount)
+                    {
+                        _teamPredictedRouteLineTotalDistance += Vector3.Distance(predictedRouteLineRenderer.GetPosition(c0), predictedRouteLineRenderer.GetPosition(c1));
+                        c0++;
+                        c1++;
+                    }
+                }
+
+                // Update size of predicted path
+                if (mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._2D)
+                {
+                    predictedRouteLineRenderer.startWidth = predictedRouteLineRenderer.endWidth = 1.0f / 30.0f * mainController.sceneCamera.orthographicSize;
+
+                    predictedRouteLineRenderer.material.SetFloat("_RepeatCount",
+                        mainController.map.cameraDefaultsAndConstraints.maximumOrthographicSize / mainController.sceneCamera.orthographicSize *
+                        0.5f * _teamPredictedRouteLineTotalDistance / predictedRouteLineRenderer.widthMultiplier
+                        );
+                }
+                else // if (mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._3D)
+                {
+                    float width = 1.0f / 30.0f * (mainController.sceneCameraObj.transform.position.y - mainController.map.cameraDefaultsAndConstraints.minimumY);
+                    if (width < 0.1f)
+                        width = 0.1f;
+
+                    predictedRouteLineRenderer.startWidth = predictedRouteLineRenderer.endWidth = width;
+
+                    predictedRouteLineRenderer.material.SetFloat("_RepeatCount",
+                        mainController.map.cameraDefaultsAndConstraints.maximumY / 5.0f /
+                            (mainController.sceneCameraObj.transform.position.y - mainController.map.cameraDefaultsAndConstraints.minimumY) *
+                        0.5f * _teamPredictedRouteLineTotalDistance / predictedRouteLineRenderer.widthMultiplier
+                        );
+                }
+            }
 
             // If the team has just completed, move its icon to the 'completed' section
             if (isComplete && _teamIcon.transform.parent != mainController.completedTeamsPanel.transform)
@@ -972,20 +1181,24 @@ public class FieldTeam : MonoBehaviour
 
             _currentLocationFrameDisplay = _currentLocationFrameDisplayObj.GetComponent<CurrentLocationFrameDisplay>();
             _currentLocationFrameDisplay.fieldTeam = this;
-            _currentLocationFrameDisplay.SetTeamName(teamName);
 
             _currentLocationFrameDisplayIsShowing = true;
         }
 
+        _currentLocationFrameDisplay.SetTeamName(teamName + (isInRadioDeadZone ? "\n(Predicted Position)" : ""));
+
         // Show or hide footage thumbnail
-        if (showExtraDetails)
+        if (showExtraDetails && !isInRadioDeadZone)
+        {
             _currentLocationFrameDisplay.ShowThumbnail();
+            _currentLocationFrameDisplayObj.transform.SetSiblingIndex(0);
+        }
         else
             _currentLocationFrameDisplay.HideThumbnail();
 
         Camera sceneCamera = mainController.sceneCameraObj.GetComponent<Camera>();
         RectTransform canvasRect = mainController.sceneUiObj.GetComponent<RectTransform>();
-        Vector2 viewportPos = sceneCamera.WorldToViewportPoint(currentScenePosition);
+        Vector2 viewportPos = sceneCamera.WorldToViewportPoint(predictedCurrentScenePosition);
         Vector2 worldObjScreenPos = new Vector2(
             ((viewportPos.x * canvasRect.sizeDelta.x) - (canvasRect.sizeDelta.x * 0.5f)),
             ((viewportPos.y * canvasRect.sizeDelta.y) - (canvasRect.sizeDelta.y * 0.5f))
