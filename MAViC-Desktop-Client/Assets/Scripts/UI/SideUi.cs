@@ -144,9 +144,9 @@ public class SideUi : ABackButtonClickHandler, // ABackButtonClickHandler inheri
                 //_imageLoader.StartLoading(thumbnailPath, this, mainController.footageThumbnailsCache);
             }
 
-            if (mainController.fullscreenView != null && mainController.fullscreenViewShowingLiveFootage)
+            if (mainController.footageFullscreenView != null && mainController.footageFullscreenViewShowingLive)
             {
-                mainController.fullscreenView.DisplayFullscreenImage(fullImagePath, thumbnailPath);
+                mainController.footageFullscreenView.DisplayFullscreenImage(fullImagePath, thumbnailPath);
             }
 
             _lastDisplayedThumbnailImagePath = thumbnailPath;

@@ -1,8 +1,26 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class MessageMapIcon : MonoBehaviour
+public class MessageMapIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    public Message message;
+    public GameObject expandablePanelObj;
+    public Text messageText;
+
+    public Message message
+    {
+        get
+        {
+            return _message;
+        }
+        set
+        {
+            _message = value;
+            messageText.text = _message.messageContent;
+        }
+    }
+
+    private Message _message;
 
     public void Update()
     {
@@ -17,5 +35,18 @@ public class MessageMapIcon : MonoBehaviour
             );
             this.gameObject.GetComponent<RectTransform>().anchoredPosition = worldObjScreenPos;
         }
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        expandablePanelObj.SetActive(true);
+        this.transform.SetAsLastSibling();
+        _message.fieldTeam.mainController.mouseHoveringOverIcon = true;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        expandablePanelObj.SetActive(false);
+        _message.fieldTeam.mainController.mouseHoveringOverIcon = false;
     }
 }

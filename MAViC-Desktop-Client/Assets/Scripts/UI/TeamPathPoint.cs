@@ -38,7 +38,8 @@ public class TeamPathPoint : MonoBehaviour
     {
         if (fieldTeam.ConvertActualTimeToSimulatedTime(actualTime) <= fieldTeam.simulatedTimeLastOnline &&
             fieldTeam.fieldTeamAppearStatus == FieldTeam.FieldTeamAppearStatus.Showing &&
-            fieldTeam.mainController.fullscreenView == null)
+            fieldTeam.mainController.fullscreenView == null &&
+            !fieldTeam.mainController.mouseHoveringOverIcon)
         {
             //this.HighlightPathPoint();
 
@@ -84,16 +85,17 @@ public class TeamPathPoint : MonoBehaviour
     {
         if (fieldTeam.ConvertActualTimeToSimulatedTime(actualTime) <= fieldTeam.simulatedTimeLastOnline &&
             fieldTeam.fieldTeamAppearStatus == FieldTeam.FieldTeamAppearStatus.Showing &&
-            fieldTeam.mainController.fullscreenView == null)
+            fieldTeam.mainController.fullscreenView == null &&
+            !fieldTeam.mainController.mouseHoveringOverIcon)
         {
             fieldTeam.mainController.fullscreenViewObj =
-                GameObject.Instantiate(fieldTeam.mainController.fullscreenViewPrefab, fieldTeam.mainController.wholeScreenUiObj.transform);
+                GameObject.Instantiate(fieldTeam.mainController.footageFullscreenViewPrefab, fieldTeam.mainController.wholeScreenUiObj.transform);
 
-            fieldTeam.mainController.fullscreenView = fieldTeam.mainController.fullscreenViewObj.GetComponent<FullscreenView>();
-            fieldTeam.mainController.fullscreenView.mainController = fieldTeam.mainController;
-            fieldTeam.mainController.fullscreenViewShowingLiveFootage = false;
+            fieldTeam.mainController.footageFullscreenView = fieldTeam.mainController.fullscreenViewObj.GetComponent<FootageFullscreenView>();
+            fieldTeam.mainController.footageFullscreenView.mainController = fieldTeam.mainController;
+            fieldTeam.mainController.footageFullscreenViewShowingLive = false;
 
-            fieldTeam.mainController.fullscreenView.DisplayFullscreenImage(
+            fieldTeam.mainController.footageFullscreenView.DisplayFullscreenImage(
                 fieldTeam.GetPhotoPathFromActualTime(actualTime),
                 fieldTeam.GetPhotoThumbnailPathFromActualTime(actualTime)
                 );

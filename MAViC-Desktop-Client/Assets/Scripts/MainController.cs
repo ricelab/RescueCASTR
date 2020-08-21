@@ -77,10 +77,30 @@ public class MainController : MonoBehaviour
     public ImageLoaderCache footagePhotosCache;
     public ImageLoaderCache cluesPhotosCache;
 
-    public FullscreenView fullscreenView;
+    public FullscreenView fullscreenView
+    {
+        get
+        {
+            if (footageFullscreenView != null)
+                return footageFullscreenView;
+            else if (clueFullscreenView != null)
+                return clueFullscreenView;
+
+            else
+                return null;
+        }
+    }
+    public FootageFullscreenView footageFullscreenView;
+    public ClueFullscreenView clueFullscreenView;
+
     public GameObject fullscreenViewObj;
-    public GameObject fullscreenViewPrefab;
-    public bool fullscreenViewShowingLiveFootage = false;
+
+    public GameObject footageFullscreenViewPrefab;
+    public GameObject clueFullscreenViewPrefab;
+
+    public bool footageFullscreenViewShowingLive = false;
+
+    public bool mouseHoveringOverIcon = false;
 
     private UDateTime _earliestSimulatedStartTime = null;
     private UDateTime _latestSimulatedEndTime = null;

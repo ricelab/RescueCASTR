@@ -9,13 +9,13 @@ public class SideUiLiveFootage : MonoBehaviour, IPointerClickHandler
     {
         if (sideUi.mainController.fullscreenViewObj == null)
         {
-            sideUi.mainController.fullscreenViewObj = GameObject.Instantiate(sideUi.mainController.fullscreenViewPrefab, sideUi.mainController.wholeScreenUiObj.transform);
+            sideUi.mainController.fullscreenViewObj = GameObject.Instantiate(sideUi.mainController.footageFullscreenViewPrefab, sideUi.mainController.wholeScreenUiObj.transform);
 
-            sideUi.mainController.fullscreenView = sideUi.mainController.fullscreenViewObj.GetComponent<FullscreenView>();
-            sideUi.mainController.fullscreenView.mainController = sideUi.mainController;
-            sideUi.mainController.fullscreenViewShowingLiveFootage = true;
+            sideUi.mainController.footageFullscreenView = sideUi.mainController.fullscreenViewObj.GetComponent<FootageFullscreenView>();
+            sideUi.mainController.footageFullscreenView.mainController = sideUi.mainController;
+            sideUi.mainController.footageFullscreenViewShowingLive = true;
 
-            sideUi.mainController.fullscreenView.DisplayFullscreenImage(
+            sideUi.mainController.footageFullscreenView.DisplayFullscreenImage(
                 sideUi.selectedFieldTeam.GetPhotoPathFromSimulatedTime(sideUi.selectedFieldTeam.simulatedTimeLastOnline),
                 sideUi.selectedFieldTeam.GetPhotoThumbnailPathFromSimulatedTime(sideUi.selectedFieldTeam.simulatedTimeLastOnline)
                 );

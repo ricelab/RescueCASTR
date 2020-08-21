@@ -280,13 +280,13 @@ public class TeamTimeline : MonoBehaviour
                 if (Input.GetMouseButtonDown(0))
                 {
                     fieldTeam.mainController.fullscreenViewObj =
-                        GameObject.Instantiate(fieldTeam.mainController.fullscreenViewPrefab, fieldTeam.mainController.wholeScreenUiObj.transform);
+                        GameObject.Instantiate(fieldTeam.mainController.footageFullscreenViewPrefab, fieldTeam.mainController.wholeScreenUiObj.transform);
 
-                    fieldTeam.mainController.fullscreenView = fieldTeam.mainController.fullscreenViewObj.GetComponent<FullscreenView>();
-                    fieldTeam.mainController.fullscreenView.mainController = fieldTeam.mainController;
-                    fieldTeam.mainController.fullscreenViewShowingLiveFootage = false;
+                    fieldTeam.mainController.footageFullscreenView = fieldTeam.mainController.fullscreenViewObj.GetComponent<FootageFullscreenView>();
+                    fieldTeam.mainController.footageFullscreenView.mainController = fieldTeam.mainController;
+                    fieldTeam.mainController.footageFullscreenViewShowingLive = false;
 
-                    fieldTeam.mainController.fullscreenView.DisplayFullscreenImage(
+                    fieldTeam.mainController.footageFullscreenView.DisplayFullscreenImage(
                         fieldTeam.GetPhotoPathFromSimulatedTime(simulatedTimeHighlighted),
                         fieldTeam.GetPhotoThumbnailPathFromSimulatedTime(simulatedTimeHighlighted)
                         );
