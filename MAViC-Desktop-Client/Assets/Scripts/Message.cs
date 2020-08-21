@@ -5,42 +5,19 @@ public class MessageJson
 {
     public string time;
     public bool instantiateBySimulatedTime;
-    public Message.MessageDirection direction;
+    public MessageDirection direction;
     public string content;
 }
 
-[Serializable]
-public class Message
+public enum MessageDirection
 {
-    public enum MessageDirection
-    {
-        FromTeamToCommand,
-        FromCommandToTeam
-    };
+    FromTeamToCommand,
+    FromCommandToTeam
+};
 
-    public FieldTeam fieldTeam;
-    public UDateTime simulatedTime;
-    public UDateTime actualTime;
-    public bool instantiateBySimulatedTime = false;
-    public Location location;
+[Serializable]
+public class Message : Communication
+{
     public MessageDirection messageDirection = MessageDirection.FromTeamToCommand;
     public string messageContent;
-    public bool isStarted = false;
-
-    public void Start()
-    {
-        if (!isStarted)
-        {
-            if (instantiateBySimulatedTime)
-            {
-                actualTime = fieldTeam.ConvertSimulatedTimeToActualTime(simulatedTime);
-            }
-            else // if (!instantiateBySimulatedTime)
-            {
-                simulatedTime = fieldTeam.ConvertActualTimeToSimulatedTime(actualTime);
-            }
-
-            isStarted = true;
-        }
-    }
 }

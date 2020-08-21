@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class MessagesPage : MonoBehaviour
@@ -13,9 +11,12 @@ public class MessagesPage : MonoBehaviour
 
     public void AddMessageBox(Message message)
     {
-        GameObject messageBoxToAdd = Instantiate(messageBoxPrefab, messagesContainerContentPanel.transform);
-        messageBoxToAdd.transform.Find("MessageText").GetComponent<Text>().text = message.messageContent;
+        GameObject messageBoxObjToAdd = Instantiate(messageBoxPrefab, messagesContainerContentPanel.transform);
+        MessageBox messageBoxToAdd = messageBoxObjToAdd.GetComponent<MessageBox>();
 
-        messageBoxToAdd.transform.Find("MessageTimeText").GetComponent<Text>().text = message.simulatedTime.dateTime.ToString("MM/dd/yyyy HH:mm:ss");
+        messageBoxToAdd.message = message;
+
+        messageBoxObjToAdd.transform.Find("MessageText").GetComponent<Text>().text = message.messageContent;
+        messageBoxObjToAdd.transform.Find("MessageTimeText").GetComponent<Text>().text = message.simulatedTime.dateTime.ToString("MM/dd/yyyy HH:mm:ss");
     }
 }

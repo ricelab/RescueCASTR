@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class FieldTeamsDetailsPage : ABackButtonClickHandler // ABackButtonClickHandler inherits MonoBehaviour, and is defined in BackButton.cs
 {
@@ -8,14 +6,17 @@ public class FieldTeamsDetailsPage : ABackButtonClickHandler // ABackButtonClick
 
     public override void OnBackButtonClick(GameObject fromPage, GameObject toPage)
     {
-        //sideUi.scrollRect.content = sideUi.fieldTeamDetailsPageObj.GetComponent<RectTransform>();
-
         foreach(Transform child in sideUi.messagesPage.messagesContainerContentPanel.transform)
         {
             GameObject.Destroy(child.gameObject);
         }
 
         foreach (Transform child in sideUi.cluesPage.cluesContainerContentPanel.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+
+        foreach (Transform child in sideUi.cluesAndMessagesPage.containerContentPanel.transform)
         {
             GameObject.Destroy(child.gameObject);
         }

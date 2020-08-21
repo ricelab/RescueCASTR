@@ -141,9 +141,11 @@ public class FieldTeam : MonoBehaviour
 
     public bool isComplete => UpdateRatioComplete() < 1.0 ? false : true;
 
+    public Communication[] communications;
     public Message[] messages;
     public Clue[] clues;
 
+    public List<Communication> revealedCommunications;
     public List<Message> revealedMessages;
     public List<Clue> revealedClues;
 
@@ -330,6 +332,7 @@ public class FieldTeam : MonoBehaviour
 
     private int _latestAvailablePredictedRouteWaypointIndex = 0;
 
+    private int _latestAvailableCommunicationIndex = -1;
     private int _latestAvailableMessageIndex = -1;
     private int _latestAvailableClueIndex = -1;
 
@@ -373,7 +376,7 @@ public class FieldTeam : MonoBehaviour
         _teamIcon.fieldTeam = this;
 
         _teamTimelineObj = Instantiate(teamTimelinePrefab, mainController.timelineContentPanel.transform);
-        _teamTimelineObj.transform.SetSiblingIndex(0);
+        _teamTimelineObj.transform.SetSiblingIndex(1);
         teamTimeline = _teamTimelineObj.GetComponent<TeamTimeline>();
         teamTimeline.fieldTeam = this;
 
@@ -585,27 +588,23 @@ public class FieldTeam : MonoBehaviour
             messages[c].messageDirection = messageJson.direction;
             messages[c].messageContent = messageJson.content;
 
+            messages[c].fieldTeam = this;
+            if (messages[c].instantiateBySimulatedTime)
+                messages[c].location = GetLocationAtSimulatedTime(messages[c].simulatedTime);
+            else
+                messages[c].location = GetLocationAtActualTime(messages[c].actualTime);
+
+            // Start the Message if it hasn't been started
+            messages[c].Start();
+
             c++;
         }
+        Array.Sort(messages);
 
         // Setup revealed messages
         revealedMessages = new List<Message>();
         _messageMapIconObjs = new List<GameObject>();
         _messageTimelineIconObjs = new List<GameObject>();
-        if (messages != null && messages.Length > 0)
-        {
-            foreach (Message message in messages)
-            {
-                message.fieldTeam = this;
-                if (message.instantiateBySimulatedTime)
-                    message.location = GetLocationAtSimulatedTime(message.simulatedTime);
-                else
-                    message.location = GetLocationAtActualTime(message.actualTime);
-
-                // Start the Message if it hasn't been started
-                message.Start();
-            }
-        }
 
         // Setup clues
         TextAsset cluesJsonFile = Resources.Load<TextAsset>(_cluesFilePath);
@@ -625,27 +624,41 @@ public class FieldTeam : MonoBehaviour
             clues[c].photoFileName = clueJson.photoFileName;
             clues[c].textDescription = clueJson.textDescription;
 
+            clues[c].fieldTeam = this;
+            if (clues[c].instantiateBySimulatedTime)
+                clues[c].location = GetLocationAtSimulatedTime(clues[c].simulatedTime);
+            else
+                clues[c].location = GetLocationAtActualTime(clues[c].actualTime);
+
+            // Start the Clue if it hasn't been started
+            clues[c].Start();
+
             c++;
         }
+        Array.Sort(clues);
 
         // Setup revealed clues
         revealedClues = new List<Clue>();
         _clueMapIconObjs = new List<GameObject>();
         _clueTimelineIconObjs = new List<GameObject>();
-        if (clues != null && clues.Length > 0)
-        {
-            foreach (Clue clue in clues)
-            {
-                clue.fieldTeam = this;
-                if (clue.instantiateBySimulatedTime)
-                    clue.location = GetLocationAtSimulatedTime(clue.simulatedTime);
-                else
-                    clue.location = GetLocationAtActualTime(clue.actualTime);
 
-                // Start the Clue if it hasn't been started
-                clue.Start();
-            }
+        // Setup Communications list
+        communications = new Communication[messages.Length + clues.Length];
+        c = 0;
+        foreach(Communication msg in messages)
+        {
+            communications[c] = msg;
+            c++;
         }
+        foreach (Communication clue in clues)
+        {
+            communications[c] = clue;
+            c++;
+        }
+        Array.Sort(communications);
+
+        // Setup revealed Communications list
+        revealedCommunications = new List<Communication>();
 
         _fieldTeamIsInstantiated = true;
     }
@@ -919,7 +932,6 @@ public class FieldTeam : MonoBehaviour
             {
                 for (int i = _latestAvailableMessageIndex + 1; i < messages.Length; i++)
                 {
-                    // Assuming messages are sorted by date/time in ascending order (TODO: need to assure this later)
                     if (messages[i].simulatedTime.dateTime < simulatedTimeLastOnline.dateTime)
                     {
                         revealedMessages.Add(messages[i]);
@@ -949,7 +961,6 @@ public class FieldTeam : MonoBehaviour
             {
                 for (int i = _latestAvailableClueIndex + 1; i < clues.Length; i++)
                 {
-                    // Assuming clues are sorted by date/time in ascending order (TODO: need to assure this later)
                     if (clues[i].simulatedTime.dateTime < simulatedTimeLastOnline.dateTime)
                     {
                         revealedClues.Add(clues[i]);
@@ -966,6 +977,23 @@ public class FieldTeam : MonoBehaviour
                         //clueTimelineIconObj.transform.SetSiblingIndex(0);
                         clueTimelineIconObj.GetComponent<ClueTimelineIcon>().clue = clues[i];
                         _clueTimelineIconObjs.Add(clueTimelineIconObj);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+
+            // Add more Communications to revealed Communications (if any)
+            if (communications != null && communications.Length > 0)
+            {
+                for (int i = _latestAvailableCommunicationIndex + 1; i < communications.Length; i++)
+                {
+                    if (communications[i].simulatedTime.dateTime < simulatedTimeLastOnline.dateTime)
+                    {
+                        revealedCommunications.Add(communications[i]);
+                        _latestAvailableCommunicationIndex++;
                     }
                     else
                     {

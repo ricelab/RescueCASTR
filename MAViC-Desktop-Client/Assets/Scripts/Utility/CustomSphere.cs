@@ -1,11 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CustomSphere : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
         /**
          * This code is by Bérenger. Sources:
@@ -110,11 +107,5 @@ public class CustomSphere : MonoBehaviour
         mesh.triangles = triangles;
 
         mesh.RecalculateBounds();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

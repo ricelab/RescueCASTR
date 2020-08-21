@@ -2,7 +2,7 @@
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class MessagesButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class CluesAndMessagesButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     public SideUi sideUi;
 
@@ -19,6 +19,6 @@ public class MessagesButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public void OnPointerClick(PointerEventData eventData)
     {
         this.GetComponent<Image>().color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
-        sideUi.ShowMessages();
+        sideUi.ShowCluesAndMessages();
     }
 }

@@ -85,6 +85,8 @@ public class MainController : MonoBehaviour
                 return footageFullscreenView;
             else if (clueFullscreenView != null)
                 return clueFullscreenView;
+            else if (messageFullscreenView != null)
+                return messageFullscreenView;
 
             else
                 return null;
@@ -92,11 +94,13 @@ public class MainController : MonoBehaviour
     }
     public FootageFullscreenView footageFullscreenView;
     public ClueFullscreenView clueFullscreenView;
+    public MessageFullscreenView messageFullscreenView;
 
     public GameObject fullscreenViewObj;
 
     public GameObject footageFullscreenViewPrefab;
     public GameObject clueFullscreenViewPrefab;
+    public GameObject messageFullscreenViewPrefab;
 
     public bool footageFullscreenViewShowingLive = false;
 

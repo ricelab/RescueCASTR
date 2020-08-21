@@ -1,47 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
-public class ClueMapIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IImageLoadedHandler
+public class ClueMapIcon : ClueIcon, IPointerEnterHandler, IPointerExitHandler
 {
-    public GameObject expandablePanelObj;
-    public Image clueImage;
-    public Text clueText;
-
-    public Clue clue
-    {
-        get
-        {
-            return _clue;
-        }
-        set
-        {
-            _clue = value;
-
-            clueText.text = _clue.textDescription;
-
-            Start();
-
-            _imageLoader.StartLoading(_clue.fieldTeam.mainController.resourcesUrl /* + _clue.fieldTeam.recordingDirectoryPath */ + "clues-photos/" + _clue.photoFileName,
-                this,
-                _clue.fieldTeam.mainController.cluesPhotosCache);
-        }
-    }
-
-    private Clue _clue;
-
-    private bool _isStarted = false;
-    private ImageLoader _imageLoader;
-
-    public void Start()
-    {
-        if (!_isStarted)
-        {
-            _imageLoader = this.gameObject.AddComponent<ImageLoader>();
-            _isStarted = true;
-        }
-    }
-
     public void Update()
     {
         if (_clue != null)
@@ -54,32 +15,30 @@ public class ClueMapIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
                 ((viewportPos.y * canvasRect.sizeDelta.y) - (canvasRect.sizeDelta.y * 0.5f))
             );
             this.gameObject.GetComponent<RectTransform>().anchoredPosition = worldObjScreenPos;
+
+            if (_clue.highlightMapIcon)
+            {
+                this.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+                this.transform.SetAsLastSibling();
+            }
+            else
+            {
+                this.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+            }
         }
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
+    public override void OnPointerEnter(PointerEventData eventData)
     {
-        expandablePanelObj.SetActive(true);
-        this.transform.SetAsLastSibling();
-        _clue.fieldTeam.mainController.mouseHoveringOverIcon = true;
+        base.OnPointerEnter(eventData);
+
+        _clue.highlightTimelineIcon = true;
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    public override void OnPointerExit(PointerEventData eventData)
     {
-        expandablePanelObj.SetActive(false);
-        _clue.fieldTeam.mainController.mouseHoveringOverIcon = false;
-    }
+        base.OnPointerExit(eventData);
 
-    public void ImageLoaded(Texture2D imageTexture, object optionalParameter)
-    {
-        clueImage.sprite = Sprite.Create(imageTexture, new Rect(0, 0, imageTexture.width, imageTexture.height), new Vector2(0, 0));
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        _clue.fieldTeam.mainController.fullscreenViewObj =
-                GameObject.Instantiate(_clue.fieldTeam.mainController.clueFullscreenViewPrefab, _clue.fieldTeam.mainController.wholeScreenUiObj.transform);
-        _clue.fieldTeam.mainController.clueFullscreenView = _clue.fieldTeam.mainController.fullscreenViewObj.GetComponent<ClueFullscreenView>();
-        _clue.fieldTeam.mainController.clueFullscreenView.clue = clue;
+        _clue.highlightTimelineIcon = false;
     }
 }
