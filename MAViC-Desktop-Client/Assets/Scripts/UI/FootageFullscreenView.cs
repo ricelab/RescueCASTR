@@ -35,12 +35,14 @@ public class FootageFullscreenView : FullscreenView, IImageLoadedHandler
         _fullImageIsLoaded = false;
         if (thumbnailPath != null)
         {
-            if (!_fullImageIsLoaded /* full image is not yet loaded */)
-            {
-                Texture2D texture = Utility.LoadImageFile(thumbnailPath);
-                image.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
-            }
+            Texture2D texture = Utility.LoadImageFile(thumbnailPath);
+            image.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+
             //_thumbnailImageLoader.StartLoading(thumbnailPath, this, mainController.footageThumbnailsCache, false /* !isFullImage */);
+        }
+        if (_fullImageLoader.loadStatus == ImageLoader.LoadStatus.Loading)
+        {
+            _fullImageLoader.CancelLoading();
         }
         _fullImageLoader.StartLoading(fullImagePath, this, mainController.footagePhotosCache, true /* isFullImage */);
     }

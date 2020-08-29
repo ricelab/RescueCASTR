@@ -202,12 +202,20 @@ public class MainController : MonoBehaviour
 
         // Update PLS marker
         RectTransform canvasRect = sceneUiObj.GetComponent<RectTransform>();
-        Vector2 viewportPos = sceneCamera.WorldToViewportPoint(map.ConvertLocationToMapPosition(pointLastSeen));
+        Vector3 viewportPos = sceneCamera.WorldToViewportPoint(map.ConvertLocationToMapPosition(pointLastSeen));
         Vector2 worldObjScreenPos = new Vector2(
             ((viewportPos.x * canvasRect.sizeDelta.x) - (canvasRect.sizeDelta.x * 0.5f)),
             ((viewportPos.y * canvasRect.sizeDelta.y) - (canvasRect.sizeDelta.y * 0.5f))
         );
         plsMarkerObj.GetComponent<RectTransform>().anchoredPosition = worldObjScreenPos;
+        if (viewportPos.z < 0.0f)
+        {
+            plsMarkerObj.SetActive(false);
+        }
+        else
+        {
+            plsMarkerObj.SetActive(true);
+        }
 
         // Update LKP marker
         viewportPos = sceneCamera.WorldToViewportPoint(map.ConvertLocationToMapPosition(lastKnownPosition));
@@ -216,6 +224,14 @@ public class MainController : MonoBehaviour
             ((viewportPos.y * canvasRect.sizeDelta.y) - (canvasRect.sizeDelta.y * 0.5f))
         );
         lkpMarkerObj.GetComponent<RectTransform>().anchoredPosition = worldObjScreenPos;
+        if (viewportPos.z < 0.0f)
+        {
+            lkpMarkerObj.SetActive(false);
+        }
+        else
+        {
+            lkpMarkerObj.SetActive(true);
+        }
     }
 
     public void AddFieldTeam(FieldTeam fieldTeam)

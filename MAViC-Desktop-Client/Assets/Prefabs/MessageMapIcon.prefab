@@ -279,3 +279,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   expandablePanelObj: {fileID: 742089923806028698}
   messageText: {fileID: 1746536147571988131}
+  iconObj: {fileID: 8404522278450200694}

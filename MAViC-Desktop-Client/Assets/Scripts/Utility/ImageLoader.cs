@@ -67,7 +67,8 @@ public class ImageLoader : MonoBehaviour
         NotStarted,
         Loading,
         Success,
-        Fail
+        Fail,
+        Cancelled
     };
 
     public LoadStatus loadStatus = LoadStatus.NotStarted;
@@ -99,6 +100,21 @@ public class ImageLoader : MonoBehaviour
             {
                 _coroutine = StartCoroutine(LoadingEnumerator());
             }
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool CancelLoading()
+    {
+        if (loadStatus == LoadStatus.Loading)
+        {
+            StopCoroutine(_coroutine);
+            loadStatus = LoadStatus.Cancelled;
 
             return true;
         }

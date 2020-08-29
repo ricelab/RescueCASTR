@@ -325,7 +325,7 @@ PrefabInstance:
     - target: {fileID: 4923149382452278027, guid: ab0fe91a18c7049fea102645746c126f,
         type: 3}
       propertyPath: m_Name
-      value: CluesAndMessagesButton
+      value: CommunicationsButton
       objectReference: {fileID: 0}
     - target: {fileID: 4923149382713971522, guid: ab0fe91a18c7049fea102645746c126f,
         type: 3}
@@ -2285,7 +2285,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.0013097716}
+  m_AnchoredPosition: {x: 0, y: -0.0014362826}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &322617437
@@ -2372,8 +2372,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resourcesUrl: http://pages.cpsc.ucalgary.ca/~bdgjones/mavic-resources/
   scenariosPath: Scenarios/
-  scenarioId: 1
-  mapId: 1
+  scenarioId: 2
+  mapId: 0
   mapObjList:
   - {fileID: 504476035}
   - {fileID: 550443983}
@@ -4149,7 +4149,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1534020812}
   m_HandleRect: {fileID: 1534020811}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -4233,7 +4233,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.0003289804, y: -0.0000355317}
+  m_AnchoredPosition: {x: -0.0006272346, y: -0.0000355317}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &582743354
@@ -5445,7 +5445,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 251239930}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.99999225
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -6146,7 +6146,7 @@ GameObject:
   - component: {fileID: 1015131603}
   - component: {fileID: 1015131602}
   m_Layer: 5
-  m_Name: CluesAndMessagesPage
+  m_Name: CommunicationsPage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10538,19 +10538,19 @@ MonoBehaviour:
   fieldTeamDetailsPageObj: {fileID: 193672365}
   messagesPageObj: {fileID: 1674321752}
   cluesPageObj: {fileID: 202403220}
-  cluesAndMessagesPageObj: {fileID: 1015131600}
+  communicationsPageObj: {fileID: 1015131600}
   ftdPageTeamColorIconObj: {fileID: 311866883}
   ftdPageTeamNameTextObj: {fileID: 484539623}
   messagesPageTeamColorIconObj: {fileID: 537155225}
   messagesPageTeamNameTextObj: {fileID: 2013119669}
   cluesPageTeamColorIconObj: {fileID: 1730893978}
   cluesPageTeamNameTextObj: {fileID: 927118909}
-  cluesAndMessagesPageTeamColorIconObj: {fileID: 1995522098}
-  cluesAndMessagesPageTeamNameTextObj: {fileID: 284761150}
+  communicationsPageTeamColorIconObj: {fileID: 1995522098}
+  communicationsPageTeamNameTextObj: {fileID: 284761150}
   liveFootageObj: {fileID: 494155}
   messagesPage: {fileID: 1674321756}
   cluesPage: {fileID: 202403224}
-  cluesAndMessagesPage: {fileID: 1015131602}
+  communicationsPage: {fileID: 1015131602}
   selectedFieldTeam: {fileID: 0}
   currentlyActivePage: 0
 --- !u!1 &1995522098

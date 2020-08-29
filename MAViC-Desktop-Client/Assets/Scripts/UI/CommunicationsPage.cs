@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class CluesAndMessagesPage : MonoBehaviour
+public class CommunicationsPage : MonoBehaviour
 {
     public SideUi sideUi;
 

@@ -9,7 +9,8 @@ public class SideUi : ABackButtonClickHandler, // ABackButtonClickHandler inheri
         MainMenu,
         FieldTeamDetails,
         Messages,
-        Clues
+        Clues,
+        Communications
     };
 
 
@@ -21,7 +22,7 @@ public class SideUi : ABackButtonClickHandler, // ABackButtonClickHandler inheri
     public GameObject fieldTeamDetailsPageObj;
     public GameObject messagesPageObj;
     public GameObject cluesPageObj;
-    public GameObject cluesAndMessagesPageObj;
+    public GameObject communicationsPageObj;
 
     public GameObject ftdPageTeamColorIconObj;
     public GameObject ftdPageTeamNameTextObj;
@@ -32,14 +33,14 @@ public class SideUi : ABackButtonClickHandler, // ABackButtonClickHandler inheri
     public GameObject cluesPageTeamColorIconObj;
     public GameObject cluesPageTeamNameTextObj;
 
-    public GameObject cluesAndMessagesPageTeamColorIconObj;
-    public GameObject cluesAndMessagesPageTeamNameTextObj;
+    public GameObject communicationsPageTeamColorIconObj;
+    public GameObject communicationsPageTeamNameTextObj;
 
     public GameObject liveFootageObj;
 
     public MessagesPage messagesPage;
     public CluesPage cluesPage;
-    public CluesAndMessagesPage cluesAndMessagesPage;
+    public CommunicationsPage communicationsPage;
 
     public FieldTeam selectedFieldTeam = null;
 
@@ -111,21 +112,21 @@ public class SideUi : ABackButtonClickHandler, // ABackButtonClickHandler inheri
         currentlyActivePage = CurrentlyActivePage.Clues;
     }
 
-    public void ShowCluesAndMessages()
+    public void ShowCommunications()
     {
-        cluesAndMessagesPageTeamColorIconObj.GetComponent<Image>().color = selectedFieldTeam.teamColor;
-        cluesAndMessagesPageTeamNameTextObj.GetComponent<Text>().text = selectedFieldTeam.teamName + " Clues and Messages";
+        communicationsPageTeamColorIconObj.GetComponent<Image>().color = selectedFieldTeam.teamColor;
+        communicationsPageTeamNameTextObj.GetComponent<Text>().text = selectedFieldTeam.teamName + " Clues and Messages";
 
         fieldTeamDetailsPageObj.SetActive(false);
-        cluesAndMessagesPageObj.SetActive(true);
+        communicationsPageObj.SetActive(true);
 
         // Load field team's clues
         foreach (Communication communication in selectedFieldTeam.revealedCommunications)
         {
-            cluesAndMessagesPage.AddCommunicationBox(communication);
+            communicationsPage.AddCommunicationBox(communication);
         }
 
-        currentlyActivePage = CurrentlyActivePage.Clues;
+        currentlyActivePage = CurrentlyActivePage.Communications;
     }
 
     public override void OnBackButtonClick(GameObject fromPage, GameObject toPage)

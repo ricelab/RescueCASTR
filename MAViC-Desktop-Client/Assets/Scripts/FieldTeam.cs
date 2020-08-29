@@ -443,7 +443,7 @@ public class FieldTeam : MonoBehaviour
             _teamPathPointObjs = new List<GameObject>(track.Waypoints.Count);
             _gpsWaypointTimes = new DateTime[track.Waypoints.Count];
 
-            _averageSpeed = (float)track.Statistics.AverageSpeed * 5.0f / 38.0f;
+            _averageSpeed = (float)track.Statistics.AverageSpeedInMotion * 5.0f / 38.0f;
 
             i = 0;
             foreach (Waypoint waypoint in track.Waypoints)
@@ -451,7 +451,7 @@ public class FieldTeam : MonoBehaviour
                 Location location = new Location();
                 location.latitude = waypoint.Latitude;
                 location.longitude = waypoint.Longitude;
-                location.altitude = waypoint.Elevation + 100;
+                location.altitude = waypoint.Elevation + 75;
                 location.accuracy = 0;
                 location.altitudeAccuracy = 0;
                 location.heading = 0;
@@ -696,8 +696,10 @@ public class FieldTeam : MonoBehaviour
                 assignedRouteLineRenderer.startWidth = assignedRouteLineRenderer.endWidth = 1.0f / 50.0f * mainController.sceneCamera.orthographicSize;
 
                 assignedRouteLineRenderer.material.SetFloat("_RepeatCount",
-                    mainController.map.cameraDefaultsAndConstraints.maximumOrthographicSize / mainController.sceneCamera.orthographicSize *
-                    0.5f * _teamAssignedRouteLineTotalDistance / assignedRouteLineRenderer.widthMultiplier
+                    mainController.map.cameraDefaultsAndConstraints.maximumOrthographicSize /
+                    mainController.sceneCamera.orthographicSize *
+                    25.0f * _teamAssignedRouteLineTotalDistance / mainController.map.cameraDefaultsAndConstraints.maximumOrthographicSize /
+                    assignedRouteLineRenderer.widthMultiplier
                     );
             }
             else // if (mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._3D)
@@ -890,8 +892,10 @@ public class FieldTeam : MonoBehaviour
                     predictedRouteLineRenderer.startWidth = predictedRouteLineRenderer.endWidth = 1.0f / 30.0f * mainController.sceneCamera.orthographicSize;
 
                     predictedRouteLineRenderer.material.SetFloat("_RepeatCount",
-                        mainController.map.cameraDefaultsAndConstraints.maximumOrthographicSize / mainController.sceneCamera.orthographicSize *
-                        0.5f * _teamPredictedRouteLineTotalDistance / predictedRouteLineRenderer.widthMultiplier
+                        mainController.map.cameraDefaultsAndConstraints.maximumOrthographicSize /
+                        mainController.sceneCamera.orthographicSize *
+                        25.0f * _teamPredictedRouteLineTotalDistance / mainController.map.cameraDefaultsAndConstraints.maximumOrthographicSize /
+                        predictedRouteLineRenderer.widthMultiplier
                         );
                 }
                 else // if (mainController.sceneCameraControls.cameraViewingMode == CameraControls.CameraViewingMode._3D)
@@ -904,7 +908,7 @@ public class FieldTeam : MonoBehaviour
 
                     predictedRouteLineRenderer.material.SetFloat("_RepeatCount",
                         mainController.map.cameraDefaultsAndConstraints.maximumY / 5.0f /
-                            (mainController.sceneCameraObj.transform.position.y - mainController.map.cameraDefaultsAndConstraints.minimumY) *
+                        (mainController.sceneCameraObj.transform.position.y - mainController.map.cameraDefaultsAndConstraints.minimumY) *
                         0.5f * _teamPredictedRouteLineTotalDistance / predictedRouteLineRenderer.widthMultiplier
                         );
                 }
@@ -994,6 +998,12 @@ public class FieldTeam : MonoBehaviour
                     {
                         revealedCommunications.Add(communications[i]);
                         _latestAvailableCommunicationIndex++;
+
+                        // If Communications page showing, add new communications box
+                        if (mainController.sideUi.currentlyActivePage == SideUi.CurrentlyActivePage.Communications && mainController.sideUi.selectedFieldTeam == this)
+                        {
+                            mainController.sideUi.communicationsPage.AddCommunicationBox(communications[i]);
+                        }
                     }
                     else
                     {
@@ -1226,12 +1236,20 @@ public class FieldTeam : MonoBehaviour
 
         Camera sceneCamera = mainController.sceneCameraObj.GetComponent<Camera>();
         RectTransform canvasRect = mainController.sceneUiObj.GetComponent<RectTransform>();
-        Vector2 viewportPos = sceneCamera.WorldToViewportPoint(predictedCurrentScenePosition);
+        Vector3 viewportPos = sceneCamera.WorldToViewportPoint(predictedCurrentScenePosition);
         Vector2 worldObjScreenPos = new Vector2(
             ((viewportPos.x * canvasRect.sizeDelta.x) - (canvasRect.sizeDelta.x * 0.5f)),
             ((viewportPos.y * canvasRect.sizeDelta.y) - (canvasRect.sizeDelta.y * 0.5f))
         );
         _currentLocationFrameDisplayObj.GetComponent<RectTransform>().anchoredPosition = worldObjScreenPos;
+        if (viewportPos.z < 0.0f)
+        {
+            _currentLocationFrameDisplayObj.SetActive(false);
+        }
+        else
+        {
+            _currentLocationFrameDisplayObj.SetActive(true);
+        }
 
         _currentLocationFrameDisplay.DisplayImage(GetPhotoThumbnailPathFromSimulatedTime(simulatedTimeLastOnline));
 

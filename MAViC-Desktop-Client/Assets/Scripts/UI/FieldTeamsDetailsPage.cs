@@ -16,7 +16,7 @@ public class FieldTeamsDetailsPage : ABackButtonClickHandler // ABackButtonClick
             GameObject.Destroy(child.gameObject);
         }
 
-        foreach (Transform child in sideUi.cluesAndMessagesPage.containerContentPanel.transform)
+        foreach (Transform child in sideUi.communicationsPage.containerContentPanel.transform)
         {
             GameObject.Destroy(child.gameObject);
         }

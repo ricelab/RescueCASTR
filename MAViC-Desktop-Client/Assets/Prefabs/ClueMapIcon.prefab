@@ -63,6 +63,8 @@ MonoBehaviour:
   expandablePanelObj: {fileID: 5743076369252811689}
   clueImage: {fileID: 2600380313945657306}
   clueText: {fileID: 7281316381174035718}
+  iconImgObj: {fileID: 8573535381223784748}
+  iconArrowObj: {fileID: 8780721426575962361}
 --- !u!1 &2447586590592543006
 GameObject:
   m_ObjectHideFlags: 0

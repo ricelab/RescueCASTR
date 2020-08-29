@@ -160,7 +160,7 @@ public class TeamTimeline : MonoBehaviour
                 offlineLineTransform.SetRight(0.0f);
 
                 Material mat = Instantiate(_offlineLineImg.material);
-                mat.SetFloat("_RepeatCount", 500.0f * _offlineLineScaleX);
+                mat.SetFloat("_RepeatCount", 400.0f * _offlineLineScaleX);
                 _offlineLineImg.material = mat;
             }
             else
