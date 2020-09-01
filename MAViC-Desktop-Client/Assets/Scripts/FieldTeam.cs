@@ -141,9 +141,9 @@ public class FieldTeam : MonoBehaviour
 
     public bool isComplete => UpdateRatioComplete() < 1.0 ? false : true;
 
-    public Communication[] communications;
-    public Message[] messages;
-    public Clue[] clues;
+    public Communication[] prerecordedCommunications;
+    public Message[] prerecordedMessages;
+    public Clue[] prerecordedClues;
 
     public List<Communication> revealedCommunications;
     public List<Message> revealedMessages;
@@ -573,33 +573,33 @@ public class FieldTeam : MonoBehaviour
         // Setup messages
         TextAsset messagesJsonFile = Resources.Load<TextAsset>(_messagesFilePath);
         MessageJson[] messageJsonArray = JsonHelper.FromJson<MessageJson>(JsonHelper.fixJson(messagesJsonFile.text));
-        messages = new Message[messageJsonArray.Length];
+        prerecordedMessages = new Message[messageJsonArray.Length];
         int c = 0;
         foreach (MessageJson messageJson in messageJsonArray)
         {
-            messages[c] = new Message();
+            prerecordedMessages[c] = new Message();
 
             if (messageJson.instantiateBySimulatedTime)
-                messages[c].simulatedTime = Convert.ToDateTime(messageJson.time);
+                prerecordedMessages[c].simulatedTime = Convert.ToDateTime(messageJson.time);
             else
-                messages[c].actualTime = Convert.ToDateTime(messageJson.time);
+                prerecordedMessages[c].actualTime = Convert.ToDateTime(messageJson.time);
 
-            messages[c].instantiateBySimulatedTime = messageJson.instantiateBySimulatedTime;
-            messages[c].messageDirection = messageJson.direction;
-            messages[c].messageContent = messageJson.content;
+            prerecordedMessages[c].instantiateBySimulatedTime = messageJson.instantiateBySimulatedTime;
+            prerecordedMessages[c].messageDirection = messageJson.direction;
+            prerecordedMessages[c].messageContent = messageJson.content;
 
-            messages[c].fieldTeam = this;
-            if (messages[c].instantiateBySimulatedTime)
-                messages[c].location = GetLocationAtSimulatedTime(messages[c].simulatedTime);
+            prerecordedMessages[c].fieldTeam = this;
+            if (prerecordedMessages[c].instantiateBySimulatedTime)
+                prerecordedMessages[c].location = GetLocationAtSimulatedTime(prerecordedMessages[c].simulatedTime);
             else
-                messages[c].location = GetLocationAtActualTime(messages[c].actualTime);
+                prerecordedMessages[c].location = GetLocationAtActualTime(prerecordedMessages[c].actualTime);
 
             // Start the Message if it hasn't been started
-            messages[c].Start();
+            prerecordedMessages[c].Start();
 
             c++;
         }
-        Array.Sort(messages);
+        Array.Sort(prerecordedMessages);
 
         // Setup revealed messages
         revealedMessages = new List<Message>();
@@ -609,33 +609,33 @@ public class FieldTeam : MonoBehaviour
         // Setup clues
         TextAsset cluesJsonFile = Resources.Load<TextAsset>(_cluesFilePath);
         ClueJson[] clueJsonArray = JsonHelper.FromJson<ClueJson>(JsonHelper.fixJson(cluesJsonFile.text));
-        clues = new Clue[clueJsonArray.Length];
+        prerecordedClues = new Clue[clueJsonArray.Length];
         c = 0;
         foreach (ClueJson clueJson in clueJsonArray)
         {
-            clues[c] = new Clue();
+            prerecordedClues[c] = new Clue();
 
             if (clueJson.instantiateBySimulatedTime)
-                clues[c].simulatedTime = Convert.ToDateTime(clueJson.time);
+                prerecordedClues[c].simulatedTime = Convert.ToDateTime(clueJson.time);
             else
-                clues[c].actualTime = Convert.ToDateTime(clueJson.time);
+                prerecordedClues[c].actualTime = Convert.ToDateTime(clueJson.time);
 
-            clues[c].instantiateBySimulatedTime = clueJson.instantiateBySimulatedTime;
-            clues[c].photoFileName = clueJson.photoFileName;
-            clues[c].textDescription = clueJson.textDescription;
+            prerecordedClues[c].instantiateBySimulatedTime = clueJson.instantiateBySimulatedTime;
+            prerecordedClues[c].photoFileName = clueJson.photoFileName;
+            prerecordedClues[c].textDescription = clueJson.textDescription;
 
-            clues[c].fieldTeam = this;
-            if (clues[c].instantiateBySimulatedTime)
-                clues[c].location = GetLocationAtSimulatedTime(clues[c].simulatedTime);
+            prerecordedClues[c].fieldTeam = this;
+            if (prerecordedClues[c].instantiateBySimulatedTime)
+                prerecordedClues[c].location = GetLocationAtSimulatedTime(prerecordedClues[c].simulatedTime);
             else
-                clues[c].location = GetLocationAtActualTime(clues[c].actualTime);
+                prerecordedClues[c].location = GetLocationAtActualTime(prerecordedClues[c].actualTime);
 
             // Start the Clue if it hasn't been started
-            clues[c].Start();
+            prerecordedClues[c].Start();
 
             c++;
         }
-        Array.Sort(clues);
+        Array.Sort(prerecordedClues);
 
         // Setup revealed clues
         revealedClues = new List<Clue>();
@@ -643,19 +643,19 @@ public class FieldTeam : MonoBehaviour
         _clueTimelineIconObjs = new List<GameObject>();
 
         // Setup Communications list
-        communications = new Communication[messages.Length + clues.Length];
+        prerecordedCommunications = new Communication[prerecordedMessages.Length + prerecordedClues.Length];
         c = 0;
-        foreach(Communication msg in messages)
+        foreach(Communication msg in prerecordedMessages)
         {
-            communications[c] = msg;
+            prerecordedCommunications[c] = msg;
             c++;
         }
-        foreach (Communication clue in clues)
+        foreach (Communication clue in prerecordedClues)
         {
-            communications[c] = clue;
+            prerecordedCommunications[c] = clue;
             c++;
         }
-        Array.Sort(communications);
+        Array.Sort(prerecordedCommunications);
 
         // Setup revealed Communications list
         revealedCommunications = new List<Communication>();
@@ -932,25 +932,25 @@ public class FieldTeam : MonoBehaviour
             }
 
             // Add more messages to revealed messages (if any)
-            if (messages != null && messages.Length > 0)
+            if (prerecordedMessages != null && prerecordedMessages.Length > 0)
             {
-                for (int i = _latestAvailableMessageIndex + 1; i < messages.Length; i++)
+                for (int i = _latestAvailableMessageIndex + 1; i < prerecordedMessages.Length; i++)
                 {
-                    if (messages[i].simulatedTime.dateTime < simulatedTimeLastOnline.dateTime)
+                    if (prerecordedMessages[i].simulatedTime.dateTime < simulatedTimeLastOnline.dateTime)
                     {
-                        revealedMessages.Add(messages[i]);
+                        revealedMessages.Add(prerecordedMessages[i]);
                         _latestAvailableMessageIndex++;
 
                         // Add message icon to map
                         GameObject messageMapIconObj = GameObject.Instantiate(messageMapIconPrefab, mainController.sceneUiObj.transform);
                         messageMapIconObj.transform.SetSiblingIndex(0);
-                        messageMapIconObj.GetComponent<MessageMapIcon>().message = messages[i];
+                        messageMapIconObj.GetComponent<MessageMapIcon>().message = prerecordedMessages[i];
                         _messageMapIconObjs.Add(messageMapIconObj);
 
                         // Add message icon to timeline
                         GameObject messageTimelineIconObj = GameObject.Instantiate(messageTimelineIconPrefab, mainController.timelineUiObj.transform);
                         //messageTimelineIconObj.transform.SetSiblingIndex(0);
-                        messageTimelineIconObj.GetComponent<MessageTimelineIcon>().message = messages[i];
+                        messageTimelineIconObj.GetComponent<MessageTimelineIcon>().message = prerecordedMessages[i];
                         _messageTimelineIconObjs.Add(messageTimelineIconObj);
                     }
                     else
@@ -961,25 +961,25 @@ public class FieldTeam : MonoBehaviour
             }
 
             // Add more clues to revealed clues (if any)
-            if (clues != null && clues.Length > 0)
+            if (prerecordedClues != null && prerecordedClues.Length > 0)
             {
-                for (int i = _latestAvailableClueIndex + 1; i < clues.Length; i++)
+                for (int i = _latestAvailableClueIndex + 1; i < prerecordedClues.Length; i++)
                 {
-                    if (clues[i].simulatedTime.dateTime < simulatedTimeLastOnline.dateTime)
+                    if (prerecordedClues[i].simulatedTime.dateTime < simulatedTimeLastOnline.dateTime)
                     {
-                        revealedClues.Add(clues[i]);
+                        revealedClues.Add(prerecordedClues[i]);
                         _latestAvailableClueIndex++;
 
                         // Add clue icon to map
                         GameObject clueMapIconObj = GameObject.Instantiate(clueMapIconPrefab, mainController.sceneUiObj.transform);
                         clueMapIconObj.transform.SetSiblingIndex(0);
-                        clueMapIconObj.GetComponent<ClueMapIcon>().clue = clues[i];
+                        clueMapIconObj.GetComponent<ClueMapIcon>().clue = prerecordedClues[i];
                         _clueMapIconObjs.Add(clueMapIconObj);
 
                         // Add clue icon to timeline
                         GameObject clueTimelineIconObj = GameObject.Instantiate(clueTimelineIconPrefab, mainController.timelineUiObj.transform);
                         //clueTimelineIconObj.transform.SetSiblingIndex(0);
-                        clueTimelineIconObj.GetComponent<ClueTimelineIcon>().clue = clues[i];
+                        clueTimelineIconObj.GetComponent<ClueTimelineIcon>().clue = prerecordedClues[i];
                         _clueTimelineIconObjs.Add(clueTimelineIconObj);
                     }
                     else
@@ -990,19 +990,19 @@ public class FieldTeam : MonoBehaviour
             }
 
             // Add more Communications to revealed Communications (if any)
-            if (communications != null && communications.Length > 0)
+            if (prerecordedCommunications != null && prerecordedCommunications.Length > 0)
             {
-                for (int i = _latestAvailableCommunicationIndex + 1; i < communications.Length; i++)
+                for (int i = _latestAvailableCommunicationIndex + 1; i < prerecordedCommunications.Length; i++)
                 {
-                    if (communications[i].simulatedTime.dateTime < simulatedTimeLastOnline.dateTime)
+                    if (prerecordedCommunications[i].simulatedTime.dateTime < simulatedTimeLastOnline.dateTime)
                     {
-                        revealedCommunications.Add(communications[i]);
+                        revealedCommunications.Add(prerecordedCommunications[i]);
                         _latestAvailableCommunicationIndex++;
 
                         // If Communications page showing, add new communications box
                         if (mainController.sideUi.currentlyActivePage == SideUi.CurrentlyActivePage.Communications && mainController.sideUi.selectedFieldTeam == this)
                         {
-                            mainController.sideUi.communicationsPage.AddCommunicationBox(communications[i]);
+                            mainController.sideUi.communicationsPage.AddCommunicationBox(prerecordedCommunications[i]);
                         }
                     }
                     else

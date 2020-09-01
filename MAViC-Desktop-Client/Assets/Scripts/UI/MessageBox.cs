@@ -19,7 +19,14 @@ public class MessageBox : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        this.transform.Find("Background").GetComponent<Image>().color = new Color(0.13f, 1.0f, 0.28f, 1.0f);
+        Color bgColor;
+
+        if (message.messageDirection == MessageDirection.FromCommandToTeam)
+            bgColor = new Color(0.13f, 1.0f, 0.28f, 1.0f);
+        else // if (message.messageDirection == MessageDirection.FromTeamToCommand)
+            bgColor = new Color(0.902f, 0.902f, 0.902f, 1.0f);
+
+        this.transform.Find("Background").GetComponent<Image>().color = bgColor;
         message.fieldTeam.UnhighlightPath();
         message.fieldTeam.UnhighlightTimeline();
         message.highlightMapIcon = false;

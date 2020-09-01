@@ -42,6 +42,8 @@ public class SideUi : ABackButtonClickHandler, // ABackButtonClickHandler inheri
     public CluesPage cluesPage;
     public CommunicationsPage communicationsPage;
 
+    public ScrollRect communicationsPageScrollRect;
+
     public FieldTeam selectedFieldTeam = null;
 
     public CurrentlyActivePage currentlyActivePage = CurrentlyActivePage.MainMenu;
@@ -125,6 +127,8 @@ public class SideUi : ABackButtonClickHandler, // ABackButtonClickHandler inheri
         {
             communicationsPage.AddCommunicationBox(communication);
         }
+
+        communicationsPageScrollRect.ScrollToBottom();
 
         currentlyActivePage = CurrentlyActivePage.Communications;
     }
