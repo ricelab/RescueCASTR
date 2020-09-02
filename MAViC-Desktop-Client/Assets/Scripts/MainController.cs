@@ -106,6 +106,8 @@ public class MainController : MonoBehaviour
 
     public bool mouseHoveringOverIcon = false;
 
+    public bool isStarted = false;
+
     private UDateTime _earliestSimulatedStartTime = null;
     private UDateTime _latestSimulatedEndTime = null;
 
@@ -191,6 +193,8 @@ public class MainController : MonoBehaviour
 
         _startTimeOfSimulation = currentSimulatedTime.dateTime;
         _actualStartTime = DateTime.Now;
+
+        isStarted = true;
     }
 
     public void Update()

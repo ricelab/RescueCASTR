@@ -343,6 +343,8 @@ public class FieldTeam : MonoBehaviour
 
     private Color _lastTeamColor;
 
+    private bool _mapPositionsDroppedToTerrain = false;
+
     #endregion
 
 
@@ -451,7 +453,7 @@ public class FieldTeam : MonoBehaviour
                 Location location = new Location();
                 location.latitude = waypoint.Latitude;
                 location.longitude = waypoint.Longitude;
-                location.altitude = waypoint.Elevation + 75;
+                location.altitude = waypoint.Elevation /* + 75 */;
                 location.accuracy = 0;
                 location.altitudeAccuracy = 0;
                 location.heading = 0;
@@ -533,7 +535,7 @@ public class FieldTeam : MonoBehaviour
                 Location location = new Location();
                 location.latitude = waypoint.Latitude;
                 location.longitude = waypoint.Longitude;
-                location.altitude = (double.IsNaN(waypoint.Elevation) ? 0 : waypoint.Elevation)  + 100;
+                location.altitude = (double.IsNaN(waypoint.Elevation) ? 0 : waypoint.Elevation) /* + 75 */;
                 location.accuracy = 0;
                 location.altitudeAccuracy = 0;
                 location.heading = 0;
@@ -1014,6 +1016,77 @@ public class FieldTeam : MonoBehaviour
         }
     }
 
+    public void FixedUpdate()
+    {
+        if (!_mapPositionsDroppedToTerrain && mainController.isStarted)
+        {
+            for (int i = 0; i < _mapPositions.Count; i++)
+            {
+                _mapPositions[i] = new Vector3(
+                    _mapPositions[i].x,
+                    TerrainHeightAtPosition(_mapPositions[i]),
+                    _mapPositions[i].z
+                    );
+            }
+
+            for (int i = 0; i < _revealedMapPositions.Count; i++)
+            {
+                _revealedMapPositions[i] = new Vector3(
+                    _revealedMapPositions[i].x,
+                    TerrainHeightAtPosition(_revealedMapPositions[i]),
+                    _revealedMapPositions[i].z
+                    );
+            }
+
+            for (int i = 0; i < _assignedRouteMapPositions.Count; i++)
+            {
+                _assignedRouteMapPositions[i] = new Vector3(
+                    _assignedRouteMapPositions[i].x,
+                    TerrainHeightAtPosition(_assignedRouteMapPositions[i]),
+                    _assignedRouteMapPositions[i].z
+                    );
+            }
+
+            if (_predictedRouteMapPositions != null)
+            {
+                for (int i = 0; i < _predictedRouteMapPositions.Count; i++)
+                {
+                    _predictedRouteMapPositions[i] = new Vector3(
+                        _predictedRouteMapPositions[i].x,
+                        TerrainHeightAtPosition(_predictedRouteMapPositions[i]),
+                        _predictedRouteMapPositions[i].z
+                        );
+                }
+            }
+
+            if (_revealedPredictedRouteMapPositions != null)
+            {
+                for (int i = 0; i < _revealedPredictedRouteMapPositions.Count; i++)
+                {
+                    _revealedPredictedRouteMapPositions[i] = new Vector3(
+                        _revealedPredictedRouteMapPositions[i].x,
+                        TerrainHeightAtPosition(_revealedPredictedRouteMapPositions[i]),
+                        _revealedPredictedRouteMapPositions[i].z
+                        );
+                }
+            }
+
+            LineRenderer routeLineRenderer = _teamPathLineObj.GetComponent<LineRenderer>();
+            routeLineRenderer.SetPositions(_revealedMapPositions.ToArray());
+
+            LineRenderer assignedRouteLineRenderer = _teamAssignedRouteLineObj.GetComponent<LineRenderer>();
+            assignedRouteLineRenderer.SetPositions(_assignedRouteMapPositions.ToArray());
+
+            if (_teamPredictedRouteLineObj != null)
+            {
+                LineRenderer predictedRouteLineRenderer = _teamPredictedRouteLineObj.GetComponent<LineRenderer>();
+                predictedRouteLineRenderer.SetPositions(_revealedPredictedRouteMapPositions.ToArray());
+            }
+
+            _mapPositionsDroppedToTerrain = true;
+        }
+    }
+
     public Location GetLocationAtSimulatedTime(DateTime simulatedTime)
     {
         return GetLocationAtActualTime(ConvertSimulatedTimeToActualTime(simulatedTime));
@@ -1296,6 +1369,20 @@ public class FieldTeam : MonoBehaviour
         } while (first <= last);
         
         return mid;
+    }
+
+    private float TerrainHeightAtPosition(Vector3 pos)
+    {
+        RaycastHit hit;
+        LayerMask mask = LayerMask.GetMask("Terrain");
+        if (Physics.Raycast(new Vector3(pos.x, 0.0f, pos.z), Vector3.down, out hit, float.MaxValue, mask))
+        {
+            return hit.point.y + 5;
+        }
+        else
+        {
+            return pos.y + 5;
+        }
     }
 
     #endregion

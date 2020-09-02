@@ -2465,7 +2465,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.00004680832}
+  m_AnchoredPosition: {x: 0, y: 0.00045827383}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &322617437
@@ -2614,6 +2614,7 @@ MonoBehaviour:
     type: 3}
   footageFullscreenViewShowingLive: 0
   mouseHoveringOverIcon: 0
+  isStarted: 0
 --- !u!1 &348195969
 GameObject:
   m_ObjectHideFlags: 0
@@ -4413,7 +4414,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.0012799418, y: -0.0000355317}
+  m_AnchoredPosition: {x: -0.001932649, y: -0.0000355317}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &582743354
@@ -5303,12 +5304,32 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 550443984}
     m_Modifications:
+    - target: {fileID: 100000, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 100004, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
       propertyPath: m_Name
       value: golden-ears-new
       objectReference: {fileID: 0}
     - target: {fileID: 100004, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100006, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100008, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
+      propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
@@ -8998,7 +9019,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1166337282}
   m_HandleRect: {fileID: 1166337281}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -12683,10 +12704,25 @@ GameObject:
   - component: {fileID: 1331826257298232546}
   - component: {fileID: 2773990355804524139}
   - component: {fileID: 529885270064880384}
-  m_Layer: 0
+  - component: {fileID: 8772338798919272684}
+  m_Layer: 9
   m_Name: Depth_Map
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!64 &8772338798919272684
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8772338798919272683}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -3010977843630198292, guid: b43e6f6422ee249fbb357d3dfb792947, type: 3}
