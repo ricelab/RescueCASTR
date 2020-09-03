@@ -1528,7 +1528,7 @@ Transform:
   m_LocalScale: {x: 23.2, y: 20, z: 14.32}
   m_Children: []
   m_Father: {fileID: 550443984}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!64 &208411106
 MeshCollider:
@@ -1759,7 +1759,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &246473531
 GameObject:
@@ -2553,14 +2553,16 @@ MonoBehaviour:
   networkEvents: {fileID: 1635571817}
   resourcesUrl: http://pages.cpsc.ucalgary.ca/~bdgjones/mavic-resources/
   scenariosPath: Scenarios/
-  scenarioId: 2
+  scenarioId: 0
   mapId: 0
   mapObjList:
   - {fileID: 504476035}
   - {fileID: 550443983}
+  - {fileID: 2113351221}
   mapList:
   - {fileID: 504476036}
   - {fileID: 550443985}
+  - {fileID: 2113351222}
   currentSimulatedTime:
     _dateTime: 2020-07-13 8:20:00 AM
   fieldTeamPrefab: {fileID: 3163116931047670762, guid: dd462e63fc0226347b55b9ef66cd9b88,
@@ -2690,7 +2692,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -22.499939}
+  m_AnchoredPosition: {x: 0, y: -22.5}
   m_SizeDelta: {x: 0, y: -44.99997}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &353984723
@@ -4204,7 +4206,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 762958389}
   - {fileID: 208411105}
   - {fileID: 1700338113}
   m_Father: {fileID: 0}
@@ -4813,7 +4814,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &690534541
 PrefabInstance:
@@ -5307,7 +5308,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 550443984}
+    m_TransformParent: {fileID: 2113351223}
     m_Modifications:
     - target: {fileID: 100000, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
       propertyPath: m_Layer
@@ -5323,7 +5324,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100004, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 100004, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
       propertyPath: m_Layer
@@ -5351,15 +5352,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: 2335925bfd612e54cb1ecfc9718af813, type: 3}
       propertyPath: m_LocalRotation.w
@@ -8611,7 +8612,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -22.499939}
+  m_AnchoredPosition: {x: 0, y: -22.5}
   m_SizeDelta: {x: 0, y: -44.99997}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1455774462
@@ -10332,7 +10333,7 @@ Transform:
   m_LocalScale: {x: 19.96, y: 20, z: 14.44}
   m_Children: []
   m_Father: {fileID: 550443984}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!64 &1700338114
 MeshCollider:
@@ -12053,6 +12054,82 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2113001015}
   m_CullTransparentMesh: 0
+--- !u!1 &2113351221
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2113351223}
+  - component: {fileID: 2113351222}
+  m_Layer: 0
+  m_Name: Map-GoldenEars
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &2113351222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2113351221}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 768a410fea1342146bd348827c1e457e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  referenceLocations:
+  - latitude: 49.319956
+    longitude: -122.459409
+    altitude: 207
+    accuracy: 0
+    altitudeAccuracy: 0
+    heading: 0
+    speed: 0
+  - latitude: 49.388525
+    longitude: -122.36534
+    altitude: 810.5
+    accuracy: 0
+    altitudeAccuracy: 0
+    heading: 0
+    speed: 0
+  referenceMapPositions:
+  - {x: 155.6, y: -110.3, z: 307.9}
+  - {x: -322.4, y: -82.65, z: -228.6}
+  cameraDefaultsAndConstraints:
+    rotateSpeed: -2
+    dragSpeed: 3
+    zoomSpeed: 40
+    mimimumX: -650
+    maximumX: 700
+    minimumY: -110
+    maximumY: 500
+    minimumZ: -650
+    maximumZ: 550
+    minimumOrthographicSize: 5
+    maximumOrthographicSize: 300
+    defaultOrthographicSize: 178
+    defaultPosition: {x: -117, y: -20, z: -85}
+--- !u!4 &2113351223
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2113351221}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 762958389}
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2125392617
 GameObject:
   m_ObjectHideFlags: 0
