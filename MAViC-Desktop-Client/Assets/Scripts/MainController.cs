@@ -12,8 +12,17 @@ public class ScenarioJson
     public FieldTeamJson[] fieldTeams;
 }
 
+[Serializable]
+public class MessageToCommandJson
+{
+    public string fromTeamName;
+    public string message;
+}
+
 public class MainController : MonoBehaviour
 {
+    public NetworkEvents networkEvents;
+
     public string resourcesUrl = "http://pages.cpsc.ucalgary.ca/~bdgjones/mavic-resources/";
 
     public string scenariosPath = "Scenarios/";
@@ -194,6 +203,8 @@ public class MainController : MonoBehaviour
         _startTimeOfSimulation = currentSimulatedTime.dateTime;
         _actualStartTime = DateTime.Now;
 
+        networkEvents.AddHandler("MessageToCommand", MessageToCommand);
+
         isStarted = true;
     }
 
@@ -261,6 +272,32 @@ public class MainController : MonoBehaviour
             {
                 ft.showExtraDetails = showExtraDetails;
                 ft.fieldTeamAppearStatus = FieldTeam.FieldTeamAppearStatus.Showing;
+            }
+        }
+    }
+
+    private void MessageToCommand(string messageToCommandJsonStr)
+    {
+        Debug.Log("MessageToCommand: " + messageToCommandJsonStr);
+
+        MessageToCommandJson msgJson = JsonUtility.FromJson<MessageToCommandJson>(messageToCommandJsonStr);
+
+        FieldTeam[] fieldTeams = this.GetComponentsInChildren<FieldTeam>();
+
+        foreach (FieldTeam fieldTeam in fieldTeams)
+        {
+            if (fieldTeam.teamName == msgJson.fromTeamName)
+            {
+                Message message = new Message();
+                message.fieldTeam = fieldTeam;
+                message.simulatedTime = currentSimulatedTime;
+                message.instantiateBySimulatedTime = true;
+                message.location = fieldTeam.predictedCurrentLocation;
+                message.messageDirection = MessageDirection.FromTeamToCommand;
+                message.messageContent = msgJson.message;
+                message.Start();
+
+                fieldTeam.AddCommunication(message);
             }
         }
     }

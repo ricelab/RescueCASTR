@@ -1,0 +1,66 @@
+<html>
+
+<head>
+  
+  <title>MAViC Study 1 Investigator Client</title>
+
+  <script type="text/javascript" src="../lib/js/jquery.min.js"></script>
+
+  <script id="script-main" type="text/javascript">
+    
+    const url = window.location.hostname;
+    const dssServerUrl = "https://" + url + ":3001";
+
+    const doc = jQuery(document),
+          win = jQuery(window);
+
+    const POLL_SERVER_TIMEOUT = 2000;
+
+    function PostToServer(recipientId, eventName, msg)
+    {
+      jQuery.ajax(
+      {
+        url: dssServerUrl + '/event/' + recipientId,
+        type: 'POST',
+        //dataType: 'json',
+        //contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify({
+          'EventName': eventName,
+          'EventData': JSON.stringify(msg)
+        }),
+        cache: false,
+        processData: false
+      })
+      .done(function(response)
+      {
+        console.log("POST Response: " + response);
+      });
+    }
+
+    function SendMessageToCommand()
+    {
+      PostToServer('command', 'MessageToCommand',
+      {
+        'fromTeamName': document.getElementById('fromTeamName').value,
+        'message': document.getElementById('message').value
+      });
+
+      document.getElementById('message').value = '';
+    }
+
+  </script>
+
+</head>
+
+<body>
+
+  <h2>MAViC Study 1 Investigator</h2>
+
+  <div>
+    <p><b>From Team Name:</b> <input id="fromTeamName" type="text" name="fromTeamName" value=""></p>
+    <p><b>Enter Message:</b> <input id="message" type="text" name="message" value=""><input id="sendMessageButton" type="button" value="Send" onclick="SendMessageToCommand();"></p>
+  </div>
+
+</body>
+
+</html>

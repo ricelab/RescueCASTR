@@ -22,7 +22,7 @@ const https = require('https');
 /* Web/static server */
 
 const node_static = require('node-static');
-const staticServer = new node_static.Server('../MAViC-Mobile-Client');
+const staticServer = new node_static.Server('../MAViC-Study1-Investigator-Client');
 
 const webServer = https.createServer(options, function(request, response)
 {

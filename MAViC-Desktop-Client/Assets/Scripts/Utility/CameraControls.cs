@@ -16,6 +16,8 @@ public class CameraDefaultsAndConstraints
     public float maximumZ;
     public float minimumOrthographicSize;
     public float maximumOrthographicSize;
+    public float defaultOrthographicSize;
+    public Vector3 defaultPosition;
 }
 
 public class CameraControls : MonoBehaviour
@@ -80,9 +82,13 @@ public class CameraControls : MonoBehaviour
             _cameraDefaultsAndConstraints.zoomSpeed /= 2.0f;
         }
 
-        // Set starting orthographic size, based on min and max orthographic sizes
-        _camera.orthographicSize = _cameraDefaultsAndConstraints.maximumOrthographicSize -
-            0.5f * (_cameraDefaultsAndConstraints.maximumOrthographicSize - _cameraDefaultsAndConstraints.minimumOrthographicSize);
+        //// Set starting orthographic size, based on min and max orthographic sizes
+        //_camera.orthographicSize = _cameraDefaultsAndConstraints.maximumOrthographicSize -
+        //    0.5f * (_cameraDefaultsAndConstraints.maximumOrthographicSize - _cameraDefaultsAndConstraints.minimumOrthographicSize);
+
+        // Set camera position and zoom to the map's defaults
+        _camera.orthographicSize = _cameraDefaultsAndConstraints.defaultOrthographicSize;
+        transform.position = _cameraDefaultsAndConstraints.defaultPosition;
     }
 
     public void Update()

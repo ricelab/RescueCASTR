@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using GPXparser;
-using System.IO;
+﻿using GPXparser;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.UI;
 
 [Serializable]
@@ -343,7 +343,7 @@ public class FieldTeam : MonoBehaviour
 
     private Color _lastTeamColor;
 
-    private bool _mapPositionsDroppedToTerrain = false;
+    //private bool _mapPositionsDroppedToTerrain = false;
 
     #endregion
 
@@ -1018,73 +1018,82 @@ public class FieldTeam : MonoBehaviour
 
     public void FixedUpdate()
     {
-        if (!_mapPositionsDroppedToTerrain && mainController.isStarted)
-        {
-            for (int i = 0; i < _mapPositions.Count; i++)
-            {
-                _mapPositions[i] = new Vector3(
-                    _mapPositions[i].x,
-                    TerrainHeightAtPosition(_mapPositions[i]),
-                    _mapPositions[i].z
-                    );
-            }
+        //if (!_mapPositionsDroppedToTerrain && mainController.isStarted)
+        //{
+        //    for (int i = 0; i < _mapPositions.Count; i++)
+        //    {
+        //        _mapPositions[i] = new Vector3(
+        //            _mapPositions[i].x,
+        //            _map.TerrainHeightAtPosition(_mapPositions[i]),
+        //            _mapPositions[i].z
+        //            );
+        //    }
 
-            for (int i = 0; i < _revealedMapPositions.Count; i++)
-            {
-                _revealedMapPositions[i] = new Vector3(
-                    _revealedMapPositions[i].x,
-                    TerrainHeightAtPosition(_revealedMapPositions[i]),
-                    _revealedMapPositions[i].z
-                    );
-            }
+        //    for (int i = 0; i < _revealedMapPositions.Count; i++)
+        //    {
+        //        _revealedMapPositions[i] = new Vector3(
+        //            _revealedMapPositions[i].x,
+        //            _map.TerrainHeightAtPosition(_revealedMapPositions[i]),
+        //            _revealedMapPositions[i].z
+        //            );
+        //    }
 
-            for (int i = 0; i < _assignedRouteMapPositions.Count; i++)
-            {
-                _assignedRouteMapPositions[i] = new Vector3(
-                    _assignedRouteMapPositions[i].x,
-                    TerrainHeightAtPosition(_assignedRouteMapPositions[i]),
-                    _assignedRouteMapPositions[i].z
-                    );
-            }
+        //    for (int i = 0; i < _assignedRouteMapPositions.Count; i++)
+        //    {
+        //        _assignedRouteMapPositions[i] = new Vector3(
+        //            _assignedRouteMapPositions[i].x,
+        //            _map.TerrainHeightAtPosition(_assignedRouteMapPositions[i]),
+        //            _assignedRouteMapPositions[i].z
+        //            );
+        //    }
 
-            if (_predictedRouteMapPositions != null)
-            {
-                for (int i = 0; i < _predictedRouteMapPositions.Count; i++)
-                {
-                    _predictedRouteMapPositions[i] = new Vector3(
-                        _predictedRouteMapPositions[i].x,
-                        TerrainHeightAtPosition(_predictedRouteMapPositions[i]),
-                        _predictedRouteMapPositions[i].z
-                        );
-                }
-            }
+        //    if (_predictedRouteMapPositions != null)
+        //    {
+        //        for (int i = 0; i < _predictedRouteMapPositions.Count; i++)
+        //        {
+        //            _predictedRouteMapPositions[i] = new Vector3(
+        //                _predictedRouteMapPositions[i].x,
+        //                _map.TerrainHeightAtPosition(_predictedRouteMapPositions[i]),
+        //                _predictedRouteMapPositions[i].z
+        //                );
+        //        }
+        //    }
 
-            if (_revealedPredictedRouteMapPositions != null)
-            {
-                for (int i = 0; i < _revealedPredictedRouteMapPositions.Count; i++)
-                {
-                    _revealedPredictedRouteMapPositions[i] = new Vector3(
-                        _revealedPredictedRouteMapPositions[i].x,
-                        TerrainHeightAtPosition(_revealedPredictedRouteMapPositions[i]),
-                        _revealedPredictedRouteMapPositions[i].z
-                        );
-                }
-            }
+        //    if (_revealedPredictedRouteMapPositions != null)
+        //    {
+        //        for (int i = 0; i < _revealedPredictedRouteMapPositions.Count; i++)
+        //        {
+        //            _revealedPredictedRouteMapPositions[i] = new Vector3(
+        //                _revealedPredictedRouteMapPositions[i].x,
+        //                _map.TerrainHeightAtPosition(_revealedPredictedRouteMapPositions[i]),
+        //                _revealedPredictedRouteMapPositions[i].z
+        //                );
+        //        }
+        //    }
 
-            LineRenderer routeLineRenderer = _teamPathLineObj.GetComponent<LineRenderer>();
-            routeLineRenderer.SetPositions(_revealedMapPositions.ToArray());
+        //    LineRenderer routeLineRenderer = _teamPathLineObj.GetComponent<LineRenderer>();
+        //    routeLineRenderer.SetPositions(_revealedMapPositions.ToArray());
 
-            LineRenderer assignedRouteLineRenderer = _teamAssignedRouteLineObj.GetComponent<LineRenderer>();
-            assignedRouteLineRenderer.SetPositions(_assignedRouteMapPositions.ToArray());
+        //    LineRenderer assignedRouteLineRenderer = _teamAssignedRouteLineObj.GetComponent<LineRenderer>();
+        //    assignedRouteLineRenderer.SetPositions(_assignedRouteMapPositions.ToArray());
 
-            if (_teamPredictedRouteLineObj != null)
-            {
-                LineRenderer predictedRouteLineRenderer = _teamPredictedRouteLineObj.GetComponent<LineRenderer>();
-                predictedRouteLineRenderer.SetPositions(_revealedPredictedRouteMapPositions.ToArray());
-            }
+        //    if (_teamPredictedRouteLineObj != null)
+        //    {
+        //        LineRenderer predictedRouteLineRenderer = _teamPredictedRouteLineObj.GetComponent<LineRenderer>();
+        //        predictedRouteLineRenderer.SetPositions(_revealedPredictedRouteMapPositions.ToArray());
+        //    }
 
-            _mapPositionsDroppedToTerrain = true;
-        }
+        //    foreach(GameObject teamPathPointObj in _teamPathPointObjs)
+        //    {
+        //        teamPathPointObj.transform.position = new Vector3(
+        //            teamPathPointObj.transform.position.x,
+        //            _map.TerrainHeightAtPosition(teamPathPointObj.transform.position),
+        //            teamPathPointObj.transform.position.z
+        //            );
+        //    }
+
+        //    _mapPositionsDroppedToTerrain = true;
+        //}
     }
 
     public Location GetLocationAtSimulatedTime(DateTime simulatedTime)
@@ -1228,6 +1237,64 @@ public class FieldTeam : MonoBehaviour
         return true;
     }
 
+    public void AddCommunication(Communication communication)
+    {
+        // TODO: Refactor Update() method to call this method rather than manually adding Communcations
+
+        revealedCommunications.Add(communication);
+
+        // If Communications page showing, add new communications box
+        if (mainController.sideUi.currentlyActivePage == SideUi.CurrentlyActivePage.Communications && mainController.sideUi.selectedFieldTeam == this)
+        {
+            mainController.sideUi.communicationsPage.AddCommunicationBox(communication);
+        }
+
+        // First try Clue
+        Clue clue = communication as Clue;
+        if (clue != null)
+        {
+            revealedClues.Add(clue);
+
+            // Add clue icon to map
+            GameObject clueMapIconObj = GameObject.Instantiate(clueMapIconPrefab, mainController.sceneUiObj.transform);
+            clueMapIconObj.transform.SetSiblingIndex(0);
+            clueMapIconObj.GetComponent<ClueMapIcon>().clue = clue;
+            _clueMapIconObjs.Add(clueMapIconObj);
+
+            // Add clue icon to timeline
+            GameObject clueTimelineIconObj = GameObject.Instantiate(clueTimelineIconPrefab, mainController.timelineUiObj.transform);
+            //clueTimelineIconObj.transform.SetSiblingIndex(0);
+            clueTimelineIconObj.GetComponent<ClueTimelineIcon>().clue = clue;
+            _clueTimelineIconObjs.Add(clueTimelineIconObj);
+
+            return;
+        }
+
+        // Then try Message
+        Message message = communication as Message;
+        if (message != null)
+        {
+            revealedMessages.Add(message);
+
+            if (message.messageDirection == MessageDirection.FromTeamToCommand)
+            {
+                // Add message icon to map
+                GameObject messageMapIconObj = GameObject.Instantiate(messageMapIconPrefab, mainController.sceneUiObj.transform);
+                messageMapIconObj.transform.SetSiblingIndex(0);
+                messageMapIconObj.GetComponent<MessageMapIcon>().message = message;
+                _messageMapIconObjs.Add(messageMapIconObj);
+
+                // Add message icon to timeline
+                GameObject messageTimelineIconObj = GameObject.Instantiate(messageTimelineIconPrefab, mainController.timelineUiObj.transform);
+                //messageTimelineIconObj.transform.SetSiblingIndex(0);
+                messageTimelineIconObj.GetComponent<MessageTimelineIcon>().message = message;
+                _messageTimelineIconObjs.Add(messageTimelineIconObj);
+            }
+
+            return;
+        }
+    }
+
     #endregion
 
 
@@ -1369,20 +1436,6 @@ public class FieldTeam : MonoBehaviour
         } while (first <= last);
         
         return mid;
-    }
-
-    private float TerrainHeightAtPosition(Vector3 pos)
-    {
-        RaycastHit hit;
-        LayerMask mask = LayerMask.GetMask("Terrain");
-        if (Physics.Raycast(new Vector3(pos.x, 0.0f, pos.z), Vector3.down, out hit, float.MaxValue, mask))
-        {
-            return hit.point.y + 5;
-        }
-        else
-        {
-            return pos.y + 5;
-        }
     }
 
     #endregion

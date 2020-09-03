@@ -74,10 +74,7 @@ public class CommunicationsPage : MonoBehaviour
         message.messageContent = messageText == null || messageText == "" ? messageInputField.text : messageText;
         message.Start();
 
-        sideUi.selectedFieldTeam.revealedMessages.Add(message);
-        sideUi.selectedFieldTeam.revealedCommunications.Add(message);
-
-        AddMessageBox(message);
+        sideUi.selectedFieldTeam.AddCommunication(message);
 
         messageInputField.text = "";
 
