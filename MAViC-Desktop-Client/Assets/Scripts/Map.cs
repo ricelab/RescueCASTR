@@ -15,6 +15,9 @@ public class Map : MonoBehaviour
     // Camera position constraints
     public CameraDefaultsAndConstraints cameraDefaultsAndConstraints;
 
+    // Amount to add to terrain height
+    public float addToTerrainHeight = 5.0f;
+
     public void Start()
     {
         //networkEvents.AddHandler("ConnectionRequest", AddNewMobileClient);
@@ -53,11 +56,11 @@ public class Map : MonoBehaviour
         LayerMask mask = LayerMask.GetMask("Terrain");
         if (Physics.Raycast(new Vector3(pos.x, 0.0f, pos.z), Vector3.down, out hit, float.MaxValue, mask))
         {
-            return hit.point.y + 5;
+            return hit.point.y + addToTerrainHeight;
         }
         else
         {
-            return pos.y + 5;
+            return pos.y + addToTerrainHeight;
         }
     }
 

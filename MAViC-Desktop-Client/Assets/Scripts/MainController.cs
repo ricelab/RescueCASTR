@@ -33,6 +33,10 @@ public class MainController : MonoBehaviour
     public GameObject[] mapObjList;
     public Map[] mapList;
 
+    public string[] scenarioNameList;
+
+    public Text startScreenText;
+
     public UDateTime currentSimulatedTime;
 
     public GameObject fieldTeamPrefab;
@@ -115,6 +119,9 @@ public class MainController : MonoBehaviour
 
     public bool mouseHoveringOverIcon = false;
 
+    public GameObject startScreenObj;
+    public LayoutGroup layoutGroupToRefresh;
+
     public bool isStarted = false;
 
     private UDateTime _earliestSimulatedStartTime = null;
@@ -122,6 +129,8 @@ public class MainController : MonoBehaviour
 
     private DateTime _startTimeOfSimulation;
     private DateTime _actualStartTime;
+
+    private bool _startup = false;
 
     public void Start()
     {
@@ -156,7 +165,7 @@ public class MainController : MonoBehaviour
         cluesPhotosCache = new ImageLoaderCache(25);
 
         mapObj = mapObjList[mapId];
-        foreach(GameObject mo in mapObjList)
+        foreach (GameObject mo in mapObjList)
         {
             mo.SetActive(false);
         }
@@ -167,85 +176,112 @@ public class MainController : MonoBehaviour
         sceneCameraControls = sceneCameraObj.GetComponent<CameraControls>();
         timelineCamera = timelineCameraObj.GetComponent<Camera>();
 
-        // Load scenario JSON
-        TextAsset scenarioJsonFile = Resources.Load<TextAsset>(scenariosPath + scenarioId + "/scenario");
-        ScenarioJson scenarioJson = JsonUtility.FromJson<ScenarioJson>(scenarioJsonFile.text);
+        startScreenText.text = scenarioNameList[scenarioId] + "\n" + startScreenText.text;
+    }
 
-        // Set current simulated time
-        currentSimulatedTime = Convert.ToDateTime(scenarioJson.currentSimulatedTime);
-
-        // Set Point Last Seen
-        pointLastSeen = scenarioJson.pointLastSeen;
-
-        // Set Last Known Position
-        lastKnownPosition = scenarioJson.lastKnownPosition;
-
-        // Setup field teams
-        foreach(FieldTeamJson fieldTeamJson in scenarioJson.fieldTeams)
+    public void BeginSimulation()
+    {
+        if (!isStarted)
         {
-            GameObject fieldTeamObj = GameObject.Instantiate(fieldTeamPrefab, this.transform);
-            FieldTeam fieldTeam = fieldTeamObj.GetComponent<FieldTeam>();
-            fieldTeam.teamName = fieldTeamJson.name;
-            ColorUtility.TryParseHtmlString(fieldTeamJson.color, out fieldTeam.teamColor);
-            fieldTeam.recordingDirectoryPath = scenariosPath + scenarioId + "/TeamRecords/" + fieldTeamJson.path;
-            fieldTeam.simulatedStartTime = Convert.ToDateTime(fieldTeamJson.simulatedStartTime);
-            fieldTeam.mainController = this;
-
-            AddFieldTeam(fieldTeam);
+            _startup = true;
         }
-
-        // Instantiate PLS and LKP markers
-        plsMarkerObj = GameObject.Instantiate(plsMarkerPrefab, sceneUiObj.transform);
-        plsMarkerObj.transform.SetSiblingIndex(0);
-        lkpMarkerObj = GameObject.Instantiate(lkpMarkerPrefab, sceneUiObj.transform);
-        lkpMarkerObj.transform.SetSiblingIndex(0);
-
-        _startTimeOfSimulation = currentSimulatedTime.dateTime;
-        _actualStartTime = DateTime.Now;
-
-        networkEvents.AddHandler("MessageToCommand", MessageToCommand);
-
-        isStarted = true;
     }
 
     public void Update()
     {
-        // Update clock
-        long ticksSinceSimulationStart = DateTime.Now.Ticks - _actualStartTime.Ticks;
-        currentSimulatedTime.dateTime = new DateTime(_startTimeOfSimulation.Ticks + ticksSinceSimulationStart);
-        currentTimeTextObj.GetComponent<Text>().text = currentSimulatedTime.dateTime.ToString("yyyy/MM/dd HH:mm:ss");
+        if (isStarted)
+        {
+            // Update clock
+            long ticksSinceSimulationStart = DateTime.Now.Ticks - _actualStartTime.Ticks;
+            currentSimulatedTime.dateTime = new DateTime(_startTimeOfSimulation.Ticks + ticksSinceSimulationStart);
+            currentTimeTextObj.GetComponent<Text>().text = currentSimulatedTime.dateTime.ToString("yyyy/MM/dd HH:mm:ss");
 
-        // Update PLS marker
-        RectTransform canvasRect = sceneUiObj.GetComponent<RectTransform>();
-        Vector3 viewportPos = sceneCamera.WorldToViewportPoint(map.ConvertLocationToMapPosition(pointLastSeen));
-        Vector2 worldObjScreenPos = new Vector2(
-            ((viewportPos.x * canvasRect.sizeDelta.x) - (canvasRect.sizeDelta.x * 0.5f)),
-            ((viewportPos.y * canvasRect.sizeDelta.y) - (canvasRect.sizeDelta.y * 0.5f))
-        );
-        plsMarkerObj.GetComponent<RectTransform>().anchoredPosition = worldObjScreenPos;
-        if (viewportPos.z < 0.0f)
-        {
-            plsMarkerObj.SetActive(false);
-        }
-        else
-        {
-            plsMarkerObj.SetActive(true);
-        }
+            // Update PLS marker
+            RectTransform canvasRect = sceneUiObj.GetComponent<RectTransform>();
+            Vector3 viewportPos = sceneCamera.WorldToViewportPoint(map.ConvertLocationToMapPosition(pointLastSeen));
+            Vector2 worldObjScreenPos = new Vector2(
+                ((viewportPos.x * canvasRect.sizeDelta.x) - (canvasRect.sizeDelta.x * 0.5f)),
+                ((viewportPos.y * canvasRect.sizeDelta.y) - (canvasRect.sizeDelta.y * 0.5f))
+            );
+            plsMarkerObj.GetComponent<RectTransform>().anchoredPosition = worldObjScreenPos;
+            if (viewportPos.z < 0.0f)
+            {
+                plsMarkerObj.SetActive(false);
+            }
+            else
+            {
+                plsMarkerObj.SetActive(true);
+            }
 
-        // Update LKP marker
-        viewportPos = sceneCamera.WorldToViewportPoint(map.ConvertLocationToMapPosition(lastKnownPosition));
-        worldObjScreenPos = new Vector2(
-            ((viewportPos.x * canvasRect.sizeDelta.x) - (canvasRect.sizeDelta.x * 0.5f)),
-            ((viewportPos.y * canvasRect.sizeDelta.y) - (canvasRect.sizeDelta.y * 0.5f))
-        );
-        lkpMarkerObj.GetComponent<RectTransform>().anchoredPosition = worldObjScreenPos;
-        if (viewportPos.z < 0.0f)
-        {
-            lkpMarkerObj.SetActive(false);
+            // Update LKP marker
+            viewportPos = sceneCamera.WorldToViewportPoint(map.ConvertLocationToMapPosition(lastKnownPosition));
+            worldObjScreenPos = new Vector2(
+                ((viewportPos.x * canvasRect.sizeDelta.x) - (canvasRect.sizeDelta.x * 0.5f)),
+                ((viewportPos.y * canvasRect.sizeDelta.y) - (canvasRect.sizeDelta.y * 0.5f))
+            );
+            lkpMarkerObj.GetComponent<RectTransform>().anchoredPosition = worldObjScreenPos;
+            if (viewportPos.z < 0.0f)
+            {
+                lkpMarkerObj.SetActive(false);
+            }
+            else
+            {
+                lkpMarkerObj.SetActive(true);
+            }
         }
-        else
+    }
+
+    public void FixedUpdate()
+    {
+        if (!isStarted && _startup)
         {
-            lkpMarkerObj.SetActive(true);
+            // Load scenario JSON
+            TextAsset scenarioJsonFile = Resources.Load<TextAsset>(scenariosPath + scenarioId + "/scenario");
+            ScenarioJson scenarioJson = JsonUtility.FromJson<ScenarioJson>(scenarioJsonFile.text);
+
+            // Set current simulated time
+            currentSimulatedTime = Convert.ToDateTime(scenarioJson.currentSimulatedTime);
+
+            // Set Point Last Seen
+            pointLastSeen = scenarioJson.pointLastSeen;
+
+            // Set Last Known Position
+            lastKnownPosition = scenarioJson.lastKnownPosition;
+
+            // Setup field teams
+            foreach (FieldTeamJson fieldTeamJson in scenarioJson.fieldTeams)
+            {
+                GameObject fieldTeamObj = GameObject.Instantiate(fieldTeamPrefab, this.transform);
+                FieldTeam fieldTeam = fieldTeamObj.GetComponent<FieldTeam>();
+                fieldTeam.teamName = fieldTeamJson.name;
+                ColorUtility.TryParseHtmlString(fieldTeamJson.color, out fieldTeam.teamColor);
+                fieldTeam.recordingDirectoryPath = scenariosPath + scenarioId + "/TeamRecords/" + fieldTeamJson.path;
+                fieldTeam.simulatedStartTime = Convert.ToDateTime(fieldTeamJson.simulatedStartTime);
+                fieldTeam.mainController = this;
+
+                AddFieldTeam(fieldTeam);
+            }
+
+            // Instantiate PLS and LKP markers
+            plsMarkerObj = GameObject.Instantiate(plsMarkerPrefab, sceneUiObj.transform);
+            plsMarkerObj.transform.SetSiblingIndex(0);
+            lkpMarkerObj = GameObject.Instantiate(lkpMarkerPrefab, sceneUiObj.transform);
+            lkpMarkerObj.transform.SetSiblingIndex(0);
+
+            _startTimeOfSimulation = currentSimulatedTime.dateTime;
+            _actualStartTime = DateTime.Now;
+
+            networkEvents.AddHandler("MessageToCommand", MessageToCommand);
+
+            //LayoutRebuilder.MarkLayoutForRebuild(sideUiObj.GetComponent<RectTransform>());
+            Canvas.ForceUpdateCanvases();
+            layoutGroupToRefresh.enabled = false;
+            layoutGroupToRefresh.enabled = true;
+
+            isStarted = true;
+            _startup = false;
+
+            GameObject.Destroy(startScreenObj);
         }
     }
 
