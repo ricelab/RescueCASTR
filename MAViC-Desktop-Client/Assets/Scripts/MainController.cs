@@ -9,6 +9,7 @@ public class ScenarioJson
     public string currentSimulatedTime;
     public Location pointLastSeen;
     public Location lastKnownPosition;
+    public Location commandPostLocation;
     public FieldTeamJson[] fieldTeams;
 }
 
@@ -43,10 +44,13 @@ public class MainController : MonoBehaviour
 
     public Location pointLastSeen;
     public Location lastKnownPosition;
+    public Location commandPostLocation;
     public GameObject plsMarkerObj;
     public GameObject lkpMarkerObj;
+    public GameObject cpMarkerObj;
     public GameObject plsMarkerPrefab;
     public GameObject lkpMarkerPrefab;
+    public GameObject cpMarkerPrefab;
 
     public GameObject currentlyDeployedTeamsPanel;
     public GameObject completedTeamsPanel;
@@ -196,37 +200,54 @@ public class MainController : MonoBehaviour
             currentSimulatedTime.dateTime = new DateTime(_startTimeOfSimulation.Ticks + ticksSinceSimulationStart);
             currentTimeTextObj.GetComponent<Text>().text = currentSimulatedTime.dateTime.ToString("yyyy/MM/dd HH:mm:ss");
 
-            // Update PLS marker
+            //// Update PLS marker
+            //RectTransform canvasRect = sceneUiObj.GetComponent<RectTransform>();
+            //Vector3 viewportPos = sceneCamera.WorldToViewportPoint(map.ConvertLocationToMapPosition(pointLastSeen));
+            //Vector2 worldObjScreenPos = new Vector2(
+            //    ((viewportPos.x * canvasRect.sizeDelta.x) - (canvasRect.sizeDelta.x * 0.5f)),
+            //    ((viewportPos.y * canvasRect.sizeDelta.y) - (canvasRect.sizeDelta.y * 0.5f))
+            //);
+            //plsMarkerObj.GetComponent<RectTransform>().anchoredPosition = worldObjScreenPos;
+            //if (viewportPos.z < 0.0f)
+            //{
+            //    plsMarkerObj.SetActive(false);
+            //}
+            //else
+            //{
+            //    plsMarkerObj.SetActive(true);
+            //}
+
+            //// Update LKP marker
+            //viewportPos = sceneCamera.WorldToViewportPoint(map.ConvertLocationToMapPosition(lastKnownPosition));
+            //worldObjScreenPos = new Vector2(
+            //    ((viewportPos.x * canvasRect.sizeDelta.x) - (canvasRect.sizeDelta.x * 0.5f)),
+            //    ((viewportPos.y * canvasRect.sizeDelta.y) - (canvasRect.sizeDelta.y * 0.5f))
+            //);
+            //lkpMarkerObj.GetComponent<RectTransform>().anchoredPosition = worldObjScreenPos;
+            //if (viewportPos.z < 0.0f)
+            //{
+            //    lkpMarkerObj.SetActive(false);
+            //}
+            //else
+            //{
+            //    lkpMarkerObj.SetActive(true);
+            //}
+
+            // Update Command Post marker
             RectTransform canvasRect = sceneUiObj.GetComponent<RectTransform>();
-            Vector3 viewportPos = sceneCamera.WorldToViewportPoint(map.ConvertLocationToMapPosition(pointLastSeen));
+            Vector3 viewportPos = sceneCamera.WorldToViewportPoint(map.ConvertLocationToMapPosition(commandPostLocation));
             Vector2 worldObjScreenPos = new Vector2(
                 ((viewportPos.x * canvasRect.sizeDelta.x) - (canvasRect.sizeDelta.x * 0.5f)),
                 ((viewportPos.y * canvasRect.sizeDelta.y) - (canvasRect.sizeDelta.y * 0.5f))
             );
-            plsMarkerObj.GetComponent<RectTransform>().anchoredPosition = worldObjScreenPos;
+            cpMarkerObj.GetComponent<RectTransform>().anchoredPosition = worldObjScreenPos;
             if (viewportPos.z < 0.0f)
             {
-                plsMarkerObj.SetActive(false);
+                cpMarkerObj.SetActive(false);
             }
             else
             {
-                plsMarkerObj.SetActive(true);
-            }
-
-            // Update LKP marker
-            viewportPos = sceneCamera.WorldToViewportPoint(map.ConvertLocationToMapPosition(lastKnownPosition));
-            worldObjScreenPos = new Vector2(
-                ((viewportPos.x * canvasRect.sizeDelta.x) - (canvasRect.sizeDelta.x * 0.5f)),
-                ((viewportPos.y * canvasRect.sizeDelta.y) - (canvasRect.sizeDelta.y * 0.5f))
-            );
-            lkpMarkerObj.GetComponent<RectTransform>().anchoredPosition = worldObjScreenPos;
-            if (viewportPos.z < 0.0f)
-            {
-                lkpMarkerObj.SetActive(false);
-            }
-            else
-            {
-                lkpMarkerObj.SetActive(true);
+                cpMarkerObj.SetActive(true);
             }
         }
     }
@@ -248,6 +269,9 @@ public class MainController : MonoBehaviour
             // Set Last Known Position
             lastKnownPosition = scenarioJson.lastKnownPosition;
 
+            // Set Command Post location
+            commandPostLocation = scenarioJson.commandPostLocation;
+
             // Setup field teams
             foreach (FieldTeamJson fieldTeamJson in scenarioJson.fieldTeams)
             {
@@ -262,11 +286,15 @@ public class MainController : MonoBehaviour
                 AddFieldTeam(fieldTeam);
             }
 
-            // Instantiate PLS and LKP markers
-            plsMarkerObj = GameObject.Instantiate(plsMarkerPrefab, sceneUiObj.transform);
-            plsMarkerObj.transform.SetSiblingIndex(0);
-            lkpMarkerObj = GameObject.Instantiate(lkpMarkerPrefab, sceneUiObj.transform);
-            lkpMarkerObj.transform.SetSiblingIndex(0);
+            //// Instantiate PLS and LKP markers
+            //plsMarkerObj = GameObject.Instantiate(plsMarkerPrefab, sceneUiObj.transform);
+            //plsMarkerObj.transform.SetSiblingIndex(0);
+            //lkpMarkerObj = GameObject.Instantiate(lkpMarkerPrefab, sceneUiObj.transform);
+            //lkpMarkerObj.transform.SetSiblingIndex(0);
+
+            // Instantiate Command Post marker
+            cpMarkerObj = GameObject.Instantiate(cpMarkerPrefab, sceneUiObj.transform);
+            cpMarkerObj.transform.SetSiblingIndex(0);
 
             _startTimeOfSimulation = currentSimulatedTime.dateTime;
             _actualStartTime = DateTime.Now;
