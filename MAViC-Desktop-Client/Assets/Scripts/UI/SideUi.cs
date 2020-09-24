@@ -43,6 +43,7 @@ public class SideUi : ABackButtonClickHandler, // ABackButtonClickHandler inheri
     public CommunicationsPage communicationsPage;
 
     public ScrollRect communicationsPageScrollRect;
+    public bool communicationsPageSetForScrollToBottom = false;
 
     public FieldTeam selectedFieldTeam = null;
 
@@ -57,6 +58,21 @@ public class SideUi : ABackButtonClickHandler, // ABackButtonClickHandler inheri
     public void Start()
     {
         _imageLoader = this.gameObject.AddComponent<ImageLoader>();
+    }
+
+    public void FixedUpdate()
+    {
+        if (communicationsPageSetForScrollToBottom)
+        {
+            Debug.Log("scrolling to bottom");
+
+            Canvas.ForceUpdateCanvases();
+            mainController.layoutGroupToRefresh.enabled = false;
+            mainController.layoutGroupToRefresh.enabled = true;
+
+            communicationsPageScrollRect.ScrollToBottom();
+            communicationsPageSetForScrollToBottom = false;
+        }
     }
 
     public void ShowTeamDetails(FieldTeam ft)
@@ -158,10 +174,15 @@ public class SideUi : ABackButtonClickHandler, // ABackButtonClickHandler inheri
             }
             else
             {
-                Texture2D texture = Utility.LoadImageFile(thumbnailPath);
-                liveFootageImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
-
-                //_imageLoader.StartLoading(thumbnailPath, this, mainController.footageThumbnailsCache);
+                if (mainController.isOptimizedVersion)
+                {
+                    _imageLoader.StartLoading(thumbnailPath, this, mainController.footageThumbnailsCache);
+                }
+                else
+                {
+                    Texture2D texture = Utility.LoadImageFile(thumbnailPath);
+                    liveFootageImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+                }    
             }
 
             if (mainController.footageFullscreenView != null && mainController.footageFullscreenViewShowingLive)

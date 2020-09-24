@@ -22,6 +22,8 @@ public class MessageToCommandJson
 
 public class MainController : MonoBehaviour
 {
+    public bool isOptimizedVersion = false;
+
     public NetworkEvents networkEvents;
 
     public string resourcesUrl = "http://pages.cpsc.ucalgary.ca/~bdgjones/mavic-resources/";

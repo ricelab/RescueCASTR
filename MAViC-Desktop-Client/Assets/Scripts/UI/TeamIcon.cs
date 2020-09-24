@@ -119,8 +119,15 @@ public class TeamIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             path = fieldTeam.GetPhotoThumbnailPathFromSimulatedTime(simulatedTime);
             if (_lastImagePathDisplayed == null || _lastImagePathDisplayed != path)
             {
-                Texture2D texture = Utility.LoadImageFile(path);
-                footage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+                if (fieldTeam.mainController.isOptimizedVersion)
+                {
+                    _imageLoader.StartLoading(path, this, fieldTeam.mainController.footageThumbnailsCache);
+                }
+                else
+                {
+                    Texture2D texture = Utility.LoadImageFile(path);
+                    footage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+                }
 
                 _lastImagePathDisplayed = path;
             }

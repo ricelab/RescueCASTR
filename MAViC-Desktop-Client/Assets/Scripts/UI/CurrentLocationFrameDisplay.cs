@@ -9,7 +9,7 @@ public class CurrentLocationFrameDisplay : MonoBehaviour, IImageLoadedHandler
     public Text teamNameText;
 
     private bool _isStarted = false;
-    //private ImageLoader _imageLoader;
+    private ImageLoader _imageLoader;
 
     private string _lastDisplayedImagePath;
 
@@ -17,7 +17,7 @@ public class CurrentLocationFrameDisplay : MonoBehaviour, IImageLoadedHandler
     {
         if (!_isStarted)
         {
-            //_imageLoader = this.gameObject.AddComponent<ImageLoader>();
+            _imageLoader = this.gameObject.AddComponent<ImageLoader>();
 
             _isStarted = true;
         }
@@ -32,11 +32,16 @@ public class CurrentLocationFrameDisplay : MonoBehaviour, IImageLoadedHandler
     {
         if (_lastDisplayedImagePath == null || _lastDisplayedImagePath != path)
         {
-            Texture2D texture = Utility.LoadImageFile(path);
-            image.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
-
-            //Start();
-            //_imageLoader.StartLoading(path, this, fieldTeam.mainController.footageThumbnailsCache);
+            if (fieldTeam.mainController.isOptimizedVersion)
+            {
+                Start();
+                _imageLoader.StartLoading(path, this, fieldTeam.mainController.footageThumbnailsCache);
+            }
+            else
+            {
+                Texture2D texture = Utility.LoadImageFile(path);
+                image.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+            }
 
             _lastDisplayedImagePath = path;
         }

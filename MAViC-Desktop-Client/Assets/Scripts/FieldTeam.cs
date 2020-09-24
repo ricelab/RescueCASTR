@@ -1315,7 +1315,12 @@ public class FieldTeam : MonoBehaviour
         _messagesFilePath = /* _recordingResourcesUrl */ recordingDirectoryPath + "messages";
         _cluesFilePath = /* _recordingResourcesUrl */ recordingDirectoryPath + "clues";
         _timelapsePhotoDirectoryPath = /* _recordingResourcesUrl */ mainController.resourcesUrl + "photos/";
-        _timelapsePhotoThumbnailDirectoryPath = /* _recordingResourcesUrl */ /* mainController.resourcesUrl */ /* recordingDirectoryPath + */ "photo-thumbnails/";
+
+        if (mainController.isOptimizedVersion)
+            _timelapsePhotoThumbnailDirectoryPath = mainController.resourcesUrl + "photo-thumbnails/";
+        else
+            _timelapsePhotoThumbnailDirectoryPath = /* _recordingResourcesUrl */ /* mainController.resourcesUrl */ /* recordingDirectoryPath + */ "photo-thumbnails/";
+
         _timelapsePhotoThumbnailGrayscaleDirectoryPath = /* _recordingResourcesUrl */ mainController.resourcesUrl + "photo-thumbnails-grayscale/";
         _photosFileNamesListPath = /* _recordingResourcesUrl */ recordingDirectoryPath + "photos-filenames";
 

@@ -2640,11 +2640,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4b19fd9484a57f4881f7befc19eb278, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isOptimizedVersion: 1
   networkEvents: {fileID: 1635571817}
   resourcesUrl: http://pages.cpsc.ucalgary.ca/~bdgjones/mavic-resources/
   scenariosPath: Scenarios/
-  scenarioId: 2
-  mapId: 2
+  scenarioId: 0
+  mapId: 0
   mapObjList:
   - {fileID: 504476035}
   - {fileID: 550443983}
@@ -4446,7 +4447,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1534020812}
   m_HandleRect: {fileID: 1534020811}
   m_Direction: 0
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -4530,7 +4531,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00074759126, y: -0.0000355317}
+  m_AnchoredPosition: {x: 0.0021564886, y: -0.0000355317}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &582743354
@@ -11368,6 +11369,7 @@ MonoBehaviour:
   cluesPage: {fileID: 202403224}
   communicationsPage: {fileID: 1015131602}
   communicationsPageScrollRect: {fileID: 1189307553}
+  communicationsPageSetForScrollToBottom: 0
   selectedFieldTeam: {fileID: 0}
   currentlyActivePage: 0
 --- !u!1 &1995522098

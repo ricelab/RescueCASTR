@@ -8,7 +8,7 @@ public class FootageFullscreenView : FullscreenView, IImageLoadedHandler
     public Image image;
 
     private ImageLoader _fullImageLoader;
-    //private ImageLoader _thumbnailImageLoader;
+    private ImageLoader _thumbnailImageLoader;
     private bool _fullImageIsLoaded = false;
     private bool _isStarted = false;
 
@@ -17,7 +17,7 @@ public class FootageFullscreenView : FullscreenView, IImageLoadedHandler
         if (!_isStarted)
         {
             _fullImageLoader = this.gameObject.AddComponent<ImageLoader>();
-            //_thumbnailImageLoader = this.gameObject.AddComponent<ImageLoader>();
+            _thumbnailImageLoader = this.gameObject.AddComponent<ImageLoader>();
 
             _isStarted = true;
         }
@@ -35,10 +35,15 @@ public class FootageFullscreenView : FullscreenView, IImageLoadedHandler
         _fullImageIsLoaded = false;
         if (thumbnailPath != null)
         {
-            Texture2D texture = Utility.LoadImageFile(thumbnailPath);
-            image.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
-
-            //_thumbnailImageLoader.StartLoading(thumbnailPath, this, mainController.footageThumbnailsCache, false /* !isFullImage */);
+            if (mainController.isOptimizedVersion)
+            {
+                _thumbnailImageLoader.StartLoading(thumbnailPath, this, mainController.footageThumbnailsCache, false /* !isFullImage */);
+            }
+            else
+            {
+                Texture2D texture = Utility.LoadImageFile(thumbnailPath);
+                image.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+            }
         }
         if (_fullImageLoader.loadStatus == ImageLoader.LoadStatus.Loading)
         {

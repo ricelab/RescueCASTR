@@ -20,6 +20,7 @@ public class CommunicationsPage : MonoBehaviour
         if (clue != null)
         {
             AddClueBox(clue);
+            sideUi.communicationsPageSetForScrollToBottom = true;
             return;
         }
 
@@ -28,6 +29,7 @@ public class CommunicationsPage : MonoBehaviour
         if (message != null)
         {
             AddMessageBox(message);
+            sideUi.communicationsPageSetForScrollToBottom = true;
             return;
         }
     }
@@ -78,6 +80,6 @@ public class CommunicationsPage : MonoBehaviour
 
         messageInputField.text = "";
 
-        sideUi.communicationsPageScrollRect.ScrollToBottom();
+        //sideUi.communicationsPageScrollRect.ScrollToBottom();
     }
 }
