@@ -1093,7 +1093,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2032959487}
   m_HandleRect: {fileID: 2032959486}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -3953,9 +3953,9 @@ MonoBehaviour:
   - {x: 1281.6, y: -532.8, z: -389.5}
   - {x: -827.8, y: -652.4, z: 882.9}
   cameraDefaultsAndConstraints:
-    rotateSpeed: -2
+    rotateSpeed: 2
     dragSpeed: 6
-    zoomSpeed: 40
+    zoomSpeed: 200
     mimimumX: -1375
     maximumX: 1375
     minimumY: -635
@@ -4352,7 +4352,7 @@ MonoBehaviour:
   - {x: 65.05, y: -113.081, z: 68.77}
   - {x: -57.98, y: -113.081, z: -31.51}
   cameraDefaultsAndConstraints:
-    rotateSpeed: -2
+    rotateSpeed: 2
     dragSpeed: 6
     zoomSpeed: 20
     mimimumX: -150
@@ -4447,8 +4447,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1534020812}
   m_HandleRect: {fileID: 1534020811}
   m_Direction: 0
-  m_Value: -0.0625
-  m_Size: 0.9999968
+  m_Value: -0.41121495
+  m_Size: 0.9999892
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -12206,7 +12206,7 @@ MonoBehaviour:
   - {x: 177.92, y: -157.83, z: 168.96}
   - {x: -248.35, y: -151.8, z: -94.53}
   cameraDefaultsAndConstraints:
-    rotateSpeed: -2
+    rotateSpeed: 2
     dragSpeed: 6
     zoomSpeed: 20
     mimimumX: -650

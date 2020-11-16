@@ -67,6 +67,8 @@ public class CameraControls : MonoBehaviour
 
         _cameraDefaultsAndConstraints = mainController.map.cameraDefaultsAndConstraints;
 
+        _cameraDefaultsAndConstraints.rotateSpeed *= -1.0f;
+
         if (cameraViewingMode == CameraViewingMode._2D)
             _oldCameraViewingMode = CameraViewingMode._3D;
         else
